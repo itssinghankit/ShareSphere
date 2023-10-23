@@ -1,32 +1,47 @@
 package com.example.sharesphere.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialogDefaults.containerColor
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.toColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sharesphere.R
+import com.example.sharesphere.ui.theme.blacktxt
+import com.example.sharesphere.ui.theme.linecolor
+import com.example.sharesphere.ui.theme.orange
+import com.example.sharesphere.ui.theme.orangebg
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -35,41 +50,140 @@ fun LoginScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(orangebg),
         contentAlignment = Alignment.BottomStart
     ) {
-        Column(modifier = Modifier
-            .padding(24.dp)
-            .fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .padding(24.dp)
+                .fillMaxWidth()
+        ) {
             Text(
                 text = "Sign in",
-                color = colorResource(id = R.color.orange),
+                color = orange,
                 fontSize = 32.sp, fontFamily = FontFamily(Font(R.font.lato_black))
             )
             Text(
                 text = "Please sign in to continue",
-                color = colorResource(id = R.color.blacktxt),
-                modifier = Modifier.padding(0.dp, 8.dp),
+                color = blacktxt,
+                modifier = Modifier.padding(top = 8.dp),
                 fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_regular))
             )
 
-            TextFields()
+            TextFields("Email", Modifier.padding(top = 64.dp))
+            TextFields("Password", Modifier.padding(top = 16.dp))
+            Text(
+                text = "Forgot Password ?", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp), textAlign = TextAlign.End, fontSize = 18.sp,
+                fontFamily = FontFamily(
+                    Font(R.font.lato_bold)
+                )
+            )
+            Spacer(modifier = Modifier.height(72.dp))
+            SimpleButton("Login")
+//            Spacer(
+//                modifier = Modifier
+//                    .height(40.dp)
+//            )
+            Divider(
+                thickness = 1.dp,
+                color = linecolor,
+                modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 40.dp)
+            )
+            IconButton(text = "Continue with Gooogle", icon = R.drawable.google_logo)
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth().padding(top = 64.dp)
+
+            ) {
+                Text(
+                    text = "Don't have an account ? ", color = Color.Black,
+                    fontFamily = FontFamily(Font(R.font.lato_regular)),
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = "Create one",
+                    color = orange,
+                    fontFamily = FontFamily(Font(R.font.lato_bold)),
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 
 }
 
 @Composable
-fun TextFields() {
-    val email = rememberSaveable { mutableStateOf("") }
+fun TextFields(labeltext: String, modifier: Modifier) {
+    var email by rememberSaveable { mutableStateOf("") }
     TextField(
-        value = email.value,
-        onValueChange = { email.value = it },
+        value = email,
+        onValueChange = { email = it },
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp)),
+        visualTransformation = PasswordVisualTransformation(),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
+        singleLine = true,
+        label = { Text(text = labeltext, color = blacktxt) },
+
+        )
+}
+
+
+@Composable
+fun SimpleButton(text: String) {
+    TextButton(
+        onClick = { /*TODO*/ },
         modifier = Modifier
-            .fillMaxWidth(),
-        colors = TextFieldDefaults.textFieldColors(containerColor= Color.Black),
-        label = { Text(text = "email", color = colorResource(id = R.color.blacktxt))}
-    )
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(orange)
+            .padding(8.dp),
+
+        ) {
+        Text(
+            text = "Sign in",
+            color = Color.White,
+            fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_bold))
+        )
+    }
+}
+
+@Composable
+fun IconButton(text: String, icon: Int) {
+    IconButton(
+        onClick = { /*TODO*/ },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.Black)
+            .padding(8.dp)
+
+
+    ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = "",
+                tint = Color.Unspecified,
+                modifier = Modifier.padding(end=16.dp).size(32.dp)
+
+            )
+            Text(
+                text = text,
+                color = Color.White,
+                fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_bold))
+            )
+        }
+
+    }
 }
 
 
