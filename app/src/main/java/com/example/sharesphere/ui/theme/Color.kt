@@ -12,6 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 //own defined app colors
 val orange = Color(0xFFFF7B01)
+val darkorange= Color(0xFFE06D02)
 val orangebg = Color(0xFFF0EBEA)
 val blacktxt = Color(0xFF7C7C7C)
 val linecolor=Color(0xFFD2D2D2)
