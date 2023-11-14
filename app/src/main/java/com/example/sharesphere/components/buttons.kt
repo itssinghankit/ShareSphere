@@ -24,21 +24,24 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sharesphere.R
-import com.example.sharesphere.screens.authentication.register.RegisterViewModel
 import com.example.sharesphere.ui.theme.darkorange
 import com.example.sharesphere.ui.theme.orange
 
 @Composable
-fun SimpleTextButton(text: String, funct:()-> Unit) {
-
-    val signupViewmodel:RegisterViewModel= hiltViewModel()
-
+fun ComponentButton(
+    modifier:Modifier=Modifier,
+    text: String,
+    contColor: Color,
+    txtColor: Color,
+    isIconButton: Boolean = false,
+    icon: Int = 0,
+    onclick: () -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
     TextButton(
-        onClick = {funct()},
-        modifier = Modifier
+        onClick = { onclick() },
+        modifier = modifier
             .fillMaxWidth()
             .indication(
                 interactionSource = interactionSource,
@@ -47,34 +50,7 @@ fun SimpleTextButton(text: String, funct:()-> Unit) {
                 )
             ),
         shape = RoundedCornerShape(size = 8.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = orange)
-
-    ) {
-        Text(
-            text = text,
-            color = Color.White,
-            modifier = Modifier.padding(12.dp),
-            fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_bold))
-        )
-    }
-}
-
-@Composable
-fun IconTextButton(text: String, icon: Int) {
-    val interactionSource = remember { MutableInteractionSource() }
-    Button(
-        onClick = { /*TODO*/ },
-        modifier = Modifier
-            .fillMaxWidth()
-            .indication(
-                interactionSource = interactionSource,
-                indication = rememberRipple(
-                    color = orange
-                )
-            ),
-        shape = RoundedCornerShape(size = 8.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-
+        colors = ButtonDefaults.buttonColors(containerColor = contColor)
 
     ) {
         Row(
@@ -84,21 +60,34 @@ fun IconTextButton(text: String, icon: Int) {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = "",
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .padding(end = 16.dp)
-                    .size(32.dp)
+            if (isIconButton) {
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = "",
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .size(32.dp)
 
-            )
-            Text(
-                text = text,
-                color = Color.White,
-                fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_bold))
-            )
+                )
+                ButtonTxt(text = text, txtColor = txtColor, modifier = Modifier)
+            } else {
+                ButtonTxt(text = text, txtColor = txtColor, modifier = Modifier.padding(3.dp))
+            }
         }
-
     }
+}
+
+@Composable
+private fun ButtonTxt(
+    text: String,
+    txtColor: Color,
+    modifier: Modifier
+) {
+    Text(
+        text = text,
+        color = txtColor,
+        modifier = modifier,
+        fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_bold))
+    )
 }

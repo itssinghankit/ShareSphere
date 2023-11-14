@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.sharesphere.helper.TextFieldValidation
 import com.example.sharesphere.screens.authentication.Login.LoginScreen
 import com.example.sharesphere.screens.authentication.register.RegisterScreen
 import com.example.sharesphere.screens.home.LandingScreen

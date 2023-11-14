@@ -27,7 +27,7 @@ import com.example.sharesphere.ui.theme.blacktxt
 import com.example.sharesphere.ui.theme.orange
 
 @Composable
-fun InputTextField(
+fun ComponentTextField(
     label: String,
     modifier: Modifier,
     value: String,
@@ -52,19 +52,31 @@ fun InputTextField(
         colors = TextFieldDefaults.colors(
             focusedTextColor = Color.Black,
             unfocusedTextColor = Color.Black,
+            errorTextColor = Color.Black,
             cursorColor = orange,
+            errorCursorColor = Color.Red,
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = Color.White,
+            errorContainerColor = Color.White,
+            focusedIndicatorColor = orange,
             unfocusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Red,
+            focusedLeadingIconColor = orange,
+            unfocusedLeadingIconColor = blacktxt,
+            errorLeadingIconColor = Color.Red,
+            focusedTrailingIconColor = orange,
+            unfocusedTrailingIconColor = blacktxt,
+            errorTrailingIconColor = Color.Red,
+            focusedLabelColor = orange,
+            unfocusedLabelColor = blacktxt,
+            errorLabelColor = Color.Red,
         ),
         singleLine = true,
-        label = { Text(text = label, color = blacktxt) },
+        label = { Text(text = label) },
         leadingIcon ={
             Icon(
                 imageVector = leadingIconImageVector,
-                contentDescription = leadingIconDescription,
-                tint = if (showError) (MaterialTheme.colorScheme.error) else (MaterialTheme.colorScheme.onSurface)
+                contentDescription = leadingIconDescription
             )
         },
         isError = showError,
@@ -94,9 +106,9 @@ fun InputTextField(
     if(showError){
         Text(
             text = errorMessage,
-            color= MaterialTheme.colorScheme.error,
+            color= Color.Red,
             style = MaterialTheme.typography.bodySmall,
-            modifier =Modifier.fillMaxWidth(0.9f)
+            modifier =Modifier.padding(start=8.dp).fillMaxWidth(0.9f)
         )
     }
 }
