@@ -1,4 +1,4 @@
-package com.example.sharesphere.screens
+package com.example.sharesphere.screens.authentication.Login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +16,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +30,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.sharesphere.R
 import com.example.sharesphere.components.IconTextButton
@@ -39,6 +44,10 @@ import com.example.sharesphere.ui.theme.orangebg
 
 @Composable
 fun LoginScreen(navController: NavController) {
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
+    val signinViewModel: SigninViewModel = hiltViewModel()
 
     Box(
         modifier = Modifier
@@ -68,12 +77,18 @@ fun LoginScreen(navController: NavController) {
             InputTextField(
                 labeltext = "Email",
                 modifier = Modifier.padding(top = 64.dp),
-                visualTransformation = VisualTransformation.None
+                visualTransformation = VisualTransformation.None,
+                email,
+                onValueChange = { email = it }
             )
             InputTextField(
                 labeltext = "Password",
                 modifier = Modifier.padding(top = 16.dp),
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                password,
+                onValueChange = {
+                    password = it
+                }
             )
             Text(
                 text = "Forgot Password ?",
@@ -87,7 +102,9 @@ fun LoginScreen(navController: NavController) {
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(72.dp))
-            SimpleTextButton(text = "Sign in")
+            SimpleTextButton(text = "Sign in") {
+                signinViewModel.signin(email, password)
+            }
             Divider(
                 thickness = 1.dp,
                 color = linecolor,

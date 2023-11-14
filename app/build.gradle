@@ -22,6 +22,13 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+//      For protecting api keys from version controls systems
+        Properties properties = new Properties();
+        properties.load(project.rootProject.file("local.properties").newInputStream());
+
+        buildConfigField "String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"";
+
     }
 
     buildTypes {
@@ -30,6 +37,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    //added buildConfig feature on for accessing API_KEYS
+    buildFeatures{
+        buildConfig true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -89,6 +102,11 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.7.3"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
-    //for material library
+    //for material library and icons
     implementation 'androidx.compose.material3:material3:1.1.2'
+    implementation 'androidx.compose.material:material-icons-extended:1.5.4'
+
+    //for datastore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
 }

@@ -8,15 +8,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.sharesphere.screens.LoginScreen
-import com.example.sharesphere.screens.RegisterScreen
+import com.example.sharesphere.screens.authentication.Login.LoginScreen
+import com.example.sharesphere.screens.authentication.register.RegisterScreen
+import com.example.sharesphere.screens.home.LandingScreen
 import com.example.sharesphere.ui.theme.ShareSphereTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+//val hello=BuildConfig.API_KEY
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -39,13 +42,16 @@ fun App() {
 
     NavHost(
         navController = navController,
-        startDestination = "login" // Set the start destination
+        startDestination = "login"
     ) {
         composable("login") {
             LoginScreen(navController = navController)
         }
         composable("register") {
             RegisterScreen(navController = navController)
+        }
+        composable("landing"){
+            LandingScreen(navController=navController)
         }
     }
 }

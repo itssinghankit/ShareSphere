@@ -24,15 +24,20 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sharesphere.R
+import com.example.sharesphere.screens.authentication.register.RegisterViewModel
 import com.example.sharesphere.ui.theme.darkorange
 import com.example.sharesphere.ui.theme.orange
 
 @Composable
-fun SimpleTextButton(text: String) {
+fun SimpleTextButton(text: String, funct:()-> Unit) {
+
+    val signupViewmodel:RegisterViewModel= hiltViewModel()
+
     val interactionSource = remember { MutableInteractionSource() }
     TextButton(
-        onClick = { /*TODO*/ },
+        onClick = {funct()},
         modifier = Modifier
             .fillMaxWidth()
             .indication(
