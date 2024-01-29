@@ -11,16 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.sharesphere.helper.TextFieldValidation
-import com.example.sharesphere.screens.authentication.Login.LoginScreen
-import com.example.sharesphere.screens.authentication.register.RegisterScreen
-import com.example.sharesphere.screens.home.LandingScreen
+import com.example.sharesphere.ui.ScreenSealedClass
+import com.example.sharesphere.ui.screens.authentication.login.LoginScreen
+import com.example.sharesphere.ui.screens.authentication.register.RegisterScreen
+import com.example.sharesphere.ui.screens.authentication.username.UsernameScreen
+import com.example.sharesphere.ui.screens.home.LandingScreen
 import com.example.sharesphere.ui.theme.ShareSphereTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-//val hello=BuildConfig.API_KEY
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -43,16 +43,19 @@ fun App() {
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = ScreenSealedClass.UsernameScreen.route
     ) {
-        composable("login") {
+        composable(ScreenSealedClass.LoginScreen.route) {
             LoginScreen(navController = navController)
         }
-        composable("register") {
+        composable(ScreenSealedClass.RegisterScreen.route) {
             RegisterScreen(navController = navController)
         }
-        composable("landing"){
+        composable(ScreenSealedClass.LandingScreen.route){
             LandingScreen(navController=navController)
+        }
+        composable(ScreenSealedClass.UsernameScreen.route){
+            UsernameScreen()
         }
     }
 }

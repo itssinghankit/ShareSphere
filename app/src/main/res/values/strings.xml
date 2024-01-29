@@ -5,4 +5,9 @@
     <string name="validateEmailError">Enter a valid Email</string>
     <string name="validatePasswordError">Must contain Capital and Non-Capital letters, Number, Special character and Minimum length of 8</string>
     <string name="validateCPasswordError">Both passwords should match</string>
+    <string name="validateUsernameError">Must contain Small letters only and Minimum length of 3</string>
+
+
+    //usernameScreen response
+    <string name="usernameError">This username is not available</string>
 </resources>

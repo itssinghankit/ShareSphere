@@ -7,6 +7,11 @@ object TextFieldValidation {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
+    fun isUsernameValid(username:String):Boolean{
+        val usernameRegex="\\w{3,}".toRegex()
+        return usernameRegex.matches(username)
+    }
+
     fun isPasswordValid(password: String): Boolean {
         val passwordRegex = "(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#\$%^&*=]).{8,}".toRegex()
         return passwordRegex.matches(password)
@@ -16,5 +21,4 @@ object TextFieldValidation {
         return password1==password2
     }
 
-    
 }

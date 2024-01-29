@@ -98,15 +98,25 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
 
-    // AndroidX Navigation
+    //AndroidX Navigation
     implementation "androidx.navigation:navigation-compose:2.7.3"
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
 
-    //for material library and icons
+    //material library and icons
     implementation 'androidx.compose.material3:material3:1.1.2'
     implementation 'androidx.compose.material:material-icons-extended:1.5.4'
 
-    //for datastore
+    //datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    //OkHttp
+    def okhttp_version = "4.10.0"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+
+    //timber
+
+    //ktlint
+
 
 }

@@ -1,4 +1,4 @@
-package com.example.sharesphere.screens.authentication.register
+package com.example.sharesphere.ui.screens.authentication.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,9 +19,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,54 +38,57 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.sharesphere.R
+import com.example.sharesphere.api.ApiResponse
 import com.example.sharesphere.components.ComponentButton
 import com.example.sharesphere.components.ComponentTextField
 import com.example.sharesphere.helper.TextFieldValidation
+import com.example.sharesphere.ui.ScreenSealedClass
 import com.example.sharesphere.ui.theme.blacktxt
 import com.example.sharesphere.ui.theme.linecolor
 import com.example.sharesphere.ui.theme.orange
 import com.example.sharesphere.ui.theme.orangebg
 
+
 @Composable
-fun RegisterScreen(navController: NavController) {
+fun LoginScreen(navController: NavController) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var cPassword by rememberSaveable { mutableStateOf("") }
     var isEmailValid by rememberSaveable { mutableStateOf(true) }
     var isPasswordValid by rememberSaveable { mutableStateOf(true) }
-    var isBothPwdSame by rememberSaveable { mutableStateOf(true) }
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
-    var isCPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
-    val registerViewModel: RegisterViewModel = hiltViewModel()
+    val signinViewModel: SigninViewModel = hiltViewModel()
+    val signinResponse = signinViewModel.signinResponse.collectAsState()
+
     val focusManager = LocalFocusManager.current
+//    var scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(orangebg)
             .verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.BottomStart,
-
-        ) {
+        contentAlignment = Alignment.BottomStart
+    ) {
         Column(
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Sign up",
+                text = "Sign in",
                 color = orange,
                 fontSize = 32.sp,
                 fontFamily = FontFamily(Font(R.font.lato_black))
             )
             Text(
-                text = "Register yourself to continue",
+                text = "Please sign in to continue",
                 color = blacktxt,
                 modifier = Modifier.padding(top = 8.dp),
                 fontSize = 20.sp,
@@ -94,8 +100,6 @@ fun RegisterScreen(navController: NavController) {
                 value = email,
                 onValueChange = { email = it },
                 leadingIconImageVector = Icons.Default.Email,
-                isPasswordField = false,
-                isPasswordVisible = false,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
@@ -121,54 +125,56 @@ fun RegisterScreen(navController: NavController) {
                 onVisibilityChange = { isPasswordVisible = it }
 
             )
-            ComponentTextField(
-                label = "Confirm Password",
-                modifier = Modifier.padding(top = 16.dp),
-                value = cPassword,
-                onValueChange = { cPassword = it },
-                leadingIconImageVector = Icons.Default.Password,
-                isPasswordVisible = isPasswordVisible,
-                isPasswordField = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                showError = !isBothPwdSame,
-                errorMessage = stringResource(id = R.string.validateCPasswordError),
-                onVisibilityChange = { isCPasswordVisible = it }
-
+            Text(
+                text = "Forgot Password ?",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .clickable { },
+                textAlign = TextAlign.End,
+                fontSize = 18.sp,
+                fontFamily = FontFamily(Font(R.font.lato_bold)),
+                color = Color.Black
             )
-//            InputTextField(
-//                labeltext = "Name",
-//                modifier = Modifier.padding(top = 64.dp),
-//                visualTransformation = VisualTransformation.None,
-//                name,
-//                onValueChange = { name = it }
-//            )
-//            InputTextField(
-//                labeltext = "Email",
-//                modifier = Modifier.padding(top = 16.dp),
-//                visualTransformation = VisualTransformation.None,
-//                email,
-//                onValueChange = { email = it }
-//            )
-//            InputTextField(
-//                labeltext = "Password",
-//                modifier = Modifier.padding(top = 16.dp),
-//                visualTransformation = PasswordVisualTransformation(),
-//                password,
-//                onValueChange = { password = it }
-//            )
             Spacer(modifier = Modifier.height(72.dp))
+            when (signinResponse.value) {
+                is ApiResponse.Initial -> {
+                    ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
+                        isEmailValid = TextFieldValidation.isEmailValid(email)
+                        isPasswordValid = TextFieldValidation.isPasswordValid(password)
+                        if (isEmailValid && isPasswordValid) {
+                            signinViewModel.signin(email, password)
+                        }
+                    }
+                }
 
-            ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
-                isEmailValid = TextFieldValidation.isEmailValid(email)
-                isPasswordValid = TextFieldValidation.isPasswordValid(password)
-                isBothPwdSame = TextFieldValidation.isBothPasswordSame(password, cPassword)
-                if (isEmailValid && isPasswordValid && isBothPwdSame) {
-                    registerViewModel.signup(email, password)
+                is ApiResponse.Loading -> {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth(1f)) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .width(40.dp),
+                            color = orangebg,
+                            trackColor = orange,
+
+                            )
+                    }
+                }
+
+                is ApiResponse.Error -> {
+                    ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
+                        isEmailValid = TextFieldValidation.isEmailValid(email)
+                        isPasswordValid = TextFieldValidation.isPasswordValid(password)
+                        if (isEmailValid && isPasswordValid) {
+                            signinViewModel.signin(email, password)
+                        }
+                    }
+                }
+
+                is ApiResponse.Success -> {
+                    navController.navigate(ScreenSealedClass.LoginScreen.route)
                 }
             }
+
             Divider(
                 thickness = 1.dp,
                 color = linecolor,
@@ -183,6 +189,7 @@ fun RegisterScreen(navController: NavController) {
             ) {
 
             }
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
@@ -191,19 +198,29 @@ fun RegisterScreen(navController: NavController) {
 
             ) {
                 Text(
-                    text = "Already have an account ? ", color = Color.Black,
+                    text = "Don't have an account ? ", color = Color.Black,
                     fontFamily = FontFamily(Font(R.font.lato_regular)),
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Sign in",
+                    text = "Create one",
                     color = orange,
                     fontFamily = FontFamily(Font(R.font.lato_bold)),
-                    fontSize = 18.sp,
-                    modifier = Modifier.clickable { navController.navigate("login") }
+                    modifier = Modifier.clickable { navController.navigate(("register")) },
+                    fontSize = 18.sp
                 )
             }
         }
     }
 
 }
+
+
+
+
+
+
+
+
+
+

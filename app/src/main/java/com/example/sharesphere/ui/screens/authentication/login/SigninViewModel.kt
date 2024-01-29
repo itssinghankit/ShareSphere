@@ -1,18 +1,19 @@
-package com.example.sharesphere.screens.authentication.Login
+package com.example.sharesphere.ui.screens.authentication.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharesphere.api.ApiResponse
 import com.example.sharesphere.models.SigninResponse
 import com.example.sharesphere.repository.SigninRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SigninViewModel @Inject constructor(private val signinRepository:SigninRepository):ViewModel() {
 
-    val signinResponse:StateFlow<SigninResponse>
+    val signinResponse: MutableStateFlow<ApiResponse<SigninResponse>>
             get()=signinRepository.signinResponse
 
   fun signin(email:String,password:String){

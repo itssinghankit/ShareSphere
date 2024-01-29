@@ -1,8 +1,8 @@
-package com.example.sharesphere.screens.authentication.register
+package com.example.sharesphere.ui.screens.authentication.register
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharesphere.api.ApiResponse
 import com.example.sharesphere.models.SignupResponse
 import com.example.sharesphere.repository.SignupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,14 +13,13 @@ import javax.inject.Inject
 @HiltViewModel
 class RegisterViewModel @Inject constructor(val signupRepository: SignupRepository):ViewModel() {
 
-    val signupResponse: StateFlow<SignupResponse>
-        get() = signupRepository.signupResponse
+    val signupResponseFlow: StateFlow<ApiResponse<SignupResponse>>
+        get() = signupRepository.signupResponseFlow
 
 
     fun signup(email:String, password:String){
        viewModelScope.launch {
            signupRepository.signup(email,password)
-           Log.d("meow",signupResponse.toString())
        }
     }
 

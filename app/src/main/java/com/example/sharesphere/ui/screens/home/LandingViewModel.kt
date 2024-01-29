@@ -1,4 +1,4 @@
-package com.example.sharesphere.screens.home
+package com.example.sharesphere.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

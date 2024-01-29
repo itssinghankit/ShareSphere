@@ -1,4 +1,4 @@
-package com.example.sharesphere.screens.authentication.Login
+package com.example.sharesphere.ui.screens.authentication.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,39 +48,41 @@ import com.example.sharesphere.ui.theme.linecolor
 import com.example.sharesphere.ui.theme.orange
 import com.example.sharesphere.ui.theme.orangebg
 
-
 @Composable
-fun LoginScreen(navController: NavController) {
+fun RegisterScreen(navController: NavController) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
+    var cPassword by rememberSaveable { mutableStateOf("") }
     var isEmailValid by rememberSaveable { mutableStateOf(true) }
     var isPasswordValid by rememberSaveable { mutableStateOf(true) }
+    var isBothPwdSame by rememberSaveable { mutableStateOf(true) }
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    var isCPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
-    val signinViewModel: SigninViewModel = hiltViewModel()
+    val registerViewModel: RegisterViewModel = hiltViewModel()
     val focusManager = LocalFocusManager.current
-//    var scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(orangebg)
             .verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.BottomStart
-    ) {
+        contentAlignment = Alignment.BottomStart,
+
+        ) {
         Column(
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Sign in",
+                text = "Sign up",
                 color = orange,
                 fontSize = 32.sp,
                 fontFamily = FontFamily(Font(R.font.lato_black))
             )
             Text(
-                text = "Please sign in to continue",
+                text = "Register yourself to continue",
                 color = blacktxt,
                 modifier = Modifier.padding(top = 8.dp),
                 fontSize = 20.sp,
@@ -93,9 +94,7 @@ fun LoginScreen(navController: NavController) {
                 value = email,
                 onValueChange = { email = it },
                 leadingIconImageVector = Icons.Default.Email,
-                isPasswordField = false,
-                isPasswordVisible = false,
-                keyboardOptions = KeyboardOptions(
+                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
                 ),
@@ -120,24 +119,33 @@ fun LoginScreen(navController: NavController) {
                 onVisibilityChange = { isPasswordVisible = it }
 
             )
-            Text(
-                text = "Forgot Password ?",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .clickable { },
-                textAlign = TextAlign.End,
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.lato_bold)),
-                color = Color.Black
+            ComponentTextField(
+                label = "Confirm Password",
+                modifier = Modifier.padding(top = 16.dp),
+                value = cPassword,
+                onValueChange = { cPassword = it },
+                leadingIconImageVector = Icons.Default.Password,
+                isPasswordVisible = isPasswordVisible,
+                isPasswordField = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+                showError = !isBothPwdSame,
+                errorMessage = stringResource(id = R.string.validateCPasswordError),
+                onVisibilityChange = { isCPasswordVisible = it }
+
             )
             Spacer(modifier = Modifier.height(72.dp))
             ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
+
                 isEmailValid = TextFieldValidation.isEmailValid(email)
                 isPasswordValid = TextFieldValidation.isPasswordValid(password)
-                if (isEmailValid && isPasswordValid) {
-                    signinViewModel.signin(email, password)
+                isBothPwdSame = TextFieldValidation.isBothPasswordSame(password, cPassword)
+                if (isEmailValid && isPasswordValid && isBothPwdSame) {
+                    registerViewModel.signup(email, password)
                 }
+
             }
             Divider(
                 thickness = 1.dp,
@@ -153,7 +161,6 @@ fun LoginScreen(navController: NavController) {
             ) {
 
             }
-
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
@@ -162,29 +169,19 @@ fun LoginScreen(navController: NavController) {
 
             ) {
                 Text(
-                    text = "Don't have an account ? ", color = Color.Black,
+                    text = "Already have an account ? ", color = Color.Black,
                     fontFamily = FontFamily(Font(R.font.lato_regular)),
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Create one",
+                    text = "Sign in",
                     color = orange,
                     fontFamily = FontFamily(Font(R.font.lato_bold)),
-                    modifier = Modifier.clickable { navController.navigate(("register")) },
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
+                    modifier = Modifier.clickable { navController.navigate("login") }
                 )
             }
         }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
