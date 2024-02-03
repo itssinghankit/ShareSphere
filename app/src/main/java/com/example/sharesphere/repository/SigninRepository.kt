@@ -1,22 +1,19 @@
 package com.example.sharesphere.repository
 
 import android.util.Log
-import com.example.sharesphere.api.ApiResponse
-import com.example.sharesphere.api.RetrofitInterface
+import com.example.sharesphere.common.ApiResponse
+import com.example.sharesphere.data.remote.ShareSphereApi
 import com.example.sharesphere.models.SigninRequest
 import com.example.sharesphere.models.SigninResponse
-import com.example.sharesphere.models.SignupRequest
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONObject
 import javax.inject.Inject
 
-class SigninRepository @Inject constructor(private val retrofitInterface: RetrofitInterface) {
+class SigninRepository @Inject constructor(private val retrofitInterface: ShareSphereApi) {
 
     private val _signinResponseFlow = MutableStateFlow<ApiResponse<SigninResponse>>(ApiResponse.Initial())
     val signinResponse: MutableStateFlow<ApiResponse<SigninResponse>>
         get() = _signinResponseFlow
-
     suspend fun singin(email: String, password: String) {
         _signinResponseFlow.emit(ApiResponse.Loading())
         try {

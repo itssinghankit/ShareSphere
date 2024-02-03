@@ -1,7 +1,9 @@
 package com.example.sharesphere.di
 
 import com.example.sharesphere.BuildConfig
-import com.example.sharesphere.api.RetrofitInterface
+import com.example.sharesphere.data.remote.ShareSphereApi
+import com.example.sharesphere.data.repository.AuthRepositoryImplementation
+import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +25,14 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesShareSphereInterface(retrofit: Retrofit):RetrofitInterface{
-        return retrofit.create(RetrofitInterface::class.java)
+    fun providesShareSphereInterface(retrofit: Retrofit): ShareSphereApi {
+        return retrofit.create(ShareSphereApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun providesAuthRepository(shareSphereApi: ShareSphereApi): AuthRepositoryInterface {
+        return AuthRepositoryImplementation(shareSphereApi)
     }
 
 }

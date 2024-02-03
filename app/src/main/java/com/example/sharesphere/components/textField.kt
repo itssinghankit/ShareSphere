@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.sharesphere.ui.theme.blacktxt
-import com.example.sharesphere.ui.theme.orange
+import com.example.sharesphere.presentation.ui.theme.blacktxt
+import com.example.sharesphere.presentation.ui.theme.orange
 
 @Composable
 fun ComponentTextField(
