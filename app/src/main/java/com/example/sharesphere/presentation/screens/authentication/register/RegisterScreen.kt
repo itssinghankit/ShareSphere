@@ -1,4 +1,4 @@
-package com.example.sharesphere.presentation.authentication.register
+package com.example.sharesphere.presentation.screens.authentication.register
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.sharesphere.R
-import com.example.sharesphere.components.ComponentButton
-import com.example.sharesphere.components.ComponentTextField
-import com.example.sharesphere.helper.TextFieldValidation
+import com.example.sharesphere.presentation.components.ComponentButton
+import com.example.sharesphere.presentation.components.ComponentTextField
+import com.example.sharesphere.util.TextFieldValidation
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.linecolor
 import com.example.sharesphere.presentation.ui.theme.orange

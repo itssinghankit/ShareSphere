@@ -1,4 +1,4 @@
-package com.example.sharesphere.components
+package com.example.sharesphere.presentation.components
 
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource

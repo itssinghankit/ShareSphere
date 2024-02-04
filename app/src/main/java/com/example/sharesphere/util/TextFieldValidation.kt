@@ -1,4 +1,4 @@
-package com.example.sharesphere.helper
+package com.example.sharesphere.util
 
 import android.util.Patterns
 

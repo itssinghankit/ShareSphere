@@ -1,4 +1,4 @@
-package com.example.sharesphere.components
+package com.example.sharesphere.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

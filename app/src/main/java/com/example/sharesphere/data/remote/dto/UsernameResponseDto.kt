@@ -13,5 +13,5 @@ data class Data(
 )
 
 fun UsernameResponseDto.toUsernameModel():UsernameModel{
-    return UsernameModel(available = data?.available)
+    return UsernameModel(available = data?.available,message=message)
 }

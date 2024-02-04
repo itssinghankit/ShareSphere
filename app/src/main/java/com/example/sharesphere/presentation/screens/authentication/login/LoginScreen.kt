@@ -1,4 +1,4 @@
-package com.example.sharesphere.presentation.authentication.login
+package com.example.sharesphere.presentation.screens.authentication.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,10 +44,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.sharesphere.R
-import com.example.sharesphere.common.ApiResponse
-import com.example.sharesphere.components.ComponentButton
-import com.example.sharesphere.components.ComponentTextField
-import com.example.sharesphere.helper.TextFieldValidation
+import com.example.sharesphere.util.ApiResponse
+import com.example.sharesphere.presentation.components.ComponentButton
+import com.example.sharesphere.presentation.components.ComponentTextField
+import com.example.sharesphere.util.TextFieldValidation
 import com.example.sharesphere.presentation.ui.ScreenSealedClass
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.linecolor
@@ -138,15 +138,15 @@ fun LoginScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(72.dp))
             when (signinResponse.value) {
-                is ApiResponse.Initial -> {
-                    ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
-                        isEmailValid = TextFieldValidation.isEmailValid(email)
-                        isPasswordValid = TextFieldValidation.isPasswordValid(password)
-                        if (isEmailValid && isPasswordValid) {
-                            signinViewModel.signin(email, password)
-                        }
-                    }
-                }
+//                is ApiResponse.Loading -> {
+//                    ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
+//                        isEmailValid = TextFieldValidation.isEmailValid(email)
+//                        isPasswordValid = TextFieldValidation.isPasswordValid(password)
+//                        if (isEmailValid && isPasswordValid) {
+//                            signinViewModel.signin(email, password)
+//                        }
+//                    }
+//                }
 
                 is ApiResponse.Loading -> {
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth(1f)) {

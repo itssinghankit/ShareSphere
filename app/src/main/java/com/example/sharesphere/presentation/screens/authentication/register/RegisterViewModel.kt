@@ -1,8 +1,8 @@
-package com.example.sharesphere.presentation.authentication.register
+package com.example.sharesphere.presentation.screens.authentication.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharesphere.common.ApiResponse
+import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.models.SignupResponse
 import com.example.sharesphere.repository.SignupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
