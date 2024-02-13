@@ -48,7 +48,7 @@ import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.presentation.components.ComponentButton
 import com.example.sharesphere.presentation.components.ComponentTextField
 import com.example.sharesphere.util.TextFieldValidation
-import com.example.sharesphere.presentation.ui.ScreenSealedClass
+import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.linecolor
 import com.example.sharesphere.presentation.ui.theme.orange
@@ -171,7 +171,7 @@ fun LoginScreen(navController: NavController) {
                 }
 
                 is ApiResponse.Success -> {
-                    navController.navigate(ScreenSealedClass.LoginScreen.route)
+                    navController.navigate(ScreenSealedClass.AuthScreens.SigninScreen.route)
                 }
             }
 

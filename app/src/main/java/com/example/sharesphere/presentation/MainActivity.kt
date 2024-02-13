@@ -12,8 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.sharesphere.presentation.ui.ScreenSealedClass
+import com.example.sharesphere.presentation.navigation.App
 import com.example.sharesphere.presentation.screens.authentication.login.LoginScreen
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameScreen
@@ -23,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -32,35 +34,47 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+                    val mainNavController = rememberNavController()
+                    App(mainNavController)
                 }
             }
         }
     }
 }
 
-@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-@Composable
-fun App() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = ScreenSealedClass.UsernameScreen.route
-    ) {
-        composable(ScreenSealedClass.LoginScreen.route) {
-            LoginScreen(navController = navController)
-        }
-        composable(ScreenSealedClass.RegisterScreen.route) {
-            RegisterScreen(navController = navController)
-        }
-        composable(ScreenSealedClass.LandingScreen.route){
-            LandingScreen(navController=navController)
-        }
-        composable(ScreenSealedClass.UsernameScreen.route){
-            UsernameScreen()
-        }
-    }
-}
+//@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
+//@Composable
+//fun App() {
+//    val navController = rememberNavController()
+//
+//    NavHost(
+//        navController = navController,
+//        startDestination = ScreenSealedClass.AuthScreens.route
+//    ) {
+//        navigation(
+//            startDestination = ScreenSealedClass.AuthScreens.UsernameScreen.route,
+//            route = ScreenSealedClass.AuthScreens.route
+//        ) {
+//            composable(ScreenSealedClass.AuthScreens.SigninScreen.route) {
+//                LoginScreen(navController = navController)
+//            }
+//            composable(ScreenSealedClass.AuthScreens.RegisterScreen.route) {
+//                RegisterScreen(navController = navController)
+//            }
+//            composable(ScreenSealedClass.AuthScreens.UsernameScreen.route) {
+//                UsernameScreen()
+//            }
+//        }
+//        navigation(
+//            startDestination = ScreenSealedClass.UserScreens.LandingScreen.route,
+//            route = ScreenSealedClass.UserScreens.route
+//        ) {
+//            composable(ScreenSealedClass.UserScreens.LandingScreen.route) {
+//                LandingScreen(navController = navController)
+//            }
+//        }
+//
+//    }
+//}
 
 

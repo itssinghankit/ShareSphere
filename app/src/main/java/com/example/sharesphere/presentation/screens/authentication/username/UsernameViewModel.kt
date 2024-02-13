@@ -2,6 +2,7 @@ package com.example.sharesphere.presentation.screens.authentication.username
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,8 +10,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
-import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.domain.use_case.username.CheckAvailabilityUseCase
+import com.example.sharesphere.domain.use_case.username.UsernameValidationUseCase
+import com.example.sharesphere.presentation.navigation.NavigationActions
+import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.TextFieldValidation
 import com.example.sharesphere.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +28,10 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class UsernameViewModel @Inject constructor(private val checkAvailabilityUseCase: CheckAvailabilityUseCase) :
+class UsernameViewModel @Inject constructor(
+    private val checkAvailabilityUseCase: CheckAvailabilityUseCase,
+    private val usernameValidationUseCase: UsernameValidationUseCase
+) :
     ViewModel() {
 
     /*
@@ -60,6 +66,10 @@ class UsernameViewModel @Inject constructor(private val checkAvailabilityUseCase
     private val _uiState = MutableStateFlow(UsernameState())
     val uiState: StateFlow<UsernameState> = _uiState.asStateFlow()
 
+    //navigation flow
+    private val _navigationEvents = mutableStateOf<NavigationActions?>(null)
+    val navigationEvents: State<NavigationActions?> = _navigationEvents
+
     //textfeild states
     var username by mutableStateOf("")
         private set
@@ -76,14 +86,28 @@ class UsernameViewModel @Inject constructor(private val checkAvailabilityUseCase
     fun onEvent(event: UsernameEvents) {
         when (event) {
             is UsernameEvents.onNextClick -> {
+                //we can also use event.username which pass the username from compose screen but it
+                //is not good to do as it first take username from viewmodel and thena again return
+                //it to this event present in viewmodel, so it not make any sense to rotate the data
+                Timber.d("hello3")
+                _navigationEvents.value = NavigationActions.NavigateToSignin(event.username)
+            }
 
+            is UsernameEvents.snackbarShown -> {
+                viewModelScope.launch {
+                    delay(2000L)
+                    _uiState.update {
+                        it.copy(showSnackBar = false)
+                    }
+                }
             }
 
             is UsernameEvents.onValueChange -> {
                 //update the username state
                 username = event.username
+
                 _uiState.update {
-                    it.copy(available = false)
+                    it.copy(isavailable = false)
                 }
 
                 Timber.d(event.username)
@@ -101,34 +125,57 @@ class UsernameViewModel @Inject constructor(private val checkAvailabilityUseCase
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun checkUsername(username: String) {
         viewModelScope.launch {
-            Timber.d("call3")
 
-            checkAvailabilityUseCase(username).collect{ result ->
-                when (result) {
-                    is ApiResponse.Loading -> {
-                        _uiState.update { currentState ->
-                            currentState.copy(isLoading = true)
-                        }
-                    }
+            if (usernameValidationUseCase(username)) {
 
-                    is ApiResponse.Success -> {
-                        _uiState.update {
-                            //if username is not available=false, isError=true
-                            var isError=false
-                            if(result.data?.available == false){
-                                isError=true
+                checkAvailabilityUseCase(username).collect { result ->
+                    when (result) {
+                        is ApiResponse.Loading -> {
+                            _uiState.update { currentState ->
+                                currentState.copy(isLoading = true, isTextfieldError = false)
                             }
-                            it.copy(available = result.data?.available ?: false, isLoading = false, isError = isError, error=UiText.DynamicString(result.data?.message?:""))
                         }
-                    }
 
-                    is ApiResponse.Error -> {
-                        _uiState.update {
-                            it.copy(error = result.message ?: UiText.DynamicString(""), isError = true, isLoading = false, available = false)
+                        is ApiResponse.Success -> {
+                            _uiState.update {
+                                //if username is not available=false, isError=true
+                                var isTextfieldError = false
+                                if (result.data?.available == false) {
+                                    isTextfieldError = true
+                                }
+                                it.copy(
+                                    isavailable = result.data?.available ?: false,
+                                    isLoading = false,
+                                    isTextfieldError = isTextfieldError,
+                                    textfieldErrorMessage = UiText.DynamicString(result.data?.message ?: "")
+                                )
+                            }
+                        }
+
+                        is ApiResponse.Error -> {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = result.message ?: UiText.DynamicString(""),
+                                    showSnackBar = true,
+                                    isError = true,
+                                    isLoading = false,
+                                    isavailable = false
+                                )
+                            }
                         }
                     }
                 }
+
+            } else {
+                _uiState.update {
+                    it.copy(
+                        isTextfieldError = true, textfieldErrorMessage = UiText.StringResource(
+                            R.string.validateUsernameError
+                        )
+                    )
+                }
             }
+
         }
     }
 }

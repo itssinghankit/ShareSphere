@@ -22,16 +22,16 @@ class CheckAvailabilityUseCase @Inject constructor(private val authRepositoryInt
     operator fun invoke(username: String): Flow<ApiResponse<UsernameModel>> = flow {
         try {
             emit(ApiResponse.Loading(isLoading = true))
+            val response = authRepositoryInterface.checkUsername(username).toUsernameModel()
+            emit(ApiResponse.Success(response))
             //check if username is valid
-            if(!TextFieldValidation.isUsernameValid(username)){
-                emit(ApiResponse.Error(UiText.StringResource(R.string.validateUsernameError)))
-            }else{
-                val response = authRepositoryInterface.checkUsername(username).toUsernameModel()
-                Timber.d("response: $response")
-                emit(ApiResponse.Success(response))
-            }
+//            if(!TextFieldValidation.isUsernameValid(username)){
+//                emit(ApiResponse.Error(UiText.StringResource(R.string.validateUsernameError)))
+//            }else{
+//
+//            }
         } catch (e: HttpException) {
-            emit(ApiResponse.Error(UiText.DynamicString(e.localizedMessage?:"Error from backend")))
+            emit(ApiResponse.Error(UiText.DynamicString(e.localizedMessage?:"Server Error")))
 
         } catch (e: IOException) {
             //also calls when server is not responding
