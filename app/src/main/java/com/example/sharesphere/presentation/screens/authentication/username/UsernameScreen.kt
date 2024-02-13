@@ -2,7 +2,6 @@ package com.example.sharesphere.presentation.screens.authentication.username
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -103,14 +102,14 @@ fun UsernameContent(
                 Text(
                     text = stringResource(R.string.create_an_username),
                     color = orange,
-                    fontSize = 32.sp,
+                    style=MaterialTheme.typography.headlineMedium,
                     fontFamily = FontFamily(Font(R.font.lato_black)),
                     modifier = Modifier.padding(top = 16.dp)
                 )
                 Text(
                     text = stringResource(id = R.string.validateUsernameError),
                     color = blacktxt,
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontFamily = FontFamily(Font(R.font.lato_regular)),
                     modifier = Modifier.padding(top = 8.dp)
                 )
@@ -136,7 +135,7 @@ fun UsernameContent(
                         txtColor = Color.White,
                         modifier = Modifier.padding(top = 40.dp)
                     ) {
-                        navigator.onAction(NavigationActions.NavigateToSignin(username))
+                        navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToRegister(username))
                         Timber.d("hello2")
 
                     }

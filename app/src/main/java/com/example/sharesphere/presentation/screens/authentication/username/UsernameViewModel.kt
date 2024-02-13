@@ -90,7 +90,7 @@ class UsernameViewModel @Inject constructor(
                 //is not good to do as it first take username from viewmodel and thena again return
                 //it to this event present in viewmodel, so it not make any sense to rotate the data
                 Timber.d("hello3")
-                _navigationEvents.value = NavigationActions.NavigateToSignin(event.username)
+//                _navigationEvents.value = NavigationActions.NavigateToAuthScreens.NavigateToRegister(event.username)
             }
 
             is UsernameEvents.snackbarShown -> {

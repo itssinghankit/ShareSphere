@@ -11,7 +11,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.screens.Splash.SplashScreen
-import com.example.sharesphere.presentation.screens.authentication.login.LoginScreen
+import com.example.sharesphere.presentation.screens.authentication.signin.SigninScreen
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
@@ -20,28 +20,28 @@ import com.example.sharesphere.util.composeAnimatedSlide
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
-fun App(mainNavController: NavHostController) {
+fun App(mainNavController: NavHostController,navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
         startDestination = ScreenSealedClass.SplashScreen.route
     ) {
-        composeAnimatedSlide(route=ScreenSealedClass.SplashScreen.route){
-            SplashScreen()
+        composeAnimatedSlide(route = ScreenSealedClass.SplashScreen.route) {
+            SplashScreen(navigator)
         }
         navigation(
-            startDestination = ScreenSealedClass.AuthScreens.UsernameScreen.route,
+            startDestination = ScreenSealedClass.AuthScreens.SigninScreen.route,
             route = ScreenSealedClass.AuthScreens.route
         ) {
-            composeAnimatedSlide("${ScreenSealedClass.AuthScreens.SigninScreen.route}/{username}",
+            composeAnimatedSlide(ScreenSealedClass.AuthScreens.SigninScreen.route) {
+                SigninScreen(navController = mainNavController,navigator)
+            }
+            composeAnimatedSlide("${ScreenSealedClass.AuthScreens.RegisterScreen.route}/{username}",
                 arguments = listOf(
                     navArgument("username") {
                         type = NavType.StringType
                     }
                 )) {
-                LoginScreen(navController = mainNavController)
-            }
-            composeAnimatedSlide(ScreenSealedClass.AuthScreens.RegisterScreen.route) {
                 RegisterScreen(navController = mainNavController)
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.UsernameScreen.route) {

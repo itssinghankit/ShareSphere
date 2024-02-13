@@ -1,4 +1,4 @@
-package com.example.sharesphere.presentation.screens.authentication.login
+package com.example.sharesphere.presentation.screens.authentication.signin
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,6 +49,8 @@ import com.example.sharesphere.presentation.components.ComponentButton
 import com.example.sharesphere.presentation.components.ComponentTextField
 import com.example.sharesphere.util.TextFieldValidation
 import com.example.sharesphere.presentation.ScreenSealedClass
+import com.example.sharesphere.presentation.navigation.NavigationActions
+import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.linecolor
 import com.example.sharesphere.presentation.ui.theme.orange
@@ -56,7 +58,7 @@ import com.example.sharesphere.presentation.ui.theme.orangebg
 
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun SigninScreen(navController: NavController,navigator: Navigator) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var isEmailValid by rememberSaveable { mutableStateOf(true) }
@@ -203,10 +205,10 @@ fun LoginScreen(navController: NavController) {
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "Create one",
+                    text = stringResource(R.string.create_one),
                     color = orange,
                     fontFamily = FontFamily(Font(R.font.lato_bold)),
-                    modifier = Modifier.clickable { navController.navigate(("register")) },
+                    modifier = Modifier.clickable { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToUsername) },
                     fontSize = 18.sp
                 )
             }

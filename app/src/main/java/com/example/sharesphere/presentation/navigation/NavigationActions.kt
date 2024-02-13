@@ -1,6 +1,12 @@
 package com.example.sharesphere.presentation.navigation
 
 sealed class NavigationActions{
-    data class NavigateToSignin(val username:String?=null): NavigationActions()
+
+    object NavigateToAuthScreens:NavigationActions(){
+        data class NavigateToRegister(val username:String?=null): NavigationActions()
+        object NavigateToSignin:NavigationActions()
+        object NavigateToUsername:NavigationActions()
+    }
+
     object NavigateBack:NavigationActions()
 }

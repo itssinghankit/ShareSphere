@@ -8,17 +8,10 @@ import androidx.annotation.RequiresExtension
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.sharesphere.presentation.navigation.App
-import com.example.sharesphere.presentation.screens.authentication.login.LoginScreen
-import com.example.sharesphere.presentation.screens.authentication.register.RegisterScreen
-import com.example.sharesphere.presentation.screens.authentication.username.UsernameScreen
-import com.example.sharesphere.presentation.ui.screens.home.LandingScreen
+import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.ShareSphereTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,7 +28,8 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val mainNavController = rememberNavController()
-                    App(mainNavController)
+                    val navigator= Navigator(mainNavController)
+                    App(mainNavController,navigator)
                 }
             }
         }

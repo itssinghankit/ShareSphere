@@ -1,4 +1,4 @@
-package com.example.sharesphere.presentation.screens.authentication.login
+package com.example.sharesphere.presentation.screens.authentication.signin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
