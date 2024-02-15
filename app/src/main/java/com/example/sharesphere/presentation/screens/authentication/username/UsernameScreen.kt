@@ -28,16 +28,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
 import com.example.sharesphere.presentation.components.ComponentButton
@@ -47,6 +49,7 @@ import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -65,6 +68,7 @@ fun UsernameScreen(
 
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UsernameContent(
     state: State<UsernameState>,
@@ -75,6 +79,8 @@ fun UsernameContent(
     val snackbarHostState = remember {
         SnackbarHostState()
     }
+    val scope = rememberCoroutineScope()
+    val keyboard = LocalSoftwareKeyboardController.current
 
     Scaffold(snackbarHost = {
         SnackbarHost(hostState = snackbarHostState, snackbar = {
@@ -96,13 +102,17 @@ fun UsernameContent(
                     .fillMaxWidth()
                     .padding(24.dp)
             ) {
-                IconButton(onClick = { navigator.onAction(NavigationActions.NavigateBack)},) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null, tint = Color.Black)
+                IconButton(onClick = { navigator.onAction(NavigationActions.NavigateBack) }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.Black
+                    )
                 }
                 Text(
                     text = stringResource(R.string.create_an_username),
                     color = orange,
-                    style=MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineMedium,
                     fontFamily = FontFamily(Font(R.font.lato_black)),
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -135,9 +145,17 @@ fun UsernameContent(
                         txtColor = Color.White,
                         modifier = Modifier.padding(top = 40.dp)
                     ) {
-                        navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToRegister(username))
-                        Timber.d("hello2")
+                        //to save username to datastore and then navigate
+                        scope.launch {
+                            onEvent(UsernameEvents.onNextClick(username))
+                            navigator.onAction(
+                                NavigationActions.NavigateToAuthScreens.NavigateToRegister(
+                                    username
+                                )
+                            )
+                            Timber.d("hello2")
 
+                        }
                     }
                 }
             }
@@ -145,8 +163,9 @@ fun UsernameContent(
 
         if (state.value.showSnackBar) {
 
-            val errorMessage=state.value.errorMessage?.asString() ?: ""
+            val errorMessage = state.value.errorMessage?.asString() ?: ""
             LaunchedEffect(key1 = state.value.showSnackBar) {
+                keyboard?.hide()
                 snackbarHostState.showSnackbar(errorMessage)
             }
             //we can also define context using local properties ans then pass it in asString function
@@ -178,20 +197,3 @@ fun SnackBarLayout(
         )
     }
 }
-//state.value.error?.asString() ?: ""
-
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun h() {
-//    Snackbar(
-//        modifier = Modifier.wrapContentSize(align = Alignment.BottomCenter),
-//        action = {
-//            // Add any action you want for the Snackbar, e.g., a dismiss action
-////            viewModel.snackbarShown()
-//        },
-//        containerColor = orange,
-//        contentColor = Color.White
-//    ) {
-//        Text(text = "Hello", style = MaterialTheme.typography.bodyLarge)
-//    }
-//}

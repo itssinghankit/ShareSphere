@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
 import com.example.sharesphere.domain.use_case.username.CheckAvailabilityUseCase
+import com.example.sharesphere.domain.use_case.username.GetUsernameDataStoreUseCase
+import com.example.sharesphere.domain.use_case.username.SaveUsernameDatastoreUseCase
 import com.example.sharesphere.domain.use_case.username.UsernameValidationUseCase
 import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.util.ApiResponse
@@ -30,7 +32,9 @@ import javax.inject.Inject
 @HiltViewModel
 class UsernameViewModel @Inject constructor(
     private val checkAvailabilityUseCase: CheckAvailabilityUseCase,
-    private val usernameValidationUseCase: UsernameValidationUseCase
+    private val usernameValidationUseCase: UsernameValidationUseCase,
+    private val saveUsernameDatastoreUseCase: SaveUsernameDatastoreUseCase,
+    private val getUsernameDataStoreUseCase: GetUsernameDataStoreUseCase
 ) :
     ViewModel() {
 
@@ -86,6 +90,11 @@ class UsernameViewModel @Inject constructor(
     fun onEvent(event: UsernameEvents) {
         when (event) {
             is UsernameEvents.onNextClick -> {
+                //to save username in datastore
+                viewModelScope.launch {
+                    saveUsernameDatastoreUseCase(event.username)
+                }
+
                 //we can also use event.username which pass the username from compose screen but it
                 //is not good to do as it first take username from viewmodel and thena again return
                 //it to this event present in viewmodel, so it not make any sense to rotate the data

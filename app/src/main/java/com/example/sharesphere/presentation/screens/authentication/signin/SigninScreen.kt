@@ -69,7 +69,7 @@ fun SigninScreen(navController: NavController,navigator: Navigator) {
     val signinResponse = signinViewModel.signinResponse.collectAsState()
 
     val focusManager = LocalFocusManager.current
-//    var scrollState = rememberScrollState()
+//    var scrollState = rememberScrollStatec
 
     Box(
         modifier = Modifier
@@ -140,15 +140,6 @@ fun SigninScreen(navController: NavController,navigator: Navigator) {
             )
             Spacer(modifier = Modifier.height(72.dp))
             when (signinResponse.value) {
-//                is ApiResponse.Loading -> {
-//                    ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
-//                        isEmailValid = TextFieldValidation.isEmailValid(email)
-//                        isPasswordValid = TextFieldValidation.isPasswordValid(password)
-//                        if (isEmailValid && isPasswordValid) {
-//                            signinViewModel.signin(email, password)
-//                        }
-//                    }
-//                }
 
                 is ApiResponse.Loading -> {
                     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth(1f)) {

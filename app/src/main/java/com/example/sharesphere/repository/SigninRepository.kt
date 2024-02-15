@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class SigninRepository @Inject constructor(private val retrofitInterface: ShareSphereApi) {
 
-    private val _signinResponseFlow = MutableStateFlow<ApiResponse<SigninResponse>>(ApiResponse.Loading(isLoading = true))
+    private val _signinResponseFlow = MutableStateFlow<ApiResponse<SigninResponse>>(ApiResponse.Loading())
     val signinResponse: MutableStateFlow<ApiResponse<SigninResponse>>
         get() = _signinResponseFlow
     suspend fun singin(email: String, password: String) {
