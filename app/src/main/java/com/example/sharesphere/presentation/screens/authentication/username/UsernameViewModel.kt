@@ -136,7 +136,6 @@ class UsernameViewModel @Inject constructor(
         viewModelScope.launch {
 
             if (usernameValidationUseCase(username)) {
-
                 checkAvailabilityUseCase(username).collect { result ->
                     when (result) {
                         is ApiResponse.Loading -> {
@@ -156,7 +155,9 @@ class UsernameViewModel @Inject constructor(
                                     isavailable = result.data?.available ?: false,
                                     isLoading = false,
                                     isTextfieldError = isTextfieldError,
-                                    textfieldErrorMessage = UiText.DynamicString(result.data?.message ?: "")
+                                    textfieldErrorMessage = UiText.DynamicString(
+                                        result.data?.message ?: ""
+                                    )
                                 )
                             }
                         }

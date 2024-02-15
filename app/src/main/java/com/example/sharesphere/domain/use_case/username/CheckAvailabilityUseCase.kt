@@ -3,6 +3,7 @@ package com.example.sharesphere.domain.use_case.username
 import android.net.http.HttpException
 import android.os.Build
 import androidx.annotation.RequiresExtension
+import com.example.sharesphere.data.remote.dto.ServerErrorDto
 import com.example.sharesphere.data.remote.dto.toUsernameModel
 import com.example.sharesphere.domain.model.UsernameModel
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
@@ -27,9 +28,8 @@ class CheckAvailabilityUseCase @Inject constructor(private val authRepositoryInt
 
         } catch (e: retrofit2.HttpException) {
             val errorBody = e.response()?.errorBody()?.string() ?: ""
-
-//                val parsedError = Gson().fromJson(errorBody)
-            emit(ApiResponse.Error(UiText.DynamicString(e.localizedMessage ?: "Server Error")))
+            val parsedError = Gson().fromJson(errorBody,ServerErrorDto::class.java)
+            emit(ApiResponse.Error(UiText.DynamicString(parsedError.errors.message ?: "Server Error")))
 
         } catch (e: IOException) {
             //also calls when server is not responding
