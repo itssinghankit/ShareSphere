@@ -23,6 +23,10 @@ class Navigator(private val navController: NavController) {
                 navController.navigate(ScreenSealedClass.AuthScreens.UsernameScreen.route)
             }
 
+            is NavigationActions.NavigateToAuthScreens.NavigateToMobile->{
+                navController.navigate(ScreenSealedClass.AuthScreens.MobileScreen.route)
+            }
+
             is NavigationActions.NavigateToAuthScreens -> {
                 navController.navigate(ScreenSealedClass.AuthScreens.route) {
                     //we don't want to see splash screen again
@@ -32,6 +36,7 @@ class Navigator(private val navController: NavController) {
                 }
 
             }
+
 
         }
     }

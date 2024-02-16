@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -18,22 +20,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.sharesphere.R
-import com.example.sharesphere.presentation.ui.theme.darkorange
+import com.example.sharesphere.presentation.ui.theme.greydisbledbtn
+import com.example.sharesphere.presentation.ui.theme.greytxt
+import com.example.sharesphere.presentation.ui.theme.whitetxt
 
 @Composable
 fun ComponentButton(
-    modifier:Modifier=Modifier,
+    modifier: Modifier = Modifier,
     text: String,
     contColor: Color,
     txtColor: Color,
-    isIconButton: Boolean = false,
+    isLeadingIconButton: Boolean = false,
     icon: Int = 0,
+    isTrailingIconButton: Boolean = false,
+    imageVector: ImageVector = Icons.Default.ArrowBack,
+    iconTint: Color = whitetxt,
+    rippleColor: Color = greytxt,
+    shape: Shape = RectangleShape,
+    disabledContainerColor: Color = greydisbledbtn,
+    enabled: Boolean = true,
     onclick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -44,24 +57,28 @@ fun ComponentButton(
             .indication(
                 interactionSource = interactionSource,
                 indication = rememberRipple(
-                    color = darkorange
+                    color = rippleColor
                 )
             ),
-        shape = RoundedCornerShape(size = 8.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = contColor)
+        shape = shape,
+        enabled = enabled,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = contColor,
+            disabledContainerColor = disabledContainerColor
+        )
 
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(6.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (isIconButton) {
+            if (isLeadingIconButton) {
                 Icon(
                     painter = painterResource(id = icon),
-                    contentDescription = "",
+                    contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier
                         .padding(end = 16.dp)
@@ -69,6 +86,14 @@ fun ComponentButton(
 
                 )
                 ButtonTxt(text = text, txtColor = txtColor, modifier = Modifier)
+            } else if (isTrailingIconButton) {
+                ButtonTxt(text = text, txtColor = txtColor, modifier = Modifier.padding(4.dp))
+                Icon(
+                    modifier = Modifier.size(14.dp),
+                    imageVector = imageVector,
+                    contentDescription = null,
+                    tint = iconTint
+                )
             } else {
                 ButtonTxt(text = text, txtColor = txtColor, modifier = Modifier.padding(3.dp))
             }
@@ -77,7 +102,7 @@ fun ComponentButton(
 }
 
 @Composable
-private fun ButtonTxt(
+fun ButtonTxt(
     text: String,
     txtColor: Color,
     modifier: Modifier
@@ -86,6 +111,7 @@ private fun ButtonTxt(
         text = text,
         color = txtColor,
         modifier = modifier,
-        fontSize = 20.sp, fontFamily = FontFamily(Font(R.font.lato_bold))
+        style = MaterialTheme.typography.bodyMedium,
+        fontFamily = FontFamily(Font(R.font.lato_bold))
     )
 }

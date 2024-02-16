@@ -8,6 +8,8 @@ sealed class ScreenSealedClass(val route:String) {
         object UsernameScreen : ScreenSealedClass("username_screen")
         object SigninScreen : ScreenSealedClass("signin_screen")
         object RegisterScreen : ScreenSealedClass("register_screen")
+
+        object MobileScreen: ScreenSealedClass("mobile_screen")
     }
 
     object UserScreens : ScreenSealedClass("user"){

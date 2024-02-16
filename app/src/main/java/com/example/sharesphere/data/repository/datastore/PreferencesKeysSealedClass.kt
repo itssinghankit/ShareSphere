@@ -5,4 +5,5 @@ sealed class PreferencesKeys(val key: String) {
     object Email : PreferencesKeys("email")
     object Password : PreferencesKeys("password")
     object AccessToken : PreferencesKeys("accessToken")
+    object Mobile : PreferencesKeys("mobile")
 }

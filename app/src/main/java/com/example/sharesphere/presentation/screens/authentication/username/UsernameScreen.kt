@@ -44,11 +44,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
 import com.example.sharesphere.presentation.components.ComponentButton
 import com.example.sharesphere.presentation.components.ComponentTextField
+import com.example.sharesphere.presentation.components.ConnectionLostScreen
+import com.example.sharesphere.presentation.components.SnackBarLayout
 import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
+import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -82,11 +85,15 @@ fun UsernameContent(
     val scope = rememberCoroutineScope()
     val keyboard = LocalSoftwareKeyboardController.current
 
+    if(NetworkMonitor.NetworkState.Lost.isAvailable()){
+        ConnectionLostScreen()
+    }
+
     Scaffold(snackbarHost = {
         SnackbarHost(hostState = snackbarHostState, snackbar = {
             SnackBarLayout(
                 message = it.visuals.message,
-                onEvent = onEvent
+                action = { onEvent(UsernameEvents.snackbarShown) }
             )
         })
     }) { it ->
@@ -153,7 +160,7 @@ fun UsernameContent(
                                     username
                                 )
                             )
-                            Timber.d("hello2")
+
 
                         }
                     }
@@ -176,24 +183,24 @@ fun UsernameContent(
 
 }
 
-@Composable
-fun SnackBarLayout(
-    message: String,
-    onEvent: (UsernameEvents) -> Unit
-) {
-    Snackbar(
-        modifier = Modifier
-            .wrapContentSize(align = Alignment.BottomCenter)
-            .padding(16.dp),
-        action = {
-            onEvent(UsernameEvents.snackbarShown)
-        },
-        containerColor = orange,
-        contentColor = Color.White
-    ) {
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-    }
-}
+//@Composable
+//fun SnackBarLayout(
+//    message: String,
+//    onEvent: (UsernameEvents) -> Unit
+//) {
+//    Snackbar(
+//        modifier = Modifier
+//            .wrapContentSize(align = Alignment.BottomCenter)
+//            .padding(16.dp),
+//        action = {
+//            onEvent(UsernameEvents.snackbarShown)
+//        },
+//        containerColor = orange,
+//        contentColor = Color.White
+//    ) {
+//        Text(
+//            text = message,
+//            style = MaterialTheme.typography.bodyLarge,
+//        )
+//    }
+//}

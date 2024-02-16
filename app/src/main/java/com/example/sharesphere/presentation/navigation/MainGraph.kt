@@ -11,8 +11,11 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.screens.Splash.SplashScreen
+import com.example.sharesphere.presentation.screens.authentication.mobile.MobileScreen
+import com.example.sharesphere.presentation.screens.authentication.mobile.MobileViewModel
 import com.example.sharesphere.presentation.screens.authentication.signin.SigninScreen
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterScreen
+import com.example.sharesphere.presentation.screens.authentication.register.RegisterViewModel
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
 import com.example.sharesphere.presentation.ui.screens.home.LandingScreen
@@ -24,7 +27,7 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
-        startDestination = ScreenSealedClass.SplashScreen.route
+        startDestination = ScreenSealedClass.AuthScreens.route
     ) {
         composeAnimatedSlide(route = ScreenSealedClass.SplashScreen.route) {
             SplashScreen(navigator)
@@ -33,6 +36,7 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
             startDestination = ScreenSealedClass.AuthScreens.SigninScreen.route,
             route = ScreenSealedClass.AuthScreens.route
         ) {
+
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.SigninScreen.route) {
                 SigninScreen(navController = mainNavController,navigator)
             }
@@ -42,12 +46,18 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
                         type = NavType.StringType
                     }
                 )) {
-                RegisterScreen(navController = mainNavController)
+                val viewModel:RegisterViewModel= hiltViewModel()
+                RegisterScreen(viewModel,viewModel::onEvents,navigator)
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.UsernameScreen.route) {
                 val viewmodel: UsernameViewModel = hiltViewModel()
-                UsernameScreen(viewmodel, viewmodel::onEvent, Navigator(mainNavController))
+                UsernameScreen(viewmodel, viewmodel::onEvent, navigator)
             }
+            composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route){
+                val viewModel:MobileViewModel= hiltViewModel()
+                MobileScreen(viewModel,viewModel::onEvent,navigator)
+            }
+
         }
         navigation(
             startDestination = ScreenSealedClass.UserScreens.LandingScreen.route,

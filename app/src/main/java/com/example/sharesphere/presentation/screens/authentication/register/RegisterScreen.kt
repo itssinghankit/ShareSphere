@@ -26,10 +26,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -37,30 +40,54 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
 import com.example.sharesphere.presentation.components.ComponentButton
 import com.example.sharesphere.presentation.components.ComponentTextField
-import com.example.sharesphere.util.TextFieldValidation
+import com.example.sharesphere.presentation.components.ConnectionLostScreen
+import com.example.sharesphere.presentation.navigation.NavigationActions
+import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.linecolor
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
+import com.example.sharesphere.util.NetworkMonitor
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun RegisterScreen(
+    viewmodel: RegisterViewModel, onEvents: (RegisterEvents) -> Unit, navigator: Navigator
+) {
+
+    val state = viewmodel.uiState.collectAsStateWithLifecycle().value
+    val textFieldState = viewmodel.textFieldStates.value
+    val networkState =
+        viewmodel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+
+    RegisterContent(state, onEvents, navigator, textFieldState, focusManager)
+
+    if (!networkState.value.isAvailable()) {
+        //to remove keyboard from screen and loose focus
+        focusManager.clearFocus(true)
+        keyboard?.hide()
+        ConnectionLostScreen()
+    }
+}
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var cPassword by rememberSaveable { mutableStateOf("") }
-    var isEmailValid by rememberSaveable { mutableStateOf(true) }
-    var isPasswordValid by rememberSaveable { mutableStateOf(true) }
-    var isBothPwdSame by rememberSaveable { mutableStateOf(true) }
+fun RegisterContent(
+    state: RegisterStates,
+    onEvents: (RegisterEvents) -> Unit,
+    navigator: Navigator,
+    textFieldStates: RegisterTextFieldStates,
+    focusManager: FocusManager
+) {
+
+
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
     var isCPasswordVisible by rememberSaveable { mutableStateOf(false) }
-
-    val registerViewModel: RegisterViewModel = hiltViewModel()
-    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
@@ -76,37 +103,35 @@ fun RegisterScreen(navController: NavController) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Sign up",
+                text = stringResource(R.string.sign_up),
                 color = orange,
                 fontSize = 32.sp,
                 fontFamily = FontFamily(Font(R.font.lato_black))
             )
             Text(
-                text = "Register yourself to continue",
+                text = stringResource(R.string.register_yourself_to_continue),
                 color = blacktxt,
                 modifier = Modifier.padding(top = 8.dp),
                 fontSize = 20.sp,
                 fontFamily = FontFamily(Font(R.font.lato_regular))
             )
             ComponentTextField(
-                label = "Email",
+                label = stringResource(R.string.email),
                 modifier = Modifier.padding(top = 64.dp),
-                value = email,
-                onValueChange = { email = it },
+                value = textFieldStates.email,
+                onValueChange = { onEvents(RegisterEvents.EmailOnValueChange(it)) },
                 leadingIconImageVector = Icons.Default.Email,
-                 keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email, imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                showError = !isEmailValid,
+                showError = state.isEmailError,
                 errorMessage = stringResource(id = R.string.validateEmailError)
             )
-            ComponentTextField(
-                label = "Password",
+            ComponentTextField(label = stringResource(R.string.password),
                 modifier = Modifier.padding(top = 16.dp),
-                value = password,
-                onValueChange = { password = it },
+                value = textFieldStates.password,
+                onValueChange = { onEvents(RegisterEvents.PasswordOnValueChange(it)) },
                 leadingIconImageVector = Icons.Default.Password,
                 isPasswordVisible = isPasswordVisible,
                 isPasswordField = true,
@@ -114,49 +139,69 @@ fun RegisterScreen(navController: NavController) {
                     keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                showError = !isPasswordValid,
+                showError = state.isPasswordError,
                 errorMessage = stringResource(id = R.string.validatePasswordError),
                 onVisibilityChange = { isPasswordVisible = it }
 
             )
-            ComponentTextField(
-                label = "Confirm Password",
+            ComponentTextField(label = stringResource(R.string.confirm_password),
                 modifier = Modifier.padding(top = 16.dp),
-                value = cPassword,
-                onValueChange = { cPassword = it },
+                value = textFieldStates.cPassword,
+                onValueChange = { onEvents(RegisterEvents.CPasswordOnValueChange(it)) },
                 leadingIconImageVector = Icons.Default.Password,
-                isPasswordVisible = isPasswordVisible,
+                isPasswordVisible = isCPasswordVisible,
                 isPasswordField = true,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-                showError = !isBothPwdSame,
+                keyboardActions = KeyboardActions(onDone = {
+                    if (
+                        textFieldStates.email.isNotEmpty() &&
+                        textFieldStates.password.isNotEmpty() &&
+                        textFieldStates.cPassword.isNotEmpty() &&
+                        !state.isEmailError &&
+                        !state.isPasswordError &&
+                        !state.isCPasswordError
+                    ) {
+                        onEvents(RegisterEvents.onNextClick)
+                        navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
+                    }
+                }),
+                showError = state.isCPasswordError,
                 errorMessage = stringResource(id = R.string.validateCPasswordError),
                 onVisibilityChange = { isCPasswordVisible = it }
 
             )
             Spacer(modifier = Modifier.height(72.dp))
-            ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
 
-                isEmailValid = TextFieldValidation.isEmailValid(email)
-                isPasswordValid = TextFieldValidation.isPasswordValid(password)
-                isBothPwdSame = TextFieldValidation.isBothPasswordSame(password, cPassword)
-                if (isEmailValid && isPasswordValid && isBothPwdSame) {
-                    registerViewModel.signup(email, password)
+            if (
+                textFieldStates.email.isNotEmpty() &&
+                textFieldStates.password.isNotEmpty() &&
+                textFieldStates.cPassword.isNotEmpty() &&
+                !state.isEmailError &&
+                !state.isPasswordError &&
+                !state.isCPasswordError
+            ) {
+                ComponentButton(
+                    text = stringResource(id = R.string.next),
+                    contColor = orange,
+                    txtColor = Color.White
+                ) {
+                    onEvents(RegisterEvents.onNextClick)
+                    navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
                 }
-
             }
+
             Divider(
                 thickness = 1.dp,
                 color = linecolor,
                 modifier = Modifier.padding(top = 16.dp, bottom = 40.dp)
             )
             ComponentButton(
-                text = "Continue with Google",
+                text = stringResource(R.string.continue_with_google),
                 contColor = Color.Black,
                 txtColor = Color.White,
-                isIconButton = true,
+                isLeadingIconButton = true,
                 icon = R.drawable.google_logo
             ) {
 
@@ -169,19 +214,17 @@ fun RegisterScreen(navController: NavController) {
 
             ) {
                 Text(
-                    text = "Already have an account ? ", color = Color.Black,
+                    text = stringResource(R.string.already_have_an_account),
+                    color = Color.Black,
                     fontFamily = FontFamily(Font(R.font.lato_regular)),
                     fontSize = 18.sp
                 )
-                Text(
-                    text = "Sign in",
+                Text(text = stringResource(R.string.sign_in),
                     color = orange,
                     fontFamily = FontFamily(Font(R.font.lato_bold)),
                     fontSize = 18.sp,
-                    modifier = Modifier.clickable { navController.navigate("login") }
-                )
+                    modifier = Modifier.clickable { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile) })
             }
         }
     }
-
 }

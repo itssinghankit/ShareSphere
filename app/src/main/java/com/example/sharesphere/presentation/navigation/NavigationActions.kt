@@ -6,6 +6,7 @@ sealed class NavigationActions{
         data class NavigateToRegister(val username:String?=null): NavigationActions()
         object NavigateToSignin:NavigationActions()
         object NavigateToUsername:NavigationActions()
+        object NavigateToMobile:NavigationActions()
     }
 
     object NavigateBack:NavigationActions()

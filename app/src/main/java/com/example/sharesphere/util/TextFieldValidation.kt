@@ -20,5 +20,9 @@ object TextFieldValidation {
     fun isBothPasswordSame(password1: String,password2: String):Boolean{
         return password1==password2
     }
+     fun isMobileValid(mobile:String):Boolean{
+         val usernameRegex="[9,8,7,6]\\d{9}".toRegex()
+         return usernameRegex.matches(mobile)
+     }
 
 }

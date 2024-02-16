@@ -177,7 +177,7 @@ fun SigninScreen(navController: NavController,navigator: Navigator) {
                 text = "Continue with Google",
                 contColor = Color.Black,
                 txtColor = Color.White,
-                isIconButton = true,
+                isLeadingIconButton = true,
                 icon = R.drawable.google_logo
             ) {
 
