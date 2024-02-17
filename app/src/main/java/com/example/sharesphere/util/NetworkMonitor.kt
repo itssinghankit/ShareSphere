@@ -1,7 +1,5 @@
 package com.example.sharesphere.util
 
-
-
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -14,15 +12,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-
-
 class NetworkMonitor(
     @ApplicationContext context: Context
 ) {
-
     enum class NetworkState {
         Available, Lost;
-
         fun isAvailable() = this == Available
     }
 
@@ -36,20 +30,17 @@ class NetworkMonitor(
             override fun onAvailable(network: Network) {
                 super.onAvailable(network)
                 launch { send(Available) }
-                Log.d("XXX", "NetworkMonitor: onAvailable() called")
             }
 
             override fun onLost(network: Network) {
                 super.onLost(network)
                 launch { send(Lost) }
-                Log.d("XXX", "NetworkMonitor: onLost() called")
             }
         }
 
         connectivityManager.registerDefaultNetworkCallback(callback)
 
         awaitClose {
-            Log.d("XXX", "NetworkMonitor: awaitClose")
             connectivityManager.unregisterNetworkCallback(callback)
         }
     }.distinctUntilChanged()
