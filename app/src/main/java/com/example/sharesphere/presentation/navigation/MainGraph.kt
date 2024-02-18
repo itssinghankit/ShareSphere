@@ -18,6 +18,8 @@ import com.example.sharesphere.presentation.screens.authentication.register.Regi
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterViewModel
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
+import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpScreen
+import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpViewModel
 import com.example.sharesphere.presentation.ui.screens.home.LandingScreen
 import com.example.sharesphere.util.composeAnimatedSlide
 
@@ -27,8 +29,17 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
-        startDestination = ScreenSealedClass.AuthScreens.route
+        startDestination = ScreenSealedClass.AuthScreens.VerifyOtpScreen.route
     ) {
+
+        ////////////////
+        composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route){
+            val viewModel:VerifyOtpViewModel= hiltViewModel()
+            VerifyOtpScreen(viewModel,viewModel::onEvent,navigator)
+        }
+        //////////
+
+
         composeAnimatedSlide(route = ScreenSealedClass.SplashScreen.route) {
             SplashScreen(navigator)
         }
@@ -56,6 +67,10 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route){
                 val viewModel:MobileViewModel= hiltViewModel()
                 MobileScreen(viewModel,viewModel::onEvent,navigator)
+            }
+            composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route){
+                val viewModel:VerifyOtpViewModel= hiltViewModel()
+                VerifyOtpScreen(viewModel,viewModel::onEvent,navigator)
             }
 
         }

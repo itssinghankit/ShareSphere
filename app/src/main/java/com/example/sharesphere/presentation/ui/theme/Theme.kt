@@ -21,13 +21,13 @@ private val DarkColorScheme = darkColorScheme(
     secondary = PurpleGrey80,
     tertiary = Pink80,
     //Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFFCBC9D0),
-    onSurface = Color(0xFFF1ECFF),
+//    background = Color(0xFFFFFBFE),
+//    surface = Color(0xFFFFFBFE),
+//    onPrimary = Color.White,
+//    onSecondary = Color.White,
+//    onTertiary = Color.White,
+//    onBackground = Color(0xFFCBC9D0),
+//    onSurface = Color(0xFFF1ECFF),
 
 
 )

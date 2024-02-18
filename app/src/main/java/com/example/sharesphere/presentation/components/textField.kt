@@ -1,10 +1,11 @@
 package com.example.sharesphere.presentation.components
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,11 +18,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -29,17 +28,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.sharesphere.R
+import com.example.sharesphere.presentation.ui.theme.DefinedFonts
 import com.example.sharesphere.presentation.ui.theme.blacktxt
 import com.example.sharesphere.presentation.ui.theme.greytxtfieldlabel
-import com.example.sharesphere.presentation.ui.theme.orange
-import com.example.sharesphere.presentation.ui.theme.orangebg
-import com.example.sharesphere.presentation.ui.theme.orangetxt
 
 @Composable
 fun ComponentTextField(
@@ -49,12 +47,12 @@ fun ComponentTextField(
     onValueChange: (String) -> Unit,
     leadingIconImageVector: ImageVector,
     leadingIconDescription: String = "",
-    isPasswordField: Boolean=false,
-    isPasswordVisible: Boolean=false,
+    isPasswordField: Boolean = false,
+    isPasswordVisible: Boolean = false,
     onVisibilityChange: (Boolean) -> Unit = {},
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    showError: Boolean=false,
+    showError: Boolean = false,
     errorMessage: String = ""
 ) {
 
@@ -62,8 +60,7 @@ fun ComponentTextField(
         value = value,
         onValueChange = { onValueChange(it) },
         modifier = modifier
-            .fillMaxWidth()
-            , shape = RectangleShape,
+            .fillMaxWidth(), shape = RectangleShape,
         colors = TextFieldDefaults.colors(
             focusedTextColor = blacktxt,
             unfocusedTextColor = blacktxt,
@@ -88,7 +85,7 @@ fun ComponentTextField(
         ),
         singleLine = true,
         label = { Text(text = label) },
-        leadingIcon ={
+        leadingIcon = {
             Icon(
                 imageVector = leadingIconImageVector,
                 contentDescription = leadingIconDescription
@@ -109,25 +106,78 @@ fun ComponentTextField(
                 }
             }
         },
-        visualTransformation = when{
-            isPasswordField && isPasswordVisible ->VisualTransformation.None
+        visualTransformation = when {
+            isPasswordField && isPasswordVisible -> VisualTransformation.None
             isPasswordField -> PasswordVisualTransformation()
-            else-> VisualTransformation.None
+            else -> VisualTransformation.None
         },
-        keyboardOptions=keyboardOptions,
+        keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
-        textStyle = TextStyle(fontFamily = FontFamily(Font(R.font.lato_regular)), fontSize = MaterialTheme.typography.bodyLarge.fontSize)
+        textStyle = TextStyle(
+            fontFamily = FontFamily(Font(R.font.lato_regular)),
+            fontSize = MaterialTheme.typography.bodyLarge.fontSize
+        )
     )
     //to show error messages
-    if(showError){
+    if (showError) {
         Text(
             text = errorMessage,
-            color= Color.Red,
+            color = Color.Red,
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .padding(top = 8.dp)
                 .fillMaxWidth(0.9f),
             fontFamily = FontFamily(Font(R.font.lato_regular))
         )
+    }
+}
+
+@Composable
+fun OTPTextField(
+    modifier: Modifier = Modifier,
+    otpCode: String,
+    noOfBox: Int = 6,
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+) {
+    BasicTextField(
+        modifier = modifier,
+        value = otpCode,
+        onValueChange = { newValue ->
+            if (newValue.length <= 6) {
+                onValueChange(newValue)
+            }
+
+        },
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            repeat(noOfBox) { index ->
+                var borderColor = greytxtfieldlabel
+                val number = when {
+                    index >= otpCode.length -> ""
+                    else -> {
+                        borderColor = blacktxt
+                        otpCode[index].toString()
+                    }
+                }
+
+                Text(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .border(2.dp, borderColor, RectangleShape)
+                        .padding(4.dp),
+                    text = number,
+                    color = blacktxt,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontFamily = DefinedFonts.latoRegular.fontFamily,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }

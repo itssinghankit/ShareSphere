@@ -10,6 +10,7 @@ sealed class ScreenSealedClass(val route:String) {
         object RegisterScreen : ScreenSealedClass("register_screen")
 
         object MobileScreen: ScreenSealedClass("mobile_screen")
+        object VerifyOtpScreen:ScreenSealedClass("verifyotp_screen")
     }
 
     object UserScreens : ScreenSealedClass("user"){

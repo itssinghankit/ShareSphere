@@ -12,7 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.MobileFriendly
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -20,10 +20,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -43,22 +42,23 @@ import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.blackbgbtn
 import com.example.sharesphere.util.NetworkMonitor
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
+
 @Composable
 fun MobileScreen(
     viewModel: MobileViewModel,
     onEvent: (MobileEvents) -> Unit,
     navigator: Navigator
 ) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle().value
-    val textFieldState = viewModel.textFieldState.value
+    val state = viewModel.uiState.collectAsStateWithLifecycle()
+    val textFieldState = viewModel.textFieldState
     val networkState =
         viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    MobileContent(state, textFieldState, onEvent, navigator, keyboard, focusManager)
+    MobileContent(state.value, textFieldState.value, onEvent, navigator, keyboard)
 
     if (!networkState.value.isAvailable()) {
         //to remove keyboard from screen and loose focus
@@ -69,7 +69,7 @@ fun MobileScreen(
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+
 @Composable
 fun MobileContent(
     state: MobileStates,
@@ -77,12 +77,13 @@ fun MobileContent(
     onEvent: (MobileEvents) -> Unit,
     navigator: Navigator,
     keyboard: SoftwareKeyboardController?,
-    focusManager: FocusManager
 
-) {
+
+    ) {
     val snackBarHostState = remember {
         SnackbarHostState()
     }
+    val scope = rememberCoroutineScope()
 
     Scaffold(snackbarHost = {
         SnackbarHost(hostState = snackBarHostState, snackbar = {
@@ -99,6 +100,7 @@ fun MobileContent(
                 .padding(it)
                 .verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Bottom
         ) {
+
             AuthTopLayout(
                 modifier = Modifier.weight(2f),
                 onBackClick = { navigator.onAction(NavigationActions.NavigateBack) },
@@ -123,10 +125,17 @@ fun MobileContent(
                             imeAction = ImeAction.Go,
                             keyboardType = KeyboardType.Number
                         ),
-                        keyboardActions = KeyboardActions(onGo = {}),
+                        keyboardActions = KeyboardActions(onGo = {
+                            scope.launch {
+                                if (state.isMobileError && textFieldState.mobile.isNotEmpty()) {
+                                    onEvent(MobileEvents.NextClicked)
+                                }
+                            }
+
+                        }),
                         showError = state.isMobileError,
                         errorMessage = stringResource(id = R.string.validateMobileError),
-                        )
+                    )
                 }
 
                 ComponentButton(
@@ -134,7 +143,7 @@ fun MobileContent(
                     contColor = blackbgbtn,
                     txtColor = Color.White,
                     isTrailingIconButton = true,
-                    imageVector = Icons.Default.ArrowForward,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     modifier = Modifier.fillMaxWidth(0.5f),
                     enabled = !state.isMobileError && textFieldState.mobile.isNotEmpty()
                 ) {

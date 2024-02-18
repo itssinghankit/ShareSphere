@@ -25,4 +25,8 @@ object TextFieldValidation {
          return usernameRegex.matches(mobile)
      }
 
+    fun isOtpValid(otp:String):Boolean{
+        return otp.length==6
+    }
+
 }

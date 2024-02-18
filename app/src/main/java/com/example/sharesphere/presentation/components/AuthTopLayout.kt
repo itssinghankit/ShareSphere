@@ -11,13 +11,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -44,7 +48,7 @@ fun AuthTopLayout(
             .padding(32.dp), contentAlignment = Alignment.BottomStart
     ) {
         IconButton(
-            onClick = { onBackClick },
+            onClick = { onBackClick() },
             modifier = Modifier
                 .border(
                     0.5.dp, blacktxt,
@@ -55,13 +59,13 @@ fun AuthTopLayout(
         ) {
             Icon(
                 modifier = Modifier.size(18.dp),
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = null,
                 tint = greydividerback
             )
         }
-        Column() {
 
+        Column() {
             Text(
                 text = supportingTxt,
                 fontFamily = FontFamily(Font(R.font.lato_regular)),
@@ -78,5 +82,5 @@ fun AuthTopLayout(
 
         }
     }
-    Divider(modifier = Modifier.height(4.dp), color = greydividerback)
+    HorizontalDivider(modifier = Modifier.height(4.dp), color = greydividerback)
 }

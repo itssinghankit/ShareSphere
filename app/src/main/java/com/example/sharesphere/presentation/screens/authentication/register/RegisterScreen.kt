@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +54,6 @@ import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
 import com.example.sharesphere.util.NetworkMonitor
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RegisterScreen(
     viewmodel: RegisterViewModel, onEvents: (RegisterEvents) -> Unit, navigator: Navigator
@@ -191,11 +191,10 @@ fun RegisterContent(
                     navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
                 }
             }
-
-            Divider(
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 16.dp, bottom = 40.dp),
                 thickness = 1.dp,
-                color = linecolor,
-                modifier = Modifier.padding(top = 16.dp, bottom = 40.dp)
+                color = linecolor
             )
             ComponentButton(
                 text = stringResource(R.string.continue_with_google),
@@ -228,3 +227,4 @@ fun RegisterContent(
         }
     }
 }
+
