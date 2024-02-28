@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -21,9 +22,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +40,7 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
@@ -52,9 +51,8 @@ import com.example.sharesphere.presentation.components.OTPTextField
 import com.example.sharesphere.presentation.components.SnackBarLayout
 import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.presentation.navigation.Navigator
-import com.example.sharesphere.presentation.ui.theme.DefinedFonts
 import com.example.sharesphere.presentation.ui.theme.blackbgbtn
-import com.example.sharesphere.presentation.ui.theme.blacktxt
+import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.silvertxt
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.Dispatchers
@@ -62,7 +60,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import kotlin.coroutines.coroutineContext
 
 @Composable
 fun VerifyOtpScreen(
@@ -122,6 +119,10 @@ fun VerifyOtpContent(
                 mainTxt = "enter your otp's",
                 supportingTxt = stringResource(id = R.string.sharesphere_application)
             )
+            HorizontalDivider(
+                Modifier
+                    .height(4.dp)
+                    .background(MaterialTheme.colorScheme.outlineVariant))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,12 +130,11 @@ fun VerifyOtpContent(
                     .background(Color.White)
                     .padding(32.dp), contentAlignment = Alignment.BottomStart
             ) {
-                Column(modifier = Modifier.align(Alignment.TopStart)) {
-                    Text(
+                Column(modifier = Modifier.fillMaxWidth().align(Alignment.TopStart)) {
+                    Text(modifier=Modifier.padding(top=40.dp),
                         text = stringResource(R.string.mobile_otp),
-                        fontFamily = DefinedFonts.latoBold.fontFamily,
-                        color = blacktxt,
-                        style = MaterialTheme.typography.titleSmall
+                        color = Black13,
+                        style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OTPTextField(
@@ -152,10 +152,9 @@ fun VerifyOtpContent(
                     )
                     Spacer(modifier = Modifier.height(32.dp))
                     Text(
-                        text = stringResource(R.string.email_otp),
-                        fontFamily = DefinedFonts.latoBold.fontFamily,
-                        color = blacktxt,
-                        style = MaterialTheme.typography.titleSmall
+                        text = stringResource(id = R.string.email_otp),
+                        color = Black13,
+                        style = MaterialTheme.typography.labelMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OTPTextField(
@@ -175,11 +174,11 @@ fun VerifyOtpContent(
 
                         })
                     )
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(72.dp))
 
-//                    ResendButtonWithTimer{
-//                        onEvent(VerifyOtpEvents.onResendClicked)
-//                    }
+                    ResendButtonWithTimer{
+                        onEvent(VerifyOtpEvents.onResendClicked)
+                    }
 
                 }
 
@@ -187,6 +186,7 @@ fun VerifyOtpContent(
                     text = "Continue ",
                     contColor = blackbgbtn,
                     txtColor = Color.White,
+                    iconTint = Color.White,
                     isTrailingIconButton = true,
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     modifier = Modifier.fillMaxWidth(0.5f),
@@ -204,35 +204,6 @@ fun VerifyOtpContent(
                 snackBarHostState.showSnackbar(errorMessage)
             }
         }
-
-    }
-}
-
-@Composable
-fun ResendButtonWithCounter(
-    isCountingDown: Boolean, // Track the counting down state
-    timeRemaining: Int, // Store the remaining time in seconds
-    onResendClicked: () -> Unit, // Callback for resend action
-    startCountdown: (Int) -> Unit
-) {
-    if (isCountingDown) {
-        Text(
-            text = "Resend in $timeRemaining seconds...",
-            color = silvertxt, // Disable button while counting down
-            style = MaterialTheme.typography.titleSmall
-        )
-    } else {
-        Text(
-            modifier = Modifier.clickable {
-                onResendClicked()
-                // Start the countdown after resend
-                startCountdown(30)
-            },
-            text = "Resend OTP's",
-            fontFamily = DefinedFonts.latoBold.fontFamily,
-            color = blacktxt,
-            style = MaterialTheme.typography.titleSmall
-        )
 
     }
 }
@@ -268,22 +239,24 @@ fun ResendButtonWithTimer(onResendClicked: () -> Unit) {
     }
     if (isResendEnabled) {
         Text(
-            modifier = Modifier.clickable {
+            modifier = Modifier.fillMaxWidth().clickable {
                 isResendEnabled=false
                 remainingTime=30
                 onResendClicked()
 
             },
             text = "Resend OTP's",
-            fontFamily = DefinedFonts.latoBold.fontFamily,
-            color = blacktxt,
-            style = MaterialTheme.typography.titleSmall
+            color = Black13,
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.End
         )
     } else {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = "Resend in $remainingTime seconds...",
             color = silvertxt, // Disable button while counting down
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+                    textAlign = TextAlign.End
         )
     }
 

@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -24,25 +24,21 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import com.example.sharesphere.R
 import com.example.sharesphere.presentation.ui.theme.greydisbledbtn
 import com.example.sharesphere.presentation.ui.theme.greytxt
-import com.example.sharesphere.presentation.ui.theme.whitetxt
 
 @Composable
 fun ComponentButton(
     modifier: Modifier = Modifier,
     text: String,
-    contColor: Color,
-    txtColor: Color,
+    contColor: Color = MaterialTheme.colorScheme.primary,
+    txtColor: Color = MaterialTheme.colorScheme.onPrimary,
     isLeadingIconButton: Boolean = false,
     icon: Int = 0,
     isTrailingIconButton: Boolean = false,
-    imageVector: ImageVector = Icons.Default.ArrowBack,
-    iconTint: Color = whitetxt,
+    imageVector: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    iconTint: Color = MaterialTheme.colorScheme.onPrimary,
     rippleColor: Color = greytxt,
     shape: Shape = RectangleShape,
     disabledContainerColor: Color = greydisbledbtn,
@@ -111,7 +107,7 @@ fun ButtonTxt(
         text = text,
         color = txtColor,
         modifier = modifier,
-        style = MaterialTheme.typography.bodyMedium,
-        fontFamily = FontFamily(Font(R.font.lato_bold))
+        style = MaterialTheme.typography.titleSmall
     )
 }
+

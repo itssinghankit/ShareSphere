@@ -13,9 +13,9 @@ import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.screens.Splash.SplashScreen
 import com.example.sharesphere.presentation.screens.authentication.mobile.MobileScreen
 import com.example.sharesphere.presentation.screens.authentication.mobile.MobileViewModel
-import com.example.sharesphere.presentation.screens.authentication.signin.SigninScreen
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterScreen
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterViewModel
+import com.example.sharesphere.presentation.screens.authentication.signin.SigninScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameScreen
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpScreen
@@ -36,6 +36,7 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
         composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route){
             val viewModel:VerifyOtpViewModel= hiltViewModel()
             VerifyOtpScreen(viewModel,viewModel::onEvent,navigator)
+//            AuthTopLayout(Modifier,{},"enter your otp","SHARESPHERE APPLICATION")
         }
         //////////
 

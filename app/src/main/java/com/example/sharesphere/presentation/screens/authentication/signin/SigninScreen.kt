@@ -51,7 +51,7 @@ import com.example.sharesphere.util.TextFieldValidation
 import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.presentation.navigation.Navigator
-import com.example.sharesphere.presentation.ui.theme.blacktxt
+import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.linecolor
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
@@ -91,7 +91,7 @@ fun SigninScreen(navController: NavController,navigator: Navigator) {
             )
             Text(
                 text = "Please sign in to continue",
-                color = blacktxt,
+                color = Black13,
                 modifier = Modifier.padding(top = 8.dp),
                 fontSize = 20.sp,
                 fontFamily = FontFamily(Font(R.font.lato_regular))

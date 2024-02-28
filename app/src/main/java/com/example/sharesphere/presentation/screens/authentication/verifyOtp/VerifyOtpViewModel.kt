@@ -1,5 +1,7 @@
 package com.example.sharesphere.presentation.screens.authentication.verifyOtp
 
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +29,7 @@ class VerifyOtpViewModel @Inject constructor(
 
     val networkState=networkMonitor.networkState
 
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun onEvent(event: VerifyOtpEvents) {
         when (event) {
             is VerifyOtpEvents.onEmailOtpValueChange -> {
@@ -69,6 +72,8 @@ class VerifyOtpViewModel @Inject constructor(
             }
 
             is VerifyOtpEvents.onNextClicked -> {
+
+
 //                viewModelScope.launch {
 //                    saveMobileDataStoreUseCase(textFieldState.value.mobile)
 //                }

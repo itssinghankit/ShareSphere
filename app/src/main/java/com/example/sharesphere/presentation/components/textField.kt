@@ -28,15 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.sharesphere.R
 import com.example.sharesphere.presentation.ui.theme.DefinedFonts
-import com.example.sharesphere.presentation.ui.theme.blacktxt
+import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.greytxtfieldlabel
 
 @Composable
@@ -62,24 +60,24 @@ fun ComponentTextField(
         modifier = modifier
             .fillMaxWidth(), shape = RectangleShape,
         colors = TextFieldDefaults.colors(
-            focusedTextColor = blacktxt,
-            unfocusedTextColor = blacktxt,
+            focusedTextColor = Black13,
+            unfocusedTextColor = Black13,
             errorTextColor = Color.Red,
-            cursorColor = blacktxt,
+            cursorColor = Black13,
             errorCursorColor = Color.Red,
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
             errorContainerColor = Color.White,
-            focusedIndicatorColor = blacktxt,
+            focusedIndicatorColor = Black13,
             unfocusedIndicatorColor = greytxtfieldlabel,
             errorIndicatorColor = Color.Red,
-            focusedLeadingIconColor = blacktxt,
+            focusedLeadingIconColor = Black13,
             unfocusedLeadingIconColor = greytxtfieldlabel,
             errorLeadingIconColor = Color.Red,
-            focusedTrailingIconColor = blacktxt,
-            unfocusedTrailingIconColor = blacktxt,
+            focusedTrailingIconColor = Black13,
+            unfocusedTrailingIconColor = Black13,
             errorTrailingIconColor = Color.Red,
-            focusedLabelColor = blacktxt,
+            focusedLabelColor = Black13,
             unfocusedLabelColor = greytxtfieldlabel,
             errorLabelColor = Color.Red,
         ),
@@ -161,7 +159,7 @@ fun OTPTextField(
                 val number = when {
                     index >= otpCode.length -> ""
                     else -> {
-                        borderColor = blacktxt
+                        borderColor = Black13
                         otpCode[index].toString()
                     }
                 }
@@ -169,10 +167,10 @@ fun OTPTextField(
                 Text(
                     modifier = Modifier
                         .size(40.dp)
-                        .border(2.dp, borderColor, RectangleShape)
+                        .border(1.dp, borderColor, MaterialTheme.shapes.extraSmall)
                         .padding(4.dp),
                     text = number,
-                    color = blacktxt,
+                    color = Black13,
                     style = MaterialTheme.typography.titleLarge,
                     fontFamily = DefinedFonts.latoRegular.fontFamily,
                     textAlign = TextAlign.Center

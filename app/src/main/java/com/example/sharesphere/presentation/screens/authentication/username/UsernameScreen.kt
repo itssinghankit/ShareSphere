@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -48,7 +46,7 @@ import com.example.sharesphere.presentation.components.ConnectionLostScreen
 import com.example.sharesphere.presentation.components.SnackBarLayout
 import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.presentation.navigation.Navigator
-import com.example.sharesphere.presentation.ui.theme.blacktxt
+import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
 import com.example.sharesphere.util.NetworkMonitor
@@ -125,7 +123,7 @@ fun UsernameContent(
                 )
                 Text(
                     text = stringResource(id = R.string.validateUsernameError),
-                    color = blacktxt,
+                    color = Black13,
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = FontFamily(Font(R.font.lato_regular)),
                     modifier = Modifier.padding(top = 8.dp)

@@ -1,10 +1,10 @@
 package com.example.sharesphere.data.remote
 
+import com.example.sharesphere.data.remote.dto.UsernameResponseDto
 import com.example.sharesphere.models.SigninRequest
 import com.example.sharesphere.models.SigninResponse
 import com.example.sharesphere.models.SignupRequest
 import com.example.sharesphere.models.SignupResponse
-import com.example.sharesphere.data.remote.dto.UsernameResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -23,4 +23,6 @@ interface ShareSphereApi {
     suspend fun checkUsername(@Path("username") username:String):UsernameResponseDto
 
     //{"statusCode":404,"data":null,"success":false,"errors":{"message":"Not Found"}}
+
+
 }

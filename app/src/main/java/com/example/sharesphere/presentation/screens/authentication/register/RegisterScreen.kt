@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -48,7 +46,7 @@ import com.example.sharesphere.presentation.components.ComponentTextField
 import com.example.sharesphere.presentation.components.ConnectionLostScreen
 import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.presentation.navigation.Navigator
-import com.example.sharesphere.presentation.ui.theme.blacktxt
+import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.linecolor
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
@@ -110,7 +108,7 @@ fun RegisterContent(
             )
             Text(
                 text = stringResource(R.string.register_yourself_to_continue),
-                color = blacktxt,
+                color = Black13,
                 modifier = Modifier.padding(top = 8.dp),
                 fontSize = 20.sp,
                 fontFamily = FontFamily(Font(R.font.lato_regular))
