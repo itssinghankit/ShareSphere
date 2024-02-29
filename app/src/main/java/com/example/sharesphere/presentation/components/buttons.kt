@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.sharesphere.presentation.ui.theme.greydisbledbtn
 import com.example.sharesphere.presentation.ui.theme.greytxt
+import com.example.sharesphere.util.UiText
 
 @Composable
 fun ComponentButton(

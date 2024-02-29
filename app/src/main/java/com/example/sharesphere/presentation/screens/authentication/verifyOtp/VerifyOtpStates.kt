@@ -7,5 +7,5 @@ data class VerifyOtpStates(
     val showSnackBar: Boolean = false,
     val isInputsValidated: Boolean = false,
     val isError:Boolean?=null,
-    val errorMessage:UiText?=null
+    val errorMessage:UiText?=UiText.DynamicString("Something went wrong")
 )

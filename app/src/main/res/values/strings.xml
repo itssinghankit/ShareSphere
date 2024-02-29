@@ -11,6 +11,7 @@
 
     //usernameScreen response
     <string name="usernameError">This username is not available</string>
+    <string name="mobileOtpError">Failed to send OTP</string>
     <string name="username">Username</string>
     <string name="next">Next</string>
     <string name="create_an_username">Create an username</string>

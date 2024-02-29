@@ -154,13 +154,18 @@ fun SigninScreen(navController: NavController,navigator: Navigator) {
                 }
 
                 is ApiResponse.Error -> {
-                    ComponentButton(text = "Sign in", contColor = orange, txtColor = Color.White) {
-                        isEmailValid = TextFieldValidation.isEmailValid(email)
-                        isPasswordValid = TextFieldValidation.isPasswordValid(password)
-                        if (isEmailValid && isPasswordValid) {
-                            signinViewModel.signin(email, password)
+                    ComponentButton(
+                        text = "Sign in",
+                        contColor = orange,
+                        txtColor = Color.White,
+                        onclick = {
+                            isEmailValid = TextFieldValidation.isEmailValid(email)
+                            isPasswordValid = TextFieldValidation.isPasswordValid(password)
+                            if (isEmailValid && isPasswordValid) {
+                                signinViewModel.signin(email, password)
+                            }
                         }
-                    }
+                    )
                 }
 
                 is ApiResponse.Success -> {
@@ -178,10 +183,11 @@ fun SigninScreen(navController: NavController,navigator: Navigator) {
                 contColor = Color.Black,
                 txtColor = Color.White,
                 isLeadingIconButton = true,
-                icon = R.drawable.google_logo
-            ) {
+                icon = R.drawable.google_logo,
+                onclick = {
 
-            }
+                }
+            )
 
             Row(
                 horizontalArrangement = Arrangement.Center,

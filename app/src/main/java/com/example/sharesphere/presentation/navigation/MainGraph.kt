@@ -29,17 +29,31 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
-        startDestination = ScreenSealedClass.AuthScreens.VerifyOtpScreen.route
+        startDestination = ScreenSealedClass.AuthScreens.MobileScreen.route
     ) {
 
         ////////////////
+
         composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route){
+
             val viewModel:VerifyOtpViewModel= hiltViewModel()
-            VerifyOtpScreen(viewModel,viewModel::onEvent,navigator)
+            VerifyOtpScreen(viewModel=viewModel, onEvent = viewModel::onEvent, onBackClick = {})
+//            VerifyOtpScreen(viewModel,viewModel::onEvent,navigator)
 //            AuthTopLayout(Modifier,{},"enter your otp","SHARESPHERE APPLICATION")
         }
-        //////////
 
+        ////////////////
+
+        composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route){
+            val viewModel:MobileViewModel= hiltViewModel()
+            MobileScreen(viewModel = viewModel, onEvent = viewModel::onEvent, onBackClick = {mainNavController.popBackStack()}) {
+                navigator.onAction(
+                    NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp
+                )
+            }
+        }
+
+        ////////////////
 
         composeAnimatedSlide(route = ScreenSealedClass.SplashScreen.route) {
             SplashScreen(navigator)
@@ -67,7 +81,10 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route){
                 val viewModel:MobileViewModel= hiltViewModel()
-                MobileScreen(viewModel,viewModel::onEvent,navigator)
+                MobileScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    onBackClick = {mainNavController.popBackStack()}) { navigator.onAction(com.example.sharesphere.presentation.navigation.NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp) }
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route){
                 val viewModel:VerifyOtpViewModel= hiltViewModel()

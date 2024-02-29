@@ -14,16 +14,15 @@ import com.example.sharesphere.presentation.ui.theme.orange
 
 @Composable
 fun SnackBarLayout(
+    modifier: Modifier=Modifier,
     message: String,
     action:()->Unit
 ) {
     Snackbar(
-        modifier = Modifier
+        modifier = modifier
             .wrapContentSize(align = Alignment.BottomCenter)
-            .padding(16.dp),
+            .padding(horizontal = 32.dp, vertical = 16.dp),
         action = { action()},
-        containerColor = orange,
-        contentColor = Color.White
     ) {
         Text(
             text = message,

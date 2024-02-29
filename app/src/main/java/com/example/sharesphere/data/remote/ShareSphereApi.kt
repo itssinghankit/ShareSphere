@@ -1,5 +1,7 @@
 package com.example.sharesphere.data.remote
 
+import com.example.sharesphere.data.remote.dto.MobileOtpRequestDto
+import com.example.sharesphere.data.remote.dto.MobileOtpResponseDto
 import com.example.sharesphere.data.remote.dto.UsernameResponseDto
 import com.example.sharesphere.models.SigninRequest
 import com.example.sharesphere.models.SigninResponse
@@ -8,21 +10,28 @@ import com.example.sharesphere.models.SignupResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ShareSphereApi {
 
-    @POST("/auth/signup")
+    @POST("auth/signup")
     suspend fun signup(@Body signupRequest: SignupRequest):Response<SignupResponse>
 
-    @POST("/auth/signin")
+    @POST("auth/signin")
     suspend fun signin(@Body signinRequest: SigninRequest):Response<SigninResponse>
 
     @GET("user/check-username/{username}")
     suspend fun checkUsername(@Path("username") username:String):UsernameResponseDto
 
     //{"statusCode":404,"data":null,"success":false,"errors":{"message":"Not Found"}}
+
+    @Headers("Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWIyODA1MmQ0MzM2NGZkNzYyNTE0NmIiLCJ1c2VybmFtZSI6Iml0c3NpbmdoYW5raXQiLCJlbWFpbCI6InNpbmdoYW5raXQua3JAZ21haWwuY29tIiwiZnVsbE5hbWUiOiJBbmtpdCBTaW5naCIsImlhdCI6MTcwOTIwMzc4NCwiZXhwIjoxNzA5MjkwMTg0fQ.dztHa2oQcbPUXkvw9YWNMhSjwYx332EV3S1E7zBh_l8")
+    @POST("user/send-otp")
+    suspend fun mobileSendOtp(@Body mobileOtpRequestDto: MobileOtpRequestDto):MobileOtpResponseDto
+
 
 
 }

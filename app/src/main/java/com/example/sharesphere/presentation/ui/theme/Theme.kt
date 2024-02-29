@@ -52,7 +52,7 @@ outlineVariant = Grey79
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Black40, //
+    primary = Black05, //
     onPrimary = Color.White, //
     primaryContainer = Black90, //
     onPrimaryContainer = Black10, //

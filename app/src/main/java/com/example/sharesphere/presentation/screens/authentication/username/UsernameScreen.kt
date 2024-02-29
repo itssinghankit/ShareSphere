@@ -145,23 +145,24 @@ fun UsernameContent(
                 Timber.d("hello1")
                 if (state.value.isavailable) {
                     ComponentButton(
+                        modifier = Modifier.padding(top = 40.dp),
                         text = stringResource(R.string.next),
                         contColor = orange,
                         txtColor = Color.White,
-                        modifier = Modifier.padding(top = 40.dp)
-                    ) {
-                        //to save username to datastore and then navigate
-                        scope.launch {
-                            onEvent(UsernameEvents.onNextClick(username))
-                            navigator.onAction(
-                                NavigationActions.NavigateToAuthScreens.NavigateToRegister(
-                                    username
+                        onclick = {
+                            //to save username to datastore and then navigate
+                            scope.launch {
+                                onEvent(UsernameEvents.onNextClick(username))
+                                navigator.onAction(
+                                    NavigationActions.NavigateToAuthScreens.NavigateToRegister(
+                                        username
+                                    )
                                 )
-                            )
 
 
+                            }
                         }
-                    }
+                    )
                 }
             }
         }

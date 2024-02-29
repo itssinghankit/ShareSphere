@@ -7,6 +7,7 @@ sealed class NavigationActions{
         object NavigateToSignin:NavigationActions()
         object NavigateToUsername:NavigationActions()
         object NavigateToMobile:NavigationActions()
+        object NavigateToVerifyOtp:NavigationActions()
     }
 
     object NavigateBack:NavigationActions()

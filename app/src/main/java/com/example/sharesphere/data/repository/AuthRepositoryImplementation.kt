@@ -1,6 +1,8 @@
 package com.example.sharesphere.data.repository
 
 import com.example.sharesphere.data.remote.ShareSphereApi
+import com.example.sharesphere.data.remote.dto.MobileOtpRequestDto
+import com.example.sharesphere.data.remote.dto.MobileOtpResponseDto
 import com.example.sharesphere.data.remote.dto.UsernameResponseDto
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import javax.inject.Inject
@@ -12,5 +14,9 @@ class AuthRepositoryImplementation @Inject constructor(private val shareSphereAp
 
     override suspend fun checkUsername(username: String): UsernameResponseDto {
         return shareSphereApi.checkUsername(username)
+    }
+
+    override suspend fun mobileSendOtp(mobile: String): MobileOtpResponseDto {
+        return shareSphereApi.mobileSendOtp(MobileOtpRequestDto(mobile=mobile))
     }
 }

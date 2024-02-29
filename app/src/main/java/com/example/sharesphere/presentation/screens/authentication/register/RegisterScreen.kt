@@ -183,11 +183,12 @@ fun RegisterContent(
                 ComponentButton(
                     text = stringResource(id = R.string.next),
                     contColor = orange,
-                    txtColor = Color.White
-                ) {
-                    onEvents(RegisterEvents.onNextClick)
-                    navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
-                }
+                    txtColor = Color.White,
+                    onclick = {
+                        onEvents(RegisterEvents.onNextClick)
+                        navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
+                    }
+                )
             }
             HorizontalDivider(
                 modifier = Modifier.padding(top = 16.dp, bottom = 40.dp),
@@ -199,10 +200,11 @@ fun RegisterContent(
                 contColor = Color.Black,
                 txtColor = Color.White,
                 isLeadingIconButton = true,
-                icon = R.drawable.google_logo
-            ) {
+                icon = R.drawable.google_logo,
+                onclick = {
 
-            }
+                }
+            )
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier

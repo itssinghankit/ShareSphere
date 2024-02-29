@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VerifyOtpViewModel @Inject constructor(
-    private val networkMonitor: NetworkMonitor,
+    networkMonitor: NetworkMonitor,
     private val checkVerifyOtpValidationUseCase: CheckVerifyOtpValidationUseCase
 ) : ViewModel() {
 
@@ -66,7 +66,7 @@ class VerifyOtpViewModel @Inject constructor(
             is VerifyOtpEvents.onSnackBarShown -> {
                 viewModelScope.launch {
                     _uiState.update {
-                        it.copy(showSnackBar = false)
+                        it.copy(errorMessage = null)
                     }
                 }
             }

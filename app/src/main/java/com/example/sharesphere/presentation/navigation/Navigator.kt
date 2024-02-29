@@ -37,6 +37,9 @@ class Navigator(private val navController: NavController) {
 
             }
 
+            is NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp->{
+                navController.navigate(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route)
+            }
 
         }
     }
