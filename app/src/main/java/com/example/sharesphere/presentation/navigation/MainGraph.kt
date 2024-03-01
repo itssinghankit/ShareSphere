@@ -73,7 +73,9 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
                     }
                 )) {
                 val viewModel:RegisterViewModel= hiltViewModel()
-                RegisterScreen(viewModel,viewModel::onEvents,navigator)
+                RegisterScreen(viewModel=viewModel, onEvent = viewModel::onEvents, onBackClick = {mainNavController.popBackStack()}){
+                    navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
+                }
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.UsernameScreen.route) {
                 val viewmodel: UsernameViewModel = hiltViewModel()

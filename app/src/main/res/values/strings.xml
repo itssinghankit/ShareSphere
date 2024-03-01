@@ -19,7 +19,7 @@
     <string name="create_one">Create one</string>
     <string name="continue_with_google">Continue with Google</string>
     <string name="sign_up">Sign up</string>
-    <string name="register_yourself_to_continue">Register yourself to continue</string>
+    <string name="register_yourself_to_continue">register yourself to continue</string>
     <string name="email">Email</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="already_have_an_account">"Already have an account ? "</string>

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
 import com.example.sharesphere.domain.use_case.username.CheckAvailabilityUseCase
-import com.example.sharesphere.domain.use_case.username.GetUsernameDataStoreUseCase
 import com.example.sharesphere.domain.use_case.username.SaveUsernameDatastoreUseCase
 import com.example.sharesphere.domain.use_case.username.UsernameValidationUseCase
 import com.example.sharesphere.util.ApiResponse
@@ -28,20 +27,19 @@ class UsernameViewModel @Inject constructor(
     networkMonitor: NetworkMonitor,
     private val checkAvailabilityUseCase: CheckAvailabilityUseCase,
     private val usernameValidationUseCase: UsernameValidationUseCase,
-    private val saveUsernameDatastoreUseCase: SaveUsernameDatastoreUseCase,
-    private val getUsernameDataStoreUseCase: GetUsernameDataStoreUseCase
+    private val saveUsernameDatastoreUseCase: SaveUsernameDatastoreUseCase
 ) :
     ViewModel() {
 
     /*
     // Game UI state
-    //instead of having a mutable and immutable variable we can simply use private set with one variablef
+    //instead of having a mutable and immutable variable we can simply use private set with one variable
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
     //_uiState.update{a->a.copy()} can only be used with flow
 
     //userGuess is TextField so can't use any reactive stream asynchronous method like flow
-    //otherwise it create lag between typing typically we should ASAP assign value to textfeild state
+    //otherwise it create lag between typing typically we should ASAP assign value to textField state
     var userGuess by mutableStateOf("")
     private set
 
@@ -49,7 +47,7 @@ class UsernameViewModel @Inject constructor(
     //Asynchronous-mutableStateFlow
     //simple compose state-mutableState
     */
-    //we will not use mutableStateFlow because for eac textfeild we need to define mutableState("") seperately
+    //we will not use mutableStateFlow because for eac textField we need to define mutableState("") separately
 //    private var _uiState = MutableStateFlow(UsernameState())
 //    val uiState: StateFlow<UsernameState> = _uiState.asStateFlow()
 
@@ -131,14 +129,14 @@ class UsernameViewModel @Inject constructor(
                         is ApiResponse.Success -> {
                             _uiState.update {
                                 //if username is not available=false, isError=true
-                                var isTextfieldError = false
+                                var isTextFieldError = false
                                 if (result.data?.available == false) {
-                                    isTextfieldError = true
+                                    isTextFieldError = true
                                 }
                                 it.copy(
                                     isAvailable = result.data?.available ?: false,
                                     isLoading = false,
-                                    isUsernameError = isTextfieldError,
+                                    isUsernameError = isTextFieldError,
                                     textFieldErrorMessage = UiText.DynamicString(
                                         result.data?.message ?: ""
                                     )

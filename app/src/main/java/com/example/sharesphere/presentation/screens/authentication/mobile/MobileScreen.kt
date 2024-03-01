@@ -139,6 +139,7 @@ fun MobileScreen(
             modifier = Modifier.padding(paddingValues),
             isMobileError = uiState.isMobileError,
             onNextClick = {
+                //TODO is not empty necessary
                 scope.launch {
                     if (!uiState.isMobileError && textFieldState.mobile.isNotEmpty()) {
                         keyboard?.hide()

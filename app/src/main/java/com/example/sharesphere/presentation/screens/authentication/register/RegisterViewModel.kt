@@ -1,6 +1,5 @@
 package com.example.sharesphere.presentation.screens.authentication.register
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +9,7 @@ import com.example.sharesphere.domain.use_case.register.PasswordValidationUseCas
 import com.example.sharesphere.domain.use_case.register.SaveRegisterDataStoreUseCase
 import com.example.sharesphere.util.NetworkMonitor
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val networkMonitor: NetworkMonitor,
+    networkMonitor: NetworkMonitor,
     private val emailValidationUseCase: EmailValidationUseCase,
     private val passwordValidationUseCase: PasswordValidationUseCase,
     private val cPasswordValidationUseCase: CPasswordValidationUseCase,
@@ -38,7 +38,7 @@ class RegisterViewModel @Inject constructor(
 
     fun onEvents(event: RegisterEvents) {
         when (event) {
-            is RegisterEvents.EmailOnValueChange -> {
+            is RegisterEvents.OnEmailValueChange -> {
                 Timber.d("email section ${event.email}")
                 val updatedEmail = event.email
                 textFieldStates.value = textFieldStates.value.copy(email = updatedEmail)
@@ -50,7 +50,7 @@ class RegisterViewModel @Inject constructor(
 
             }
 
-            is RegisterEvents.PasswordOnValueChange -> {
+            is RegisterEvents.OnPasswordValueChange -> {
 
                 val updatedPassword = event.password
                 val updatedCPassword = textFieldStates.value.cPassword
@@ -58,15 +58,18 @@ class RegisterViewModel @Inject constructor(
 
                 //email validation
                 _uiState.update {
-                    it.copy(isPasswordError = !passwordValidationUseCase(updatedPassword), isCPasswordError = !cPasswordValidationUseCase(
-                        updatedPassword,
-                        updatedCPassword
-                    ))
+                    it.copy(
+                        isPasswordError = !passwordValidationUseCase(updatedPassword),
+                        isCPasswordError = !cPasswordValidationUseCase(
+                            updatedPassword,
+                            updatedCPassword
+                        )
+                    )
                 }
 
             }
 
-            is RegisterEvents.CPasswordOnValueChange -> {
+            is RegisterEvents.OnCPasswordValueChange -> {
 
                 val updatedPassword = textFieldStates.value.password
                 val updatedCPassword = event.cPassword
@@ -85,11 +88,31 @@ class RegisterViewModel @Inject constructor(
             }
 
             is RegisterEvents.onNextClick -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     saveRegisterDataStoreUseCase(
                         textFieldStates.value.email,
                         textFieldStates.value.password
                     )
+                    //TODO : do the navigate state logic
+                    _uiState.update {
+                        it.copy(navigate = true)
+                    }
+                }
+            }
+
+            is RegisterEvents.onSnackBarShown -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _uiState.update {
+                        it.copy(errorMessage = null)
+                    }
+                }
+            }
+
+            is RegisterEvents.onNavigationDone -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _uiState.update {
+                        it.copy(navigate = false)
+                    }
                 }
             }
         }
