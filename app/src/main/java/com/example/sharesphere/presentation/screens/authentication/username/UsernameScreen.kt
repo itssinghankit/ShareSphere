@@ -1,9 +1,5 @@
 package com.example.sharesphere.presentation.screens.authentication.username
 
-import android.os.Build
-import androidx.annotation.RequiresExtension
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,193 +9,180 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
+import com.example.sharesphere.presentation.components.AuthTopBar
 import com.example.sharesphere.presentation.components.ComponentButton
 import com.example.sharesphere.presentation.components.ComponentTextField
 import com.example.sharesphere.presentation.components.ConnectionLostScreen
-import com.example.sharesphere.presentation.components.SnackBarLayout
-import com.example.sharesphere.presentation.navigation.NavigationActions
-import com.example.sharesphere.presentation.navigation.Navigator
-import com.example.sharesphere.presentation.ui.theme.Black13
-import com.example.sharesphere.presentation.ui.theme.orange
-import com.example.sharesphere.presentation.ui.theme.orangebg
+import com.example.sharesphere.presentation.components.DefinedSnackBarHost
+import com.example.sharesphere.presentation.components.Loading
+import com.example.sharesphere.presentation.ui.theme.Black05
+import com.example.sharesphere.presentation.ui.theme.Black70
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
-@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun UsernameScreen(
+    modifier: Modifier = Modifier,
     viewModel: UsernameViewModel,
     onEvent: (UsernameEvents) -> Unit,
-    navigator: Navigator
+    onBackClick: () -> Unit,
+    navigateToRegisterScreen: (username: String) -> Unit
 ) {
 
-    //we can also use vieModel.onEvent but it explicitly find onEvent function and it will be time
-    //taking if viewModel is large and we need to call onEvent very frequently
-
-    val state = viewModel.uiState.collectAsStateWithLifecycle()
-    UsernameContent(state, onEvent, navigator, username = viewModel.username)
-
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun UsernameContent(
-    state: State<UsernameState>,
-    onEvent: (UsernameEvents) -> Unit,
-    navigator: Navigator,
-    username: String
-) {
-    val snackbarHostState = remember {
+    val scope = rememberCoroutineScope()
+    val snackBarHostState: SnackbarHostState = remember {
         SnackbarHostState()
     }
-    val scope = rememberCoroutineScope()
+    val networkState by
+    viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
     val keyboard = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val textFieldState by viewModel.textFieldState
 
-    if(NetworkMonitor.NetworkState.Lost.isAvailable()){
-        ConnectionLostScreen()
+    //showing snackBar
+    uiState.errorMessage?.let { errorMessage ->
+        val snackBarText = errorMessage.asString()
+        scope.launch {
+            snackBarHostState.showSnackbar(snackBarText)
+        }
     }
 
-    Scaffold(snackbarHost = {
-        SnackbarHost(hostState = snackbarHostState, snackbar = {
-            SnackBarLayout(
-                message = it.visuals.message,
-                action = { onEvent(UsernameEvents.snackbarShown) }
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize(),
+        topBar = {
+            AuthTopBar(
+                modifier = Modifier,
+                onBackClick = onBackClick,
+                mainTxt = stringResource(R.string.create_an_username),
+                supportingTxt = stringResource(id = R.string.sharesphere_application)
             )
-        })
-    }) { it ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(orangebg)
-                .verticalScroll(rememberScrollState()), contentAlignment = Alignment.TopStart
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-            ) {
-                IconButton(onClick = { navigator.onAction(NavigationActions.NavigateBack) }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = null,
-                        tint = Color.Black
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.create_an_username),
-                    color = orange,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontFamily = FontFamily(Font(R.font.lato_black)),
-                    modifier = Modifier.padding(top = 16.dp)
-                )
-                Text(
-                    text = stringResource(id = R.string.validateUsernameError),
-                    color = Black13,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontFamily = FontFamily(Font(R.font.lato_regular)),
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-                ComponentTextField(
-                    label = stringResource(R.string.username),
-                    modifier = Modifier.padding(top = 32.dp),
-                    value = username,
-                    onValueChange = { onEvent(UsernameEvents.onValueChange(it)) },
-                    leadingIconImageVector = Icons.Default.Person,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Go,
-                        keyboardType = KeyboardType.Password
-                    ),
-                    keyboardActions = KeyboardActions(onGo = {}),
-                    showError = state.value.isTextfieldError,
-                    errorMessage = state.value.textfieldErrorMessage?.asString() ?: ""
-                )
-                Timber.d("hello1")
-                if (state.value.isavailable) {
-                    ComponentButton(
-                        modifier = Modifier.padding(top = 40.dp),
-                        text = stringResource(R.string.next),
-                        contColor = orange,
-                        txtColor = Color.White,
-                        onclick = {
-                            //to save username to datastore and then navigate
-                            scope.launch {
-                                onEvent(UsernameEvents.onNextClick(username))
-                                navigator.onAction(
-                                    NavigationActions.NavigateToAuthScreens.NavigateToRegister(
-                                        username
-                                    )
-                                )
-
-
-                            }
-                        }
-                    )
-                }
-            }
-        }
-
-        if (state.value.showSnackBar) {
-
-            val errorMessage = state.value.errorMessage?.asString() ?: ""
-            LaunchedEffect(key1 = state.value.showSnackBar) {
+        },
+        bottomBar = {
+            if (!networkState.isAvailable()) {
+                //to remove keyboard from screen and loose focus
+                focusManager.clearFocus(true)
                 keyboard?.hide()
-                snackbarHostState.showSnackbar(errorMessage)
+                ConnectionLostScreen()
+
+            } else if (uiState.isLoading) {
+                Loading(color = Black05)
+            } else {
+                ComponentButton(
+                    text = stringResource(R.string.next),
+                    contColor = Black05,
+                    txtColor = Color.White,
+                    iconTint = Color.White,
+                    isTrailingIconButton = true,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(start = 32.dp, bottom = 32.dp),
+                    enabled = uiState.isAvailable
+                ) {
+                    onEvent(UsernameEvents.OnNextClick)
+                    navigateToRegisterScreen(textFieldState.username)
+                }
             }
-            //we can also define context using local properties ans then pass it in asString function
+
+        },
+        snackbarHost = {
+            DefinedSnackBarHost(hostState = snackBarHostState) {
+                keyboard?.hide()
+                onEvent(UsernameEvents.SnackBarShown)
+            }
         }
 
+    ) { paddingValues ->
+
+
+        UsernameContent(
+            modifier = Modifier.padding(paddingValues),
+            isUsernameError = uiState.isUsernameError,
+            onNextClick = {
+                scope.launch {
+                    if (uiState.isAvailable) {
+
+                        //to save username using datastore and then navigate to next screen
+                        onEvent(UsernameEvents.OnNextClick)
+                        navigateToRegisterScreen(textFieldState.username)
+
+                    }
+                }
+            },
+            onUsernameValueChange = { onEvent(UsernameEvents.OnUsernameValueChange(it)) },
+            username = textFieldState.username,
+            errorMessage = uiState.textFieldErrorMessage?.asString() ?: ""
+        )
+
+    }
+}
+
+@Composable
+fun UsernameContent(
+    modifier: Modifier,
+    onNextClick: () -> Unit,
+    onUsernameValueChange: (String) -> Unit,
+    username: String,
+    isUsernameError: Boolean,
+    errorMessage: String
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(32.dp)
+            .verticalScroll(rememberScrollState())
+
+    ) {
+
+        ComponentTextField(
+            label = stringResource(R.string.username),
+            modifier = Modifier,
+            value = username,
+            onValueChange = { onUsernameValueChange(it) },
+            leadingIconImageVector = Icons.Default.Person,
+            keyboardOptions = KeyboardOptions(
+                imeAction = androidx.compose.ui.text.input.ImeAction.Next,
+                keyboardType = KeyboardType.Password
+            ),
+            keyboardActions = KeyboardActions(onNext = {
+                onNextClick()
+            }),
+            showError = isUsernameError,
+            errorMessage = errorMessage,
+        )
+        Text(
+            modifier = Modifier.padding(top = 32.dp),
+            text = stringResource(id = R.string.validateUsernameError),
+            color = Black70,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.SemiBold
+        )
 
     }
 
 }
 
-//@Composable
-//fun SnackBarLayout(
-//    message: String,
-//    onEvent: (UsernameEvents) -> Unit
-//) {
-//    Snackbar(
-//        modifier = Modifier
-//            .wrapContentSize(align = Alignment.BottomCenter)
-//            .padding(16.dp),
-//        action = {
-//            onEvent(UsernameEvents.snackbarShown)
-//        },
-//        containerColor = orange,
-//        contentColor = Color.White
-//    ) {
-//        Text(
-//            text = message,
-//            style = MaterialTheme.typography.bodyLarge,
-//        )
-//    }
-//}
+
+

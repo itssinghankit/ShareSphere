@@ -2,11 +2,7 @@ package com.example.sharesphere.presentation.screens.authentication.username
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
@@ -14,9 +10,8 @@ import com.example.sharesphere.domain.use_case.username.CheckAvailabilityUseCase
 import com.example.sharesphere.domain.use_case.username.GetUsernameDataStoreUseCase
 import com.example.sharesphere.domain.use_case.username.SaveUsernameDatastoreUseCase
 import com.example.sharesphere.domain.use_case.username.UsernameValidationUseCase
-import com.example.sharesphere.presentation.navigation.NavigationActions
 import com.example.sharesphere.util.ApiResponse
-import com.example.sharesphere.util.TextFieldValidation
+import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -26,11 +21,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class UsernameViewModel @Inject constructor(
+    networkMonitor: NetworkMonitor,
     private val checkAvailabilityUseCase: CheckAvailabilityUseCase,
     private val usernameValidationUseCase: UsernameValidationUseCase,
     private val saveUsernameDatastoreUseCase: SaveUsernameDatastoreUseCase,
@@ -70,62 +65,51 @@ class UsernameViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UsernameState())
     val uiState: StateFlow<UsernameState> = _uiState.asStateFlow()
 
-    //navigation flow
-    private val _navigationEvents = mutableStateOf<NavigationActions?>(null)
-    val navigationEvents: State<NavigationActions?> = _navigationEvents
-
-    //textfeild states
-    var username by mutableStateOf("")
+    var textFieldState = mutableStateOf(UsernameTextFieldState())
         private set
 
-    //lateinit
     private var serverJob: Job? = null
 
-    val usernameHasLocalError by derivedStateOf {
-        TextFieldValidation.isUsernameValid(username)
-    }
-
+    val networkState = networkMonitor.networkState
 
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     fun onEvent(event: UsernameEvents) {
         when (event) {
-            is UsernameEvents.onNextClick -> {
+            is UsernameEvents.OnNextClick -> {
+
+                //TODO : remove datastore class use case
                 //to save username in datastore
                 viewModelScope.launch {
-                    saveUsernameDatastoreUseCase(event.username)
+                    saveUsernameDatastoreUseCase(textFieldState.value.username)
                 }
 
                 //we can also use event.username which pass the username from compose screen but it
-                //is not good to do as it first take username from viewmodel and thena again return
+                //is not good to do as it first take username from viewmodel and then again return
                 //it to this event present in viewmodel, so it not make any sense to rotate the data
-                Timber.d("hello3")
-//                _navigationEvents.value = NavigationActions.NavigateToAuthScreens.NavigateToRegister(event.username)
             }
 
-            is UsernameEvents.snackbarShown -> {
+            is UsernameEvents.SnackBarShown -> {
                 viewModelScope.launch {
                     delay(2000L)
                     _uiState.update {
-                        it.copy(showSnackBar = false)
+                        it.copy(textFieldErrorMessage = null)
                     }
                 }
             }
 
-            is UsernameEvents.onValueChange -> {
+            is UsernameEvents.OnUsernameValueChange -> {
                 //update the username state
-                username = event.username
+                textFieldState.value = textFieldState.value.copy(username = event.username)
 
                 _uiState.update {
-                    it.copy(isavailable = false)
+                    it.copy(isAvailable = false)
                 }
-
-                Timber.d(event.username)
 
                 //if user type quickly then validation and network call is not done frequently
                 serverJob?.cancel()
                 serverJob = viewModelScope.launch {
                     delay(500L)
-                    checkUsername(username.lowercase())
+                    checkUsername(textFieldState.value.username.lowercase())
                 }
             }
         }
@@ -140,7 +124,7 @@ class UsernameViewModel @Inject constructor(
                     when (result) {
                         is ApiResponse.Loading -> {
                             _uiState.update { currentState ->
-                                currentState.copy(isLoading = true, isTextfieldError = false)
+                                currentState.copy(isLoading = true, isUsernameError = false)
                             }
                         }
 
@@ -152,10 +136,10 @@ class UsernameViewModel @Inject constructor(
                                     isTextfieldError = true
                                 }
                                 it.copy(
-                                    isavailable = result.data?.available ?: false,
+                                    isAvailable = result.data?.available ?: false,
                                     isLoading = false,
-                                    isTextfieldError = isTextfieldError,
-                                    textfieldErrorMessage = UiText.DynamicString(
+                                    isUsernameError = isTextfieldError,
+                                    textFieldErrorMessage = UiText.DynamicString(
                                         result.data?.message ?: ""
                                     )
                                 )
@@ -166,10 +150,8 @@ class UsernameViewModel @Inject constructor(
                             _uiState.update {
                                 it.copy(
                                     errorMessage = result.message ?: UiText.DynamicString(""),
-                                    showSnackBar = true,
-                                    isError = true,
                                     isLoading = false,
-                                    isavailable = false
+                                    isAvailable = false
                                 )
                             }
                         }
@@ -179,7 +161,7 @@ class UsernameViewModel @Inject constructor(
             } else {
                 _uiState.update {
                     it.copy(
-                        isTextfieldError = true, textfieldErrorMessage = UiText.StringResource(
+                        isUsernameError = true, textFieldErrorMessage = UiText.StringResource(
                             R.string.validateUsernameError
                         )
                     )

@@ -11,9 +11,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.MobileFriendly
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,12 +34,11 @@ import com.example.sharesphere.presentation.components.AuthTopBar
 import com.example.sharesphere.presentation.components.ComponentButton
 import com.example.sharesphere.presentation.components.ComponentTextField
 import com.example.sharesphere.presentation.components.ConnectionLostScreen
+import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.components.Loading
-import com.example.sharesphere.presentation.components.SnackBarLayout
 import com.example.sharesphere.presentation.ui.theme.Black05
-import com.example.sharesphere.presentation.ui.theme.blackbgbtn
+import com.example.sharesphere.presentation.ui.theme.Black70
 import com.example.sharesphere.util.NetworkMonitor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,41 +47,41 @@ fun MobileScreen(
     viewModel: MobileViewModel,
     onEvent: (MobileEvents) -> Unit,
     onBackClick: () -> Unit,
-    navigateToVerifyOtpScreen: () -> Unit,
+    navigateToVerifyOtpScreen: () -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
-    val snackbarHostState: SnackbarHostState = remember {
+    val snackBarHostState: SnackbarHostState = remember {
         SnackbarHostState()
     }
     val networkState by
-        viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
+    viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
     val keyboard = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val textFieldState by viewModel.textFieldState
 
-    //showing snackbar
+    //showing snackBar
     uiState.errorMessage?.let { errorMessage ->
-        val snackbarText = errorMessage.asString()
+        val snackBarText = errorMessage.asString()
         scope.launch {
-            snackbarHostState.showSnackbar(snackbarText)
+            snackBarHostState.showSnackbar(snackBarText)
         }
     }
 
-/*
-* why disposabele effect?
-* Only navigates once, even if uiState.navigate changes multiple times
-* Allows for cleanup actions to be performed before navigation, such as resetting the uiState.navigate flag
-* More flexible than LaunchedEffect
-*/
-    DisposableEffect(uiState.navigate ) {
+    /*
+    * why disposable effect?
+    * Only navigates once, even if uiState.navigate changes multiple times
+    * Allows for cleanup actions to be performed before navigation, such as resetting the uiState.navigate flag
+    * More flexible than LaunchedEffect
+    */
+    DisposableEffect(uiState.navigate) {
         if (uiState.navigate) {
 
             navigateToVerifyOtpScreen()
         }
         onDispose {
-            viewModel.changeNavigateToFalse()
+            onEvent(MobileEvents.onNavigationDone)
         }
     }
 
@@ -91,7 +92,7 @@ fun MobileScreen(
             AuthTopBar(
                 modifier = Modifier,
                 onBackClick = onBackClick,
-                mainTxt = "tell us your number",
+                mainTxt = stringResource(R.string.tell_us_your_number),
                 supportingTxt = stringResource(id = R.string.sharesphere_application)
             )
         },
@@ -106,8 +107,8 @@ fun MobileScreen(
                 Loading(color = Black05)
             } else {
                 ComponentButton(
-                    text = "Send OTP ",
-                    contColor = blackbgbtn,
+                    text = stringResource(R.string.send_otp),
+                    contColor = Black05,
                     txtColor = Color.White,
                     iconTint = Color.White,
                     isTrailingIconButton = true,
@@ -117,7 +118,7 @@ fun MobileScreen(
                         .padding(start = 32.dp, bottom = 32.dp),
                     enabled = !uiState.isMobileError && textFieldState.mobile.isNotEmpty()
                 ) {
-                    scope.launch(Dispatchers.IO) {
+                    scope.launch {
                         onEvent(MobileEvents.NextClicked)
                     }
                 }
@@ -125,14 +126,10 @@ fun MobileScreen(
 
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState, snackbar = {
-                SnackBarLayout(
-                    message = it.visuals.message
-                ) {
-                    keyboard?.hide()
-                    onEvent(MobileEvents.SnackBarShown)
-                }
-            })
+            DefinedSnackBarHost(hostState = snackBarHostState) {
+                keyboard?.hide()
+                onEvent(MobileEvents.SnackBarShown)
+            }
         }
 
     ) { paddingValues ->
@@ -142,7 +139,7 @@ fun MobileScreen(
             modifier = Modifier.padding(paddingValues),
             isMobileError = uiState.isMobileError,
             onNextClick = {
-                scope.launch(Dispatchers.IO) {
+                scope.launch {
                     if (!uiState.isMobileError && textFieldState.mobile.isNotEmpty()) {
                         keyboard?.hide()
                         onEvent(MobileEvents.NextClicked)
@@ -187,6 +184,14 @@ fun MobileContent(
             }),
             showError = isMobileError,
             errorMessage = stringResource(id = R.string.validateMobileError),
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 32.dp),
+            text = stringResource(R.string.otp_s_will_be_sent_to_this_number_and_registered_email),
+            color = Black70,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.SemiBold
         )
 
     }

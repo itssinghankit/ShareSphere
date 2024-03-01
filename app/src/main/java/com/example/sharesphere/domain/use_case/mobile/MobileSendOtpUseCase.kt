@@ -8,8 +8,11 @@ import com.example.sharesphere.domain.model.MobileModel
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.UiText
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import okhttp3.Dispatcher
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -35,6 +38,7 @@ class MobileSendOtpUseCase @Inject constructor(private val authRepositoryImpleme
             Timber.d("$e")
             emit(ApiResponse.Error(UiText.DynamicString("Check your Internet")))
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
 }
+//TODO : added flow on for background thread calling

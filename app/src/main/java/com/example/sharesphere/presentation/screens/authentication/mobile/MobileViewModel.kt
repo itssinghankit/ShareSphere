@@ -11,11 +11,12 @@ import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,17 +35,21 @@ class MobileViewModel @Inject constructor(
 
     val networkState = networkMonitor.networkState
 
+    //for not validating again and again with each typed character
+    private var serverJob: Job? = null
+
     fun onEvent(event: MobileEvents) {
         when (event) {
             is MobileEvents.MobileOnValueChange -> {
                 textFieldState.value = textFieldState.value.copy(mobile = event.mobile)
 
-                viewModelScope.launch(Dispatchers.IO) {
+                serverJob?.cancel()
+                serverJob = viewModelScope.launch(Dispatchers.IO) {
                     _uiState.update {
+                        delay(500L)
                         it.copy(isMobileError = !mobileValidationUseCase(event.mobile))
                     }
                 }
-                //TODO: add job cancellation code
             }
 
             is MobileEvents.SnackBarShown -> {
@@ -61,17 +66,18 @@ class MobileViewModel @Inject constructor(
                     sendOtp(textFieldState.value.mobile)
                 }
             }
-        }
 
-    }
-
-    fun changeNavigateToFalse() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update {
-                it.copy(navigate = false)
+            is MobileEvents.onNavigationDone -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _uiState.update {
+                        it.copy(navigate = false)
+                    }
+                }
             }
         }
+
     }
+
 
     private fun sendOtp(mobile: String) {
 
@@ -88,13 +94,8 @@ class MobileViewModel @Inject constructor(
                         _uiState.update {
 //                            val success = result.data?.success ?: false
                             it.copy(
-//                                isError = !success,
                                 navigate = true,
                                 isLoading = false,
-//                                errorMessage = UiText.DynamicString(
-//                                    result.data?.message ?: ""
-//                                ),
-//                                showSnackBar = !success
                             )
                         }
                     }
@@ -103,8 +104,6 @@ class MobileViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 errorMessage = result.message ?: UiText.DynamicString(""),
-//                                showSnackBar = true,
-//                                isError = true,
                                 isLoading = false
                             )
                         }

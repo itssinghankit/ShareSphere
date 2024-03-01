@@ -124,7 +124,7 @@ dependencies {
 
 
     //compose preview
-    debugImplementation "androidx.compose.ui:ui-tooling-preview:1.6.1"
+    debugImplementation "androidx.compose.ui:ui-tooling-preview:1.6.2"
 
     //compose constraint layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"

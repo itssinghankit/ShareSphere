@@ -29,7 +29,7 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
-        startDestination = ScreenSealedClass.AuthScreens.MobileScreen.route
+        startDestination = ScreenSealedClass.AuthScreens.route
     ) {
 
         ////////////////
@@ -77,7 +77,9 @@ fun App(mainNavController: NavHostController,navigator: Navigator) {
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.UsernameScreen.route) {
                 val viewmodel: UsernameViewModel = hiltViewModel()
-                UsernameScreen(viewmodel, viewmodel::onEvent, navigator)
+                UsernameScreen(viewModel=viewmodel, onEvent = viewmodel::onEvent, onBackClick = {mainNavController.popBackStack()}){
+                    navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToRegister(it))
+                }
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route){
                 val viewModel:MobileViewModel= hiltViewModel()

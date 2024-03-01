@@ -49,7 +49,6 @@ import com.example.sharesphere.presentation.components.SnackBarLayout
 import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.Black05
 import com.example.sharesphere.presentation.ui.theme.Black13
-import com.example.sharesphere.presentation.ui.theme.blackbgbtn
 import com.example.sharesphere.presentation.ui.theme.silvertxt
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.Dispatchers
@@ -253,7 +252,7 @@ fun VerifyOtpScreen(
             } else {
                 ComponentButton(
                     text = "Continue ",
-                    contColor = blackbgbtn,
+                    contColor = Black05,
                     txtColor = Color.White,
                     iconTint = Color.White,
                     isTrailingIconButton = true,

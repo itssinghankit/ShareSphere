@@ -14,7 +14,7 @@ val linecolor = Color(0xFFD2D2D2)
 val transparentblack = Color(0x80000000)
 
 //
-val blackbgbtn = Color(0xFF0D0D0D)
+
 val greydisbledbtn = Color(0xFF8A8A8A)
 val greydividerback = Color(0xFFCCCCCC)
 val greytxt = Color(0xFF6E6E6E)
