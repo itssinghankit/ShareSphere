@@ -310,15 +310,6 @@ fun VerifyOtpScreen(
                 snackbarHostState.showSnackbar("snackbarText")
             }
         }
-
-//        if (state.showSnackBar) {
-//            val errorMessage = state.errorMessage?.asString() ?: ""
-//            LaunchedEffect(key1 = state.showSnackBar) {
-//                keyboard?.hide()
-//                snackBarHostState.showSnackbar(errorMessage)
-//            }
-//        }
-
     }
 }
 

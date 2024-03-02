@@ -1,5 +1,6 @@
 package com.example.sharesphere.presentation.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.MaterialTheme
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.sharesphere.presentation.screens.authentication.mobile.MobileEvents
@@ -46,12 +48,14 @@ fun DefinedSnackBarHost(
         Snackbar(
             modifier = modifier
                 .wrapContentSize(align = Alignment.BottomCenter)
-                .padding(vertical = 16.dp),
+                .padding(bottom = 32.dp),
             action = { action() },
         ) {
             Text(
+                modifier= Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 text = it.visuals.message,
                 style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
             )
         }
 

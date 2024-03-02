@@ -2,7 +2,7 @@ package com.example.sharesphere.repository
 
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.data.remote.ShareSphereApi
-import com.example.sharesphere.models.SigninRequest
+import com.example.sharesphere.data.remote.dto.SignInRequestDto
 import com.example.sharesphere.models.SigninResponse
 import com.example.sharesphere.util.UiText
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +18,7 @@ class SigninRepository @Inject constructor(private val retrofitInterface: ShareS
     suspend fun singin(email: String, password: String) {
         _signinResponseFlow.emit(ApiResponse.Loading())
         try {
-            val response = retrofitInterface.signin(SigninRequest(email, password))
+            val response = retrofitInterface.signIn(SignInRequestDto(email, password))
             if (response.isSuccessful && response.body() != null) {
                 _signinResponseFlow.emit(ApiResponse.Success(response.body()!!))
                 Timber.tag("meow").d("hello " + response.body())

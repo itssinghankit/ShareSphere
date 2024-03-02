@@ -1,6 +1,7 @@
 package com.example.sharesphere.data.repository.datastore
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -9,7 +10,6 @@ import com.example.sharesphere.domain.repository.DataStoreRepositoryInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 
 class DataStoreRepositoryImplementation @Inject constructor(private val context: Context) :
@@ -17,7 +17,7 @@ class DataStoreRepositoryImplementation @Inject constructor(private val context:
 
     private val Context.datastore by preferencesDataStore("datastore")
 
-    override suspend fun get(preferencesKeys: PreferencesKeys): Flow<String?> =
+    override suspend fun getString(preferencesKeys: PreferencesKeys): Flow<String?> =
         context.datastore.data.catch {
             if (this is Exception) {
                 emit(emptyPreferences())
@@ -25,7 +25,18 @@ class DataStoreRepositoryImplementation @Inject constructor(private val context:
             }
         }.map { preference ->
             val datastoreKey = stringPreferencesKey(preferencesKeys.key)
-            preference[datastoreKey]?:""
+            preference[datastoreKey] ?: ""
+        }
+
+    override suspend fun getBoolean(preferencesKeys: PreferencesKeys): Flow<Boolean?> =
+        context.datastore.data.catch {
+            if (this is Exception) {
+                emit(emptyPreferences())
+
+            }
+        }.map { preference ->
+            val datastoreKey = booleanPreferencesKey(preferencesKeys.key)
+            preference[datastoreKey] ?: false
         }
 
     override suspend fun save(preferencesKeys: PreferencesKeys, value: String) {
@@ -34,6 +45,14 @@ class DataStoreRepositoryImplementation @Inject constructor(private val context:
             preference[datastoreKey] = value
         }
     }
+
+    override suspend fun save(preferencesKeys: PreferencesKeys, value: Boolean) {
+        val datastoreKey = booleanPreferencesKey(preferencesKeys.key)
+        context.datastore.edit { preference ->
+            preference[datastoreKey] = value
+        }
+    }
+
 }
 
 

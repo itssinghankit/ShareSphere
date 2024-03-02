@@ -36,7 +36,7 @@ class MobileSendOtpUseCase @Inject constructor(private val authRepositoryImpleme
 
         }catch(e:IOException){
             Timber.d("$e")
-            emit(ApiResponse.Error(UiText.DynamicString("Check your Internet")))
+            emit(ApiResponse.Error(UiText.StringResource(R.string.internetError)))
         }
     }.flowOn(Dispatchers.IO)
 

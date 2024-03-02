@@ -87,7 +87,7 @@ class RegisterViewModel @Inject constructor(
 
             }
 
-            is RegisterEvents.onNextClick -> {
+            is RegisterEvents.OnNextClick -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     saveRegisterDataStoreUseCase(
                         textFieldStates.value.email,

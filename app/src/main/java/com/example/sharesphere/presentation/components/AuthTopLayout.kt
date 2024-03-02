@@ -87,7 +87,8 @@ fun AuthTopBar(
     modifier: Modifier,
     onBackClick: () -> Unit,
     mainTxt: String,
-    supportingTxt: String
+    supportingTxt: String,
+    showBackButton:Boolean=true
 ) {
    Surface{
        ConstraintLayout(
@@ -97,24 +98,26 @@ fun AuthTopBar(
        ) {
            val (button, text, subtext, divider) = createRefs()
 
-           OutlinedIconButton(
-               modifier = Modifier
-                   .size(32.dp)
-                   .constrainAs(button) {
-                       top.linkTo(parent.top, margin = 32.dp)
-                       start.linkTo(parent.start, margin = 32.dp)
-                   },
-               onClick = onBackClick,
-               shape = RectangleShape,
-               border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
-           ) {
-               Icon(
-                   modifier = Modifier.size(18.dp),
-                   imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                   contentDescription = null,
-                   tint = MaterialTheme.colorScheme.onSurfaceVariant
-               )
+           if(showBackButton){
+               OutlinedIconButton(
+                   modifier = Modifier
+                       .size(32.dp)
+                       .constrainAs(button) {
+                           top.linkTo(parent.top, margin = 32.dp)
+                           start.linkTo(parent.start, margin = 32.dp)
+                       },
+                   onClick = onBackClick,
+                   shape = RectangleShape,
+                   border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
+               ) {
+                   Icon(
+                       modifier = Modifier.size(18.dp),
+                       imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                       contentDescription = null,
+                       tint = MaterialTheme.colorScheme.onSurfaceVariant
+                   )
 
+               }
            }
            Text(
                modifier = Modifier.constrainAs(subtext) {

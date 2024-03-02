@@ -7,6 +7,7 @@
     <string name="validateCPasswordError">Both passwords should match</string>
     <string name="validateUsernameError">Must contain Lowercase letters or Numbers with Minimum length 3</string>
     <string name="validateMobileError">Must be a valid 10 digit Number</string>
+    <string name="internetError">Check your Internet</string>
 
 
     //usernameScreen response

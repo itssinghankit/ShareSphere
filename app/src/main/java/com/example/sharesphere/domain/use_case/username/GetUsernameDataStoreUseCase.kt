@@ -8,7 +8,7 @@ import javax.inject.Inject
 class GetUsernameDataStoreUseCase @Inject constructor(private val dataStoreRepositoryInterface: DataStoreRepositoryInterface) {
 
     suspend fun getUsernameDataStore(): Flow<String?> {
-       return dataStoreRepositoryInterface.get(PreferencesKeys.Username)
+       return dataStoreRepositoryInterface.getString(PreferencesKeys.Username)
     }
 
 }
