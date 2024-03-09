@@ -43,6 +43,7 @@ import com.example.sharesphere.presentation.components.Loading
 import com.example.sharesphere.presentation.ui.theme.Black05
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 //TODO: fast typing send otp enable button
 
@@ -122,7 +123,6 @@ fun RegisterScreen(
                     enabled = !isError
                 ) {
                     onEvent(RegisterEvents.OnNextClick)
-                    navigateToMobileScreen()
                 }
             }
 

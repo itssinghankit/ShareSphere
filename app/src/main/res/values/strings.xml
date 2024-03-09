@@ -37,4 +37,7 @@
     <string name="tell_us_your_number">tell us your number</string>
     <string name="send_otp">"Send OTP "</string>
     <string name="otp_s_will_be_sent_to_this_number_and_registered_email">OTP\'s will be sent to this Number and Registered Email</string>
+    <string name="signin_to_continue">signin to continue</string>
+    <string name="don_t_have_an_account">"Don't have an account ? "</string>
+    <string name="forgot_password">Forgot Password ?</string>
 </resources>

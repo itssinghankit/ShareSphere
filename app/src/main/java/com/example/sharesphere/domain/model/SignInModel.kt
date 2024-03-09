@@ -1,8 +1,5 @@
 package com.example.sharesphere.domain.model
 
-import com.example.sharesphere.data.remote.dto.User
-import com.google.gson.annotations.SerializedName
-
 data class SignInModel(
     val _id: String,
     val avatar: String,
@@ -13,7 +10,7 @@ data class SignInModel(
     val gender: String,
     val isDetailsFilled: Boolean,
     val isVerified: Boolean,
-    val mobile: String,
+    val mobile: Long,
     val username: String,
     val accessToken: String,
     val refreshToken: String

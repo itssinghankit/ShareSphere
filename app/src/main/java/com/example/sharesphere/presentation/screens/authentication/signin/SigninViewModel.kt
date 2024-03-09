@@ -1,6 +1,7 @@
 package com.example.sharesphere.presentation.screens.authentication.signin
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.domain.model.SignInModel
@@ -28,7 +29,8 @@ class SigninViewModel @Inject constructor(
     private val emailValidationUseCase: EmailValidationUseCase,
     private val passwordValidationUseCase: PasswordValidationUseCase,
     private val signInUseCase: SignInUseCase,
-    private val saveUserDataStoreUseCase: SaveUserDataStoreUseCase
+    private val saveUserDataStoreUseCase: SaveUserDataStoreUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignInStates())

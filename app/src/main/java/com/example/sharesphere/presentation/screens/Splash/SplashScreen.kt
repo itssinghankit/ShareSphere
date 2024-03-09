@@ -23,11 +23,7 @@ import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
 import kotlinx.coroutines.delay
 
-//@Preview
-//@Composable
-//fun A() {
-//    SplashScreen(navigator = Navigator(rememberNavController()))
-//}
+
 @Composable
 fun SplashScreen(navigator: Navigator) {
     LaunchedEffect(key1 = Unit) {

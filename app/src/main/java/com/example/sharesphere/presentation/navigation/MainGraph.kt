@@ -21,6 +21,7 @@ import com.example.sharesphere.presentation.screens.authentication.username.User
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpScreen
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpViewModel
+import com.example.sharesphere.presentation.screens.user.home.HomeScreen
 import com.example.sharesphere.presentation.ui.screens.home.LandingScreen
 import com.example.sharesphere.util.composeAnimatedSlide
 
@@ -30,20 +31,16 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
-        startDestination = ScreenSealedClass.AuthScreens.route
+        startDestination = ScreenSealedClass.SplashScreen.route
     ) {
 
-        ////////////////
+        //Testing///////////////////////////////////////////////////////////////////////////////////
 
         composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route) {
-
             val viewModel: VerifyOtpViewModel = hiltViewModel()
             VerifyOtpScreen(viewModel = viewModel, onEvent = viewModel::onEvent, onBackClick = {})
-//            VerifyOtpScreen(viewModel,viewModel::onEvent,navigator)
-//            AuthTopLayout(Modifier,{},"enter your otp","SHARESPHERE APPLICATION")
         }
 
-        ////////////////
 
         composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route) {
             val viewModel: MobileViewModel = hiltViewModel()
@@ -57,11 +54,16 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
             }
         }
 
-        ////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////
+
+        //Splash Screen
 
         composeAnimatedSlide(route = ScreenSealedClass.SplashScreen.route) {
             SplashScreen(navigator)
         }
+
+        //Auth Screens
+
         navigation(
             startDestination = ScreenSealedClass.AuthScreens.SigninScreen.route,
             route = ScreenSealedClass.AuthScreens.route
@@ -75,7 +77,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                     onBackClick = { mainNavController.popBackStack() },
                     navigateToForgetPasswordScreen = {},
                     navigateToUsernameScreen = { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToUsername) }) {
-
+                    navigator.onAction(NavigationActions.NavigateToUserScreens)
                 }
             }
             composeAnimatedSlide("${ScreenSealedClass.AuthScreens.RegisterScreen.route}/{username}",
@@ -106,7 +108,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 MobileScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() }) { navigator.onAction(com.example.sharesphere.presentation.navigation.NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp) }
+                    onBackClick = { mainNavController.popBackStack() }) { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp) }
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route) {
                 val viewModel: VerifyOtpViewModel = hiltViewModel()
@@ -114,12 +116,18 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
             }
 
         }
+
+        //User Screens
+
         navigation(
-            startDestination = ScreenSealedClass.UserScreens.LandingScreen.route,
+            startDestination = ScreenSealedClass.UserScreens.HomeScreen.route,
             route = ScreenSealedClass.UserScreens.route
         ) {
             composeAnimatedSlide(ScreenSealedClass.UserScreens.LandingScreen.route) {
                 LandingScreen(navController = mainNavController)
+            }
+            composeAnimatedSlide(ScreenSealedClass.UserScreens.HomeScreen.route) {
+                HomeScreen()
             }
         }
 

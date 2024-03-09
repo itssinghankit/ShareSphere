@@ -1,4 +1,4 @@
-package com.example.sharesphere.data.remote.dto
+package com.example.sharesphere.data.remote.dto.error
 
 data class ServerErrorDto(
     val `data`: Any,

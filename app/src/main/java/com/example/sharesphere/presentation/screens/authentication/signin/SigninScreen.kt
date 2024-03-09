@@ -49,168 +49,10 @@ import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.components.Loading
 import com.example.sharesphere.presentation.ui.theme.Black05
 import com.example.sharesphere.presentation.ui.theme.Black13
-import com.example.sharesphere.presentation.ui.theme.Violet20
 import com.example.sharesphere.presentation.ui.theme.Violet40
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
 
-
-//@Composable
-//fun SigninScreen(navController: NavController,navigator: Navigator) {
-//    var email by rememberSaveable { mutableStateOf("") }
-//    var password by rememberSaveable { mutableStateOf("") }
-//    var isEmailValid by rememberSaveable { mutableStateOf(true) }
-//    var isPasswordValid by rememberSaveable { mutableStateOf(true) }
-//    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
-//
-//    val signinViewModel: SigninViewModel = hiltViewModel()
-//    val signinResponse = signinViewModel.signinResponse.collectAsState()
-//
-//    val focusManager = LocalFocusManager.current
-////    var scrollState = rememberScrollStatec
-//
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(orangebg)
-//            .verticalScroll(rememberScrollState()),
-//        contentAlignment = Alignment.BottomStart
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .padding(24.dp)
-//                .fillMaxWidth()
-//        ) {
-//            Text(
-//                text = "Sign in",
-//                color = orange,
-//                fontSize = 32.sp,
-//                fontFamily = FontFamily(Font(R.font.lato_black))
-//            )
-//            Text(
-//                text = "Please sign in to continue",
-//                color = Black13,
-//                modifier = Modifier.padding(top = 8.dp),
-//                fontSize = 20.sp,
-//                fontFamily = FontFamily(Font(R.font.lato_regular))
-//            )
-//            ComponentTextField(
-//                label = "Email",
-//                modifier = Modifier.padding(top = 64.dp),
-//                value = email,
-//                onValueChange = { email = it },
-//                leadingIconImageVector = Icons.Default.Email,
-//                keyboardOptions = KeyboardOptions(
-//                    keyboardType = KeyboardType.Email,
-//                    imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-//                showError = !isEmailValid,
-//                errorMessage = stringResource(id = R.string.validateEmailError)
-//            )
-//            ComponentTextField(
-//                label = "Password",
-//                modifier = Modifier.padding(top = 16.dp),
-//                value = password,
-//                onValueChange = { password = it },
-//                leadingIconImageVector = Icons.Default.Password,
-//                isPasswordVisible = isPasswordVisible,
-//                isPasswordField = true,
-//                keyboardOptions = KeyboardOptions(
-//                    keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
-//                ),
-//                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
-//                showError = !isPasswordValid,
-//                errorMessage = stringResource(id = R.string.validatePasswordError),
-//                onVisibilityChange = { isPasswordVisible = it }
-//
-//            )
-//            Text(
-//                text = "Forgot Password ?",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 16.dp)
-//                    .clickable { },
-//                textAlign = TextAlign.End,
-//                fontSize = 18.sp,
-//                fontFamily = FontFamily(Font(R.font.lato_bold)),
-//                color = Color.Black
-//            )
-//            Spacer(modifier = Modifier.height(72.dp))
-//            when (signinResponse.value) {
-//
-//                is ApiResponse.Loading -> {
-//                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth(1f)) {
-//                        CircularProgressIndicator(
-//                            modifier = Modifier
-//                                .width(40.dp),
-//                            color = orangebg,
-//                            trackColor = orange,
-//
-//                            )
-//                    }
-//                }
-//
-//                is ApiResponse.Error -> {
-//                    ComponentButton(
-//                        text = "Sign in",
-//                        contColor = orange,
-//                        txtColor = Color.White,
-//                        onclick = {
-//                            isEmailValid = TextFieldValidation.isEmailValid(email)
-//                            isPasswordValid = TextFieldValidation.isPasswordValid(password)
-//                            if (isEmailValid && isPasswordValid) {
-//                                signinViewModel.signin(email, password)
-//                            }
-//                        }
-//                    )
-//                }
-//
-//                is ApiResponse.Success -> {
-//                    navController.navigate(ScreenSealedClass.AuthScreens.SigninScreen.route)
-//                }
-//            }
-//
-//            Divider(
-//                thickness = 1.dp,
-//                color = linecolor,
-//                modifier = Modifier.padding(top = 16.dp, bottom = 40.dp)
-//            )
-//            ComponentButton(
-//                text = "Continue with Google",
-//                contColor = Color.Black,
-//                txtColor = Color.White,
-//                isLeadingIconButton = true,
-//                icon = R.drawable.google_logo,
-//                onclick = {
-//
-//                }
-//            )
-//
-//            Row(
-//                horizontalArrangement = Arrangement.Center,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 64.dp)
-//
-//            ) {
-//                Text(
-//                    text = "Don't have an account ? ", color = Color.Black,
-//                    fontFamily = FontFamily(Font(R.font.lato_regular)),
-//                    fontSize = 18.sp
-//                )
-//                Text(
-//                    text = stringResource(R.string.create_one),
-//                    color = orange,
-//                    fontFamily = FontFamily(Font(R.font.lato_bold)),
-//                    modifier = Modifier.clickable { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToUsername) },
-//                    fontSize = 18.sp
-//                )
-//            }
-//        }
-//    }
-//
-//}
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
@@ -274,7 +116,7 @@ fun SignInScreen(
             AuthTopBar(
                 modifier = Modifier,
                 onBackClick = onBackClick,
-                mainTxt = "signin to continue",
+                mainTxt = stringResource(R.string.signin_to_continue),
                 supportingTxt = stringResource(id = R.string.sharesphere_application),
                 showBackButton = false
             )
@@ -289,7 +131,10 @@ fun SignInScreen(
                 },
                 isLoading = uiState.isLoading,
                 isError = isError,
-                onSignInClick = { onEvent(SignInEvents.OnNextClick) },
+                onSignInClick = {
+                    keyboard?.hide()
+                    onEvent(SignInEvents.OnNextClick)
+                },
                 onCreateOneClick = { navigateToUsernameScreen() }
             )
         },
@@ -302,7 +147,7 @@ fun SignInScreen(
 
     ) { paddingValues ->
 
-        SigninContent(
+        SignInContent(
             modifier = Modifier.padding(paddingValues),
             isEmailError = uiState.isEmailError,
             isPasswordError = uiState.isPasswordError,
@@ -330,69 +175,7 @@ fun SignInScreen(
 }
 
 @Composable
-private fun BottomBar(
-    isNetworkAvailable: Boolean,
-    onNetworkNotAvailable: () -> Unit,
-    isLoading: Boolean,
-    isError: Boolean,
-    onCreateOneClick: () -> Unit,
-    onSignInClick: () -> Unit
-) {
-    if (!isNetworkAvailable) {
-        onNetworkNotAvailable()
-        ConnectionLostScreen()
-
-    } else {
-        Column {
-            if (isLoading) {
-                Loading(color = Black05)
-            } else {
-                ComponentButton(
-                    text = stringResource(R.string.sign_in),
-                    contColor = Black05,
-                    txtColor = Color.White,
-                    iconTint = Color.White,
-                    isTrailingIconButton = true,
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp),
-                    enabled = !isError
-                ) {
-                    onSignInClick()
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 32.dp, end = 32.dp, top = 40.dp, bottom = 32.dp)
-
-            ) {
-                Text(
-                    text = "Don't have an account ? ",
-                    color = Black13,
-                    style = MaterialTheme.typography.titleSmall,
-                )
-                Text(
-                    text = stringResource(R.string.create_one),
-                    color = Violet40,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.clickable { onCreateOneClick() }
-
-                )
-            }
-
-        }
-
-
-    }
-}
-
-
-@Composable
-fun SigninContent(
+fun SignInContent(
     modifier: Modifier,
     onNextClick: () -> Unit,
     onEmailValueChange: (String) -> Unit,
@@ -461,7 +244,7 @@ fun SigninContent(
                 .clickable {
                     onForgetPasswordClicked()
                 },
-            text = "Forgot Password ?",
+            text = stringResource(R.string.forgot_password),
             color = Black13,
             style = MaterialTheme.typography.titleSmall,
             textAlign = TextAlign.End
@@ -471,7 +254,66 @@ fun SigninContent(
 
 }
 
+@Composable
+private fun BottomBar(
+    isNetworkAvailable: Boolean,
+    onNetworkNotAvailable: () -> Unit,
+    isLoading: Boolean,
+    isError: Boolean,
+    onCreateOneClick: () -> Unit,
+    onSignInClick: () -> Unit
+) {
+    if (!isNetworkAvailable) {
+        onNetworkNotAvailable()
+        ConnectionLostScreen()
 
+    } else {
+        Column {
+            if (isLoading) {
+                Loading(color = Black05)
+            } else {
+                ComponentButton(
+                    text = stringResource(R.string.sign_in),
+                    contColor = Black05,
+                    txtColor = Color.White,
+                    iconTint = Color.White,
+                    isTrailingIconButton = true,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp),
+                    enabled = !isError
+                ) {
+                    onSignInClick()
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp, end = 32.dp, top = 40.dp, bottom = 32.dp)
+
+            ) {
+                Text(
+                    text = stringResource(R.string.don_t_have_an_account),
+                    color = Black13,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                Text(
+                    text = stringResource(R.string.create_one),
+                    color = Violet40,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.clickable { onCreateOneClick() }
+
+                )
+            }
+
+        }
+
+
+    }
+}
 
 
 

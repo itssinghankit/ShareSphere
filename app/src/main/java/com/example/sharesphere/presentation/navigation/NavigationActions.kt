@@ -11,4 +11,8 @@ sealed class NavigationActions{
     }
 
     object NavigateBack:NavigationActions()
+
+    object NavigateToUserScreens:NavigationActions(){
+        object NavigateToHome:NavigationActions()
+    }
 }

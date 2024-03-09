@@ -1,4 +1,4 @@
-package com.example.sharesphere.data.remote.dto
+package com.example.sharesphere.data.remote.dto.username
 
 import com.example.sharesphere.domain.model.UsernameModel
 

@@ -1,4 +1,4 @@
-package com.example.sharesphere.data.remote.dto
+package com.example.sharesphere.data.remote.dto.mobile
 
 import com.example.sharesphere.domain.model.MobileModel
 

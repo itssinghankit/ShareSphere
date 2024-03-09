@@ -15,6 +15,7 @@ sealed class ScreenSealedClass(val route:String) {
 
     object UserScreens : ScreenSealedClass("user"){
         object LandingScreen : ScreenSealedClass("landing_screen")
+        object HomeScreen:ScreenSealedClass("home_screen")
     }
 
 }

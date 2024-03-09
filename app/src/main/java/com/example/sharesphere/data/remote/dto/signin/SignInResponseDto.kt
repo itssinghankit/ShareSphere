@@ -1,6 +1,4 @@
-package com.example.sharesphere.data.remote.dto
-
-import com.example.sharesphere.domain.model.SignInModel
+package com.example.sharesphere.data.remote.dto.signin
 
 data class SignInResponseDto(
     val `data`: SignInData,

@@ -1,6 +1,6 @@
 package com.example.sharesphere.data.mapper
 
-import com.example.sharesphere.data.remote.dto.SignInResponseDto
+import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
 import com.example.sharesphere.domain.model.SignInModel
 
 fun SignInResponseDto.toSignInModel(): SignInModel {

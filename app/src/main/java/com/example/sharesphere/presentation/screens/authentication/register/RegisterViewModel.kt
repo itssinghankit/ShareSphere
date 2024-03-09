@@ -1,19 +1,27 @@
 package com.example.sharesphere.presentation.screens.authentication.register
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sharesphere.domain.model.RegisterModel
 import com.example.sharesphere.domain.use_case.register.CPasswordValidationUseCase
 import com.example.sharesphere.domain.use_case.register.EmailValidationUseCase
 import com.example.sharesphere.domain.use_case.register.PasswordValidationUseCase
+import com.example.sharesphere.domain.use_case.register.RegisterUseCase
 import com.example.sharesphere.domain.use_case.register.SaveRegisterDataStoreUseCase
+import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.NetworkMonitor
+import com.example.sharesphere.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -23,29 +31,34 @@ class RegisterViewModel @Inject constructor(
     private val emailValidationUseCase: EmailValidationUseCase,
     private val passwordValidationUseCase: PasswordValidationUseCase,
     private val cPasswordValidationUseCase: CPasswordValidationUseCase,
-    private val saveRegisterDataStoreUseCase: SaveRegisterDataStoreUseCase
+    private val saveRegisterDataStoreUseCase: SaveRegisterDataStoreUseCase,
+    private val registerUseCase: RegisterUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterStates())
     val uiState: StateFlow<RegisterStates> = _uiState
 
-    //textfield states
     var textFieldStates = mutableStateOf(RegisterTextFieldStates())
         private set
 
     val networkState = networkMonitor.networkState
 
+    var validationJob: Job? = null
+
 
     fun onEvents(event: RegisterEvents) {
         when (event) {
             is RegisterEvents.OnEmailValueChange -> {
-                Timber.d("email section ${event.email}")
-                val updatedEmail = event.email
-                textFieldStates.value = textFieldStates.value.copy(email = updatedEmail)
+                textFieldStates.value = textFieldStates.value.copy(email = event.email)
 
                 //email validation
-                _uiState.update {
-                    it.copy(isEmailError = !emailValidationUseCase(email = updatedEmail))
+                validationJob?.cancel()
+                validationJob = viewModelScope.launch(Dispatchers.IO) {
+                    delay(500L)
+                    _uiState.update {
+                        it.copy(isEmailError = !emailValidationUseCase(email = event.email))
+                    }
                 }
 
             }
@@ -56,16 +69,24 @@ class RegisterViewModel @Inject constructor(
                 val updatedCPassword = textFieldStates.value.cPassword
                 textFieldStates.value = textFieldStates.value.copy(password = updatedPassword)
 
-                //email validation
-                _uiState.update {
-                    it.copy(
-                        isPasswordError = !passwordValidationUseCase(updatedPassword),
-                        isCPasswordError = !cPasswordValidationUseCase(
-                            updatedPassword,
-                            updatedCPassword
-                        )
-                    )
+                //passwords validation
+                validationJob?.cancel()
+                validationJob = viewModelScope.launch(Dispatchers.IO) {
+                    delay(500L)
+                    _uiState.update {
+                        withContext(Dispatchers.Main) {
+                            it.copy(
+                                isPasswordError = !passwordValidationUseCase(updatedPassword),
+                                isCPasswordError = !cPasswordValidationUseCase(
+                                    updatedPassword,
+                                    updatedCPassword
+                                )
+                            )
+                        }
+
+                    }
                 }
+
 
             }
 
@@ -75,29 +96,35 @@ class RegisterViewModel @Inject constructor(
                 val updatedCPassword = event.cPassword
                 textFieldStates.value = textFieldStates.value.copy(cPassword = updatedCPassword)
 
-                //email validation
-                _uiState.update {
-                    it.copy(
-                        isCPasswordError = !cPasswordValidationUseCase(
-                            updatedPassword,
-                            updatedCPassword
-                        )
-                    )
+                //passwords validation
+                validationJob?.cancel()
+                validationJob = viewModelScope.launch(Dispatchers.IO) {
+                    delay(500L)
+                    _uiState.update {
+                        withContext(Dispatchers.Main) {
+                            it.copy(
+                                isCPasswordError = !cPasswordValidationUseCase(
+                                    updatedPassword,
+                                    updatedCPassword
+                                )
+                            )
+                        }
+
+                    }
                 }
 
             }
 
             is RegisterEvents.OnNextClick -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    saveRegisterDataStoreUseCase(
-                        textFieldStates.value.email,
-                        textFieldStates.value.password
-                    )
-                    //TODO : do the navigate state logic
-                    _uiState.update {
-                        it.copy(navigate = true)
-                    }
-                }
+
+                //taking username from previous screen
+                val username = savedStateHandle.get<String>("username") ?: ""
+                registerNetworkRequest(
+                    email = textFieldStates.value.email,
+                    password = textFieldStates.value.password,
+                    username = username
+                )
+
             }
 
             is RegisterEvents.onSnackBarShown -> {
@@ -118,14 +145,45 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
-//    val signupResponseFlow: StateFlow<ApiResponse<SignupResponse>>
-//        get() = signupRepository.signupResponseFlow
-//
-//
-//    fun signup(email: String, password: String) {
-//        viewModelScope.launch {
-//            signupRepository.signup(email, password)
-//        }
-//    }
+    private fun registerNetworkRequest(email: String, password: String, username: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            registerUseCase(email, password, username).collect { result ->
+                when (result) {
+                    is ApiResponse.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = result.message ?: UiText.DynamicString(""),
+                                isLoading = false
+                            )
+                        }
+                    }
+
+                    is ApiResponse.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true)
+                        }
+                    }
+
+                    is ApiResponse.Success -> {
+                        Timber.d(result.data.toString())
+                        saveRegisterDataStore(result.data!!)
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                navigate = true
+                            )
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun saveRegisterDataStore(data: RegisterModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            saveRegisterDataStoreUseCase(data)
+        }
+    }
 
 }

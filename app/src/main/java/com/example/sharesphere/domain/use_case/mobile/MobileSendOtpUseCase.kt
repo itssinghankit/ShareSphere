@@ -1,18 +1,15 @@
 package com.example.sharesphere.domain.use_case.mobile
 
 import com.example.sharesphere.R
-import com.example.sharesphere.data.remote.dto.ServerErrorDto
-import com.example.sharesphere.data.remote.dto.toMobileModel
+import com.example.sharesphere.data.remote.dto.mobile.toMobileModel
 import com.example.sharesphere.data.repository.AuthRepositoryImplementation
 import com.example.sharesphere.domain.model.MobileModel
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.UiText
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.Dispatcher
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
