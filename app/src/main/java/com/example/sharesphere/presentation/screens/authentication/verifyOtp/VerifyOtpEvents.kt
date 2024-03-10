@@ -6,5 +6,6 @@ sealed class VerifyOtpEvents() {
     data class onEmailOtpValueChange(val emailOtp:String):VerifyOtpEvents()
     object onSnackBarShown:VerifyOtpEvents()
     object onResendClicked:VerifyOtpEvents()
+    object onNavigationDone:VerifyOtpEvents()
 
 }

@@ -46,6 +46,10 @@ class Navigator(private val navController: NavController) {
                 navController.navigate(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route)
             }
 
+            is NavigationActions.NavigateToAuthScreens.NavigateToDetails->{
+                navController.navigate(ScreenSealedClass.AuthScreens.DetailsScreen.route)
+            }
+
 
             //User Screens
 

@@ -15,17 +15,19 @@ class ShareSphereInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
 
         val request = chain.request()
+        val requestBuilder=request.newBuilder()
         Timber.d("intercepted")
 
         if (request.headers["AddAuthorizationHeader"] == "true") {
             val token = runBlocking {
                 dataStoreRepositoryInterface.getString(PreferencesKeys.AccessToken).first()
+
             }
-            request.newBuilder().addHeader("Authorization", "Bearer $token")
+            Timber.d("$token")
+            requestBuilder.addHeader("Authorization", "Bearer $token")
 
         }
-        val removedAddAuthHeaderRequest =
-            request.newBuilder().removeHeader("AddAuthorizationHeader")
-        return chain.proceed(removedAddAuthHeaderRequest.build())
+        requestBuilder.removeHeader("AddAuthorizationHeader")
+        return chain.proceed(requestBuilder.build())
     }
 }

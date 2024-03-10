@@ -8,6 +8,8 @@ import com.example.sharesphere.data.remote.dto.register.RegisterResponseDto
 import com.example.sharesphere.data.remote.dto.signin.SignInRequestDto
 import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
 import com.example.sharesphere.data.remote.dto.username.UsernameResponseDto
+import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpRequestDto
+import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpResponseDto
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,5 +32,9 @@ class AuthRepositoryImplementation @Inject constructor(private val shareSphereAp
 
     override suspend fun register(registerRequestDto: RegisterRequestDto): RegisterResponseDto {
         return shareSphereApi.register(registerRequestDto)
+    }
+
+    override suspend fun verifyOtp(verifyOtpRequestDto: VerifyOtpRequestDto): VerifyOtpResponseDto {
+        return shareSphereApi.verifyOtp(verifyOtpRequestDto)
     }
 }

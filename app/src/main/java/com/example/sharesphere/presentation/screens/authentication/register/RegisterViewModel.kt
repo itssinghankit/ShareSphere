@@ -165,7 +165,7 @@ class RegisterViewModel @Inject constructor(
                     }
 
                     is ApiResponse.Success -> {
-                        Timber.d(result.data.toString())
+
                         saveRegisterDataStore(result.data!!)
                         _uiState.update {
                             it.copy(

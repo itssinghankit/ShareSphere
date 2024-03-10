@@ -7,6 +7,7 @@
     <string name="validateCPasswordError">Both passwords should match</string>
     <string name="validateUsernameError">Must contain Lowercase letters or Numbers with Minimum length 3</string>
     <string name="validateMobileError">Must be a valid 10 digit Number</string>
+    <string name="validateFullNameError">Must be a valid Name with Alphabets only</string>
     <string name="internetError">Check your Internet</string>
 
 
@@ -40,4 +41,8 @@
     <string name="signin_to_continue">signin to continue</string>
     <string name="don_t_have_an_account">"Don't have an account ? "</string>
     <string name="forgot_password">Forgot Password ?</string>
+    <string name="enter_your_otp_s">enter your otp\'s</string>
+    <string name="otp_sent_successfully">OTP Sent Successfully</string>
+    <string name="tell_us_your_details">tell us your details</string>
+    <string name="full_name">Full Name</string>
 </resources>

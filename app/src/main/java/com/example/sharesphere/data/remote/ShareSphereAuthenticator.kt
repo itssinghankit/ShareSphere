@@ -32,7 +32,7 @@ class ShareSphereAuthenticator @Inject constructor(
                 Timber.d("failed to refresh token")
                 dataStoreRepositoryInterface.deleteString(PreferencesKeys.RefreshToken)
             }
-//testing git
+
             accessToken?.let {
 
                 Timber.d(accessToken)
@@ -59,6 +59,7 @@ class ShareSphereAuthenticator @Inject constructor(
         //calling function is using runBlock to provide coroutine scope
         return try {
             val response = service.refreshToken(RefreshTokenRequestDto(generatedRefreshToken))
+            Timber.d(response.toString())
 
             //if access token refreshed successfully save token to datastore
             dataStoreRepositoryInterface.save(PreferencesKeys.AccessToken, response.data.accessToken)

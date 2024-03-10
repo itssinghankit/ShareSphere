@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,24 +37,28 @@ class MobileViewModel @Inject constructor(
     val networkState = networkMonitor.networkState
 
     //for not validating again and again with each typed character
-    private var serverJob: Job? = null
+    private var validationJob: Job? = null
 
     fun onEvent(event: MobileEvents) {
         when (event) {
             is MobileEvents.MobileOnValueChange -> {
                 textFieldState.value = textFieldState.value.copy(mobile = event.mobile)
 
-                serverJob?.cancel()
-                serverJob = viewModelScope.launch(Dispatchers.IO) {
-                    _uiState.update {
-                        delay(500L)
-                        it.copy(isMobileError = !mobileValidationUseCase(event.mobile))
+                validationJob?.cancel()
+                validationJob = viewModelScope.launch(Dispatchers.IO) {
+
+                    delay(500L)
+                    withContext(Dispatchers.Main){
+                        _uiState.update {
+                            it.copy(isMobileError = !mobileValidationUseCase(event.mobile))
+                        }
                     }
+
                 }
             }
 
             is MobileEvents.SnackBarShown -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     _uiState.update {
                         it.copy(errorMessage = null)
                     }

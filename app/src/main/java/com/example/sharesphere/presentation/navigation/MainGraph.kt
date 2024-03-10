@@ -11,6 +11,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.screens.Splash.SplashScreen
+import com.example.sharesphere.presentation.screens.authentication.details.DetailsScreen
+import com.example.sharesphere.presentation.screens.authentication.details.DetailsViewModel
 import com.example.sharesphere.presentation.screens.authentication.mobile.MobileScreen
 import com.example.sharesphere.presentation.screens.authentication.mobile.MobileViewModel
 import com.example.sharesphere.presentation.screens.authentication.register.RegisterScreen
@@ -24,6 +26,7 @@ import com.example.sharesphere.presentation.screens.authentication.verifyOtp.Ver
 import com.example.sharesphere.presentation.screens.user.home.HomeScreen
 import com.example.sharesphere.presentation.ui.screens.home.LandingScreen
 import com.example.sharesphere.util.composeAnimatedSlide
+import timber.log.Timber
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
@@ -31,16 +34,20 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
 
     NavHost(
         navController = mainNavController,
-        startDestination = ScreenSealedClass.SplashScreen.route
+        startDestination = ScreenSealedClass.AuthScreens.DetailsScreen.route
     ) {
 
         //Testing///////////////////////////////////////////////////////////////////////////////////
 
-        composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route) {
-            val viewModel: VerifyOtpViewModel = hiltViewModel()
-            VerifyOtpScreen(viewModel = viewModel, onEvent = viewModel::onEvent, onBackClick = {})
-        }
+        composeAnimatedSlide(ScreenSealedClass.AuthScreens.DetailsScreen.route) {
+            val viewModel: DetailsViewModel = hiltViewModel()
+            DetailsScreen(
+                viewModel = viewModel,
+                onEvent = viewModel::onEvent,
+                onBackClick = { mainNavController.popBackStack() }) {
 
+            }
+        }
 
         composeAnimatedSlide(ScreenSealedClass.AuthScreens.MobileScreen.route) {
             val viewModel: MobileViewModel = hiltViewModel()
@@ -108,11 +115,27 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 MobileScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() }) { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp) }
+                    onBackClick = { mainNavController.popBackStack() }) {
+                    navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp)
+                }
             }
             composeAnimatedSlide(ScreenSealedClass.AuthScreens.VerifyOtpScreen.route) {
                 val viewModel: VerifyOtpViewModel = hiltViewModel()
-                VerifyOtpScreen(viewModel, viewModel::onEvent, navigator)
+                VerifyOtpScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    onBackClick = { mainNavController.popBackStack() }) {
+                    navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToDetails)
+                }
+            }
+            composeAnimatedSlide(ScreenSealedClass.AuthScreens.DetailsScreen.route) {
+                val viewModel: DetailsViewModel = hiltViewModel()
+                DetailsScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    onBackClick = { mainNavController.popBackStack() }) {
+
+                }
             }
 
         }

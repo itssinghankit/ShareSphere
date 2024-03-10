@@ -29,4 +29,9 @@ object TextFieldValidation {
         return otp.length==6
     }
 
+    fun isFullNameValid(fullName:String):Boolean{
+        val regex="^[a-zA-Z]+[ a-zA-Z]{2,20}$".toRegex()
+        return regex.matches(fullName)
+    }
+
 }

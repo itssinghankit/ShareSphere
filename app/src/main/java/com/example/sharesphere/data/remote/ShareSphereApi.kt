@@ -9,6 +9,8 @@ import com.example.sharesphere.data.remote.dto.register.RegisterResponseDto
 import com.example.sharesphere.data.remote.dto.username.UsernameResponseDto
 import com.example.sharesphere.data.remote.dto.signin.SignInRequestDto
 import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
+import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpRequestDto
+import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpResponseDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -36,6 +38,7 @@ interface ShareSphereApi {
     @POST("user/send-otp")
     suspend fun mobileSendOtp(@Body mobileOtpRequestDto: MobileOtpRequestDto): MobileOtpResponseDto
 
-
-
+    @Headers("AddAuthorizationHeader: true")
+    @POST("user/verify-otp")
+    suspend fun verifyOtp(@Body verifyOtpRequestDto: VerifyOtpRequestDto):VerifyOtpResponseDto
 }
