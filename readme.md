@@ -1,6 +1,6 @@
-# Social Media Android App
+# ShareSphere
 
-Welcome to ShareSphere, the next-generation social media platform that brings people together in
+ShareSphere is the next-generation social media platform that brings people together in
 exciting new ways. Built with cutting-edge Android technology in `Jetpack Compose` and powered by a robust `Node.js`
 backend, ShareSphere offers a seamless, intuitive, and feature-rich social experience right at your
 fingertips.
@@ -16,9 +16,8 @@ fingertips.
     - Follow other users
     - View follower/following lists
 - **Notifications**: Stay updated with real-time notifications
-- **Post Management**:
-    - Save posts for later viewing
-    - View and update your profile details
+- **Post Management**: Save posts for later viewing
+- **View Profile**: View and update your profile details
 - **Day and Night Mode**: Reduce eye strain with easy-to-toggle light and dark themes
 
 ## Screenshots
