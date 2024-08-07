@@ -16,4 +16,5 @@ enum class PreferencesKeys(val key: String) {
     IsDetailsFilled("isDetailsFilled"),
     IsVerified("isVerified"),
     IsSignedIn("isSignedIn"),
+    IsAuthenticated("isAuthenticated")
 }

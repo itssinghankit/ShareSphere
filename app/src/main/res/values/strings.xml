@@ -9,7 +9,7 @@
     <string name="validateMobileError">Must be a valid 10 digit Number</string>
     <string name="validateFullNameError">Must be a valid Name with Alphabets only</string>
     <string name="internetError">Check your Internet</string>
-
+    <string name="validate_bio_error">Bio must be of length between 3 to 100 characters</string>
 
     //usernameScreen response
     <string name="usernameError">This username is not available</string>
@@ -45,4 +45,5 @@
     <string name="otp_sent_successfully">OTP Sent Successfully</string>
     <string name="tell_us_your_details">tell us your details</string>
     <string name="full_name">Full Name</string>
+
 </resources>

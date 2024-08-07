@@ -50,8 +50,12 @@ class Navigator(private val navController: NavController) {
                 navController.navigate(ScreenSealedClass.AuthScreens.DetailsScreen.route)
             }
 
+            is NavigationActions.NavigateToAuthScreens.NavigateToAvatar->{
+                navController.navigate("${ScreenSealedClass.AuthScreens.AvatarScreen.route}/${action.fullName}/${action.dob}/${action.gender}")
+            }
 
-            //User Screens
+
+                                                //User Screens
 
             is NavigationActions.NavigateToUserScreens -> {
                 navController.navigate(ScreenSealedClass.UserScreens.route) {

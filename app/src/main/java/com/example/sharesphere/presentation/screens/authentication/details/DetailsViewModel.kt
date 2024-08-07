@@ -13,34 +13,36 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     networkMonitor: NetworkMonitor,
     private val fullNameValidationUseCase: FullNameValidationUseCase
-):ViewModel() {
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailsStates())
-    val uiState:StateFlow<DetailsStates> = _uiState
+    val uiState: StateFlow<DetailsStates> = _uiState
 
     var textFieldStates by mutableStateOf(DetailsTextFieldStates())
         private set
 
-    val networkState=networkMonitor.networkState
+    val networkState = networkMonitor.networkState
 
-    fun onEvent(event:DetailsEvents){
-        when(event){
+    fun onEvent(event: DetailsEvents) {
+        when (event) {
             is DetailsEvents.OnFullNameValueChange -> {
-                textFieldStates=textFieldStates.copy(
+                textFieldStates = textFieldStates.copy(
                     fullName = event.fullName
                 )
 
-              _uiState.update {
-                  it.copy(isFullNameError = !fullNameValidationUseCase(event.fullName))
-              }
+                _uiState.update {
+                    it.copy(isFullNameError = !fullNameValidationUseCase(event.fullName))
+                }
 
             }
+
             DetailsEvents.OnNavigationDone -> {
 
                 viewModelScope.launch(Dispatchers.IO) {
@@ -52,14 +54,32 @@ class DetailsViewModel @Inject constructor(
                 }
 
             }
-            DetailsEvents.OnNextClicked -> {
 
-            }
             DetailsEvents.OnSnackBarShown -> {
 
                 _uiState.update {
                     it.copy(errorMessage = null)
                 }
+            }
+
+            is DetailsEvents.OnGenderSelected -> {
+
+                _uiState.update {
+                    it.copy(gender = event.gender)
+                }
+            }
+
+//            is DetailsEvents.OnDateChanged -> {
+//                Timber.d(event.date.toString())
+//                _uiState.update {
+//                    it.copy(date = event.date)
+//                }
+//            }
+            is DetailsEvents.OnNextClicked -> {
+                _uiState.update {
+                    it.copy(navigate = true)
+                }
+
             }
         }
     }

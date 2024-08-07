@@ -21,66 +21,66 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 
-@Composable
-fun AuthTopLayout(
-    modifier: Modifier,
-    onBackClick: () -> Unit,
-    mainTxt: String,
-    supportingTxt: String
-) {
-    Column(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.surface),
-
-        ) {
-
-        OutlinedIconButton(
-            modifier = Modifier.size(32.dp),
-            onClick = onBackClick,
-            shape = RectangleShape,
-            border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
-        ) {
-            Icon(
-                modifier = Modifier.size(18.dp),
-                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = supportingTxt,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = mainTxt,
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-//        Column(modifier=Modifier.wrapContentSize(),verticalArrangement = Arrangement.Bottom) {
+//@Composable
+//fun AuthTopLayout(
+//    modifier: Modifier,
+//    onBackClick: () -> Unit,
+//    mainTxt: String,
+//    supportingTxt: String
+//) {
+//    Column(
+//        modifier = modifier
+//            .background(MaterialTheme.colorScheme.surface),
 //
-//
-//        }
-//        Box(modifier = Modifier
-//
-//            .padding(32.dp),
-//            contentAlignment = Alignment.BottomStart
 //        ) {
 //
-//
-//
+//        OutlinedIconButton(
+//            modifier = Modifier.size(32.dp),
+//            onClick = onBackClick,
+//            shape = RectangleShape,
+//            border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
+//        ) {
+//            Icon(
+//                modifier = Modifier.size(18.dp),
+//                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+//                contentDescription = null,
+//                tint = MaterialTheme.colorScheme.onSurfaceVariant
+//            )
 //
 //        }
-        HorizontalDivider(
-            Modifier
-                .height(8.dp)
-                .background(MaterialTheme.colorScheme.outlineVariant)
-        )
-    }
-}
+//        Spacer(modifier = Modifier.height(20.dp))
+//        Text(
+//            text = supportingTxt,
+//            style = MaterialTheme.typography.labelSmall,
+//            color = MaterialTheme.colorScheme.onSurfaceVariant
+//        )
+//        Spacer(modifier = Modifier.height(4.dp))
+//        Text(
+//            text = mainTxt,
+//            style = MaterialTheme.typography.headlineSmall,
+//            color = MaterialTheme.colorScheme.onSurface
+//        )
+////        Column(modifier=Modifier.wrapContentSize(),verticalArrangement = Arrangement.Bottom) {
+////
+////
+////        }
+////        Box(modifier = Modifier
+////
+////            .padding(32.dp),
+////            contentAlignment = Alignment.BottomStart
+////        ) {
+////
+////
+////
+////
+////        }
+//        HorizontalDivider(
+//            Modifier
+//                .height(8.dp)
+//                .background(MaterialTheme.colorScheme.outlineVariant)
+//        )
+//    }
+//}
 
 @Composable
 fun AuthTopBar(

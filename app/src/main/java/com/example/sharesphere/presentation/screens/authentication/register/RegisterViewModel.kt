@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -150,28 +149,37 @@ class RegisterViewModel @Inject constructor(
             registerUseCase(email, password, username).collect { result ->
                 when (result) {
                     is ApiResponse.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                errorMessage = result.message ?: UiText.DynamicString(""),
-                                isLoading = false
-                            )
+                        withContext(Dispatchers.Main) {
+                            _uiState.update {
+                                it.copy(
+                                    errorMessage = result.message ?: UiText.DynamicString(""),
+                                    isLoading = false
+                                )
+                            }
                         }
                     }
 
                     is ApiResponse.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true)
+                        withContext(Dispatchers.Main) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = true
+                                )
+                            }
                         }
                     }
 
                     is ApiResponse.Success -> {
-
+                        //save the date internally and update ui
                         saveRegisterDataStore(result.data!!)
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                navigate = true
-                            )
+
+                        withContext(Dispatchers.Main) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoading = false,
+                                    navigate = true
+                                )
+                            }
                         }
                     }
                 }

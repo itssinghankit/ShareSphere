@@ -34,4 +34,8 @@ object TextFieldValidation {
         return regex.matches(fullName)
     }
 
+    fun isBioValid(bio:String):Boolean{
+       return bio.length in 3..100
+    }
+
 }

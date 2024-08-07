@@ -14,7 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -23,16 +23,14 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +39,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
@@ -55,22 +52,18 @@ import com.example.sharesphere.presentation.ui.theme.Black05
 import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.Black43
 import com.example.sharesphere.presentation.ui.theme.Black70
-import com.example.sharesphere.presentation.ui.theme.greytxtfieldlabel
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.Date
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailsViewModel,
     onEvent: (DetailsEvents) -> Unit,
     onBackClick: () -> Unit,
-    navigateToAvatarScreen: () -> Unit
+    navigateToAvatarScreen: (fullName: String, dob: Long, gender: String) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -83,6 +76,11 @@ fun DetailsScreen(
     val focusManager = LocalFocusManager.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val textFieldState = viewModel.textFieldStates
+    val dateState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+    val isEnabled by derivedStateOf {
+        textFieldState.fullName.isEmpty() || uiState.isFullNameError || dateState.selectedDateMillis == null
+    }
+
 
     //showing snackBar
     uiState.errorMessage?.let { errorMessage ->
@@ -95,7 +93,11 @@ fun DetailsScreen(
     //for navigation
     DisposableEffect(uiState.navigate) {
         if (uiState.navigate) {
-            navigateToAvatarScreen()
+            navigateToAvatarScreen(
+                textFieldState.fullName,
+                dateState.selectedDateMillis ?: 0,
+                uiState.gender.text
+            )
         }
         onDispose {
             onEvent(DetailsEvents.OnNavigationDone)
@@ -133,10 +135,10 @@ fun DetailsScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(start = 32.dp, bottom = 32.dp),
-                    enabled = !uiState.isFullNameError
+                    enabled = !isEnabled
                 ) {
                     scope.launch {
-                        onEvent(DetailsEvents.OnNextClicked)
+                        onEvent(DetailsEvents.OnNextClicked(dateState.selectedDateMillis))
                     }
                 }
             }
@@ -159,8 +161,12 @@ fun DetailsScreen(
                 keyboard?.hide()
             },
             onFullNameValueChange = { onEvent(DetailsEvents.OnFullNameValueChange(it)) },
-            fullName = textFieldState.fullName
-        )
+            fullName = textFieldState.fullName,
+            gender = uiState.gender,
+            dateState = dateState
+        ) {
+            onEvent(DetailsEvents.OnGenderSelected(it))
+        }
 
     }
 }
@@ -173,7 +179,11 @@ fun DetailsContent(
     onFullNameValueChange: (String) -> Unit,
     fullName: String,
     isFullNameError: Boolean,
+    gender: Gender,
+    dateState: DatePickerState,
+    onGenderSelected: (Gender) -> Unit,
 ) {
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -189,32 +199,32 @@ fun DetailsContent(
             onValueChange = { onFullNameValueChange(it) },
             leadingIconImageVector = Icons.Default.Person,
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Next,
+                imeAction = ImeAction.Done,
                 keyboardType = KeyboardType.Password
             ),
-            keyboardActions = KeyboardActions(onNext = {
+            keyboardActions = KeyboardActions(onDone = {
                 onKeyboardNextClick()
             }),
             showError = isFullNameError,
             errorMessage = stringResource(id = R.string.validateFullNameError),
         )
 
-        var gender by remember { mutableStateOf(Gender.MALE) }
+
         GenderRadioButtonGroup(
             modifier = Modifier.padding(top = 40.dp),
             selectedGender = gender,
             onGenderSelected = {
-                gender = it
+                onGenderSelected(it)
             })
 
-        val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
+
 //        Timber.d(state.selectedDateMillis.toString())
 //        val selectedDate = LocalDate.ofEpochDay(state.selectedDateMillis!!)
 //        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 //        val formattedDate= dateFormat.format(selectedDate)
         DatePicker(
             modifier = Modifier.padding(top = 16.dp),
-            state = state,
+            state = dateState,
             title = null,
             headline = {
                 Text(
@@ -263,10 +273,6 @@ fun DetailsContent(
                 navigationContentColor = Black05,
             )
         )
-
-//        DatePickerDialog(onDismissRequest = { /*TODO*/ }, confirmButton = { /*TODO*/ }) {
-//
-//        }
 
     }
 
@@ -333,16 +339,3 @@ enum class Gender(val text: String) {
     MALE("male"), FEMALE("female"), OTHER("other")
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-private fun PRE() {
-    val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-    DatePickerDialog(onDismissRequest = { /*TODO*/ }, confirmButton = { /*TODO*/ }) {
-
-    }
-//    Surface {
-//        val state = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-//        DatePicker(state = state, title = {}, headline = {}, showModeToggle = false)
-//    }
-}

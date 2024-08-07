@@ -106,8 +106,8 @@ dependencies {
     implementation"androidx.lifecycle:lifecycle-runtime-compose:2.7.0"
 
     //material library and icons
-    implementation 'androidx.compose.material3:material3:1.2.0'
-    implementation 'androidx.compose.material:material-icons-extended:1.6.1'
+    implementation 'androidx.compose.material3:material3:1.2.1'
+    implementation 'androidx.compose.material:material-icons-extended:1.6.4'
 
     //datastore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
@@ -124,9 +124,12 @@ dependencies {
 
 
     //compose preview
-    debugImplementation "androidx.compose.ui:ui-tooling-preview:1.6.2"
+    debugImplementation "androidx.compose.ui:ui-tooling-preview:1.6.4"
 
     //compose constraint layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+    //coil
+    implementation "io.coil-kt:coil-compose:2.3.0"
 
 }

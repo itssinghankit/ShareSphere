@@ -6,5 +6,6 @@ data class DetailsStates(
     val isLoading: Boolean=false,
     val navigate: Boolean = false,
     val errorMessage: UiText? = null,
-    val isFullNameError:Boolean=false
+    val isFullNameError:Boolean=false,
+    val gender:Gender=Gender.MALE
 )

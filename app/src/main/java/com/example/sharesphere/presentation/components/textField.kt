@@ -51,7 +51,9 @@ fun ComponentTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     showError: Boolean = false,
-    errorMessage: String = ""
+    errorMessage: String = "",
+    singleLine:Boolean=true,
+    maxLines:Int=1
 ) {
 
     OutlinedTextField(
@@ -81,7 +83,8 @@ fun ComponentTextField(
             unfocusedLabelColor = greytxtfieldlabel,
             errorLabelColor = Color.Red,
         ),
-        singleLine = true,
+        singleLine = singleLine,
+        maxLines = maxLines,
         label = { Text(text = label) },
         leadingIcon = {
             Icon(

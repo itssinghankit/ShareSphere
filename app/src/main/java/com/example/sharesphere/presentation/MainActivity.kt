@@ -37,39 +37,5 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//@RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
-//@Composable
-//fun App() {
-//    val navController = rememberNavController()
-//
-//    NavHost(
-//        navController = navController,
-//        startDestination = ScreenSealedClass.AuthScreens.route
-//    ) {
-//        navigation(
-//            startDestination = ScreenSealedClass.AuthScreens.UsernameScreen.route,
-//            route = ScreenSealedClass.AuthScreens.route
-//        ) {
-//            composable(ScreenSealedClass.AuthScreens.SigninScreen.route) {
-//                LoginScreen(navController = navController)
-//            }
-//            composable(ScreenSealedClass.AuthScreens.RegisterScreen.route) {
-//                RegisterScreen(navController = navController)
-//            }
-//            composable(ScreenSealedClass.AuthScreens.UsernameScreen.route) {
-//                UsernameScreen()
-//            }
-//        }
-//        navigation(
-//            startDestination = ScreenSealedClass.UserScreens.LandingScreen.route,
-//            route = ScreenSealedClass.UserScreens.route
-//        ) {
-//            composable(ScreenSealedClass.UserScreens.LandingScreen.route) {
-//                LandingScreen(navController = navController)
-//            }
-//        }
-//
-//    }
-//}
 
 
