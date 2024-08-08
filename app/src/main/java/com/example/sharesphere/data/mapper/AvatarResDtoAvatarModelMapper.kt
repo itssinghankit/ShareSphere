@@ -1,7 +1,7 @@
 package com.example.sharesphere.data.mapper
 
 import com.example.sharesphere.data.remote.dto.avatar.AvatarResDto
-import com.example.sharesphere.domain.model.AvatarModel
+import com.example.sharesphere.domain.model.auth.AvatarModel
 
 fun AvatarResDto.toAvatarModel(): AvatarModel {
     return AvatarModel(

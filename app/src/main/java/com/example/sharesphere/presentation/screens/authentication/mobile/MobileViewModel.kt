@@ -3,9 +3,9 @@ package com.example.sharesphere.presentation.screens.authentication.mobile
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharesphere.domain.use_case.mobile.MobileSendOtpUseCase
-import com.example.sharesphere.domain.use_case.mobile.MobileValidationUseCase
-import com.example.sharesphere.domain.use_case.mobile.SaveMobileDataStoreUseCase
+import com.example.sharesphere.domain.use_case.auth.mobile.MobileSendOtpUseCase
+import com.example.sharesphere.domain.use_case.auth.mobile.MobileValidationUseCase
+import com.example.sharesphere.domain.use_case.auth.mobile.SaveMobileDataStoreUseCase
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText

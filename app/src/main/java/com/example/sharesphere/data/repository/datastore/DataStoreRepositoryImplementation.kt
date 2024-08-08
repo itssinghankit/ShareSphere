@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.sharesphere.domain.repository.DataStoreRepositoryInterface
+import com.example.sharesphere.domain.repository.DataStoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -15,7 +15,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class DataStoreRepositoryImplementation @Inject constructor(private val context: Context) :
-    DataStoreRepositoryInterface {
+    DataStoreRepository {
 
     private val Context.datastore by preferencesDataStore("datastore")
 

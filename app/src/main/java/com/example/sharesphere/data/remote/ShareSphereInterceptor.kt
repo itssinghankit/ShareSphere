@@ -1,7 +1,7 @@
 package com.example.sharesphere.data.remote
 
 import com.example.sharesphere.data.repository.datastore.PreferencesKeys
-import com.example.sharesphere.domain.repository.DataStoreRepositoryInterface
+import com.example.sharesphere.domain.repository.DataStoreRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ShareSphereInterceptor @Inject constructor(
-    private val dataStoreRepositoryInterface: DataStoreRepositoryInterface,
+    private val dataStoreRepository: DataStoreRepository,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
 
@@ -20,7 +20,7 @@ class ShareSphereInterceptor @Inject constructor(
 
         if (request.headers["AddAuthorizationHeader"] == "true") {
             val token = runBlocking {
-                dataStoreRepositoryInterface.getString(PreferencesKeys.AccessToken).first()
+                dataStoreRepository.getString(PreferencesKeys.ACCESS_TOKEN).first()
 
             }
             Timber.d("$token")

@@ -3,9 +3,10 @@ package com.example.sharesphere.presentation.navigation
 sealed class NavigationActions {
 
     object NavigateToAuthScreens : NavigationActions() {
-        data class NavigateToRegister(val username: String? = null) : NavigationActions()
-        object NavigateToSignin : NavigationActions()
+
+        object NavigateToSignIn : NavigationActions()
         object NavigateToUsername : NavigationActions()
+        data class NavigateToRegister(val username: String? = null) : NavigationActions()
         object NavigateToMobile : NavigationActions()
         object NavigateToVerifyOtp : NavigationActions()
         object NavigateToDetails : NavigationActions()
@@ -22,4 +23,9 @@ sealed class NavigationActions {
     object NavigateToUserScreens : NavigationActions() {
         object NavigateToHome : NavigationActions()
     }
+
+    //from splash screens
+    object NavigateToUserFromSplash:NavigationActions()
+    object NavigateToMobileFromSplash:NavigationActions()
+    object NavigateToDetailsFromSplash:NavigationActions()
 }

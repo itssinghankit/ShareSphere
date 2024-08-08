@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharesphere.domain.use_case.details.FullNameValidationUseCase
+import com.example.sharesphere.domain.use_case.auth.details.FullNameValidationUseCase
 import com.example.sharesphere.util.NetworkMonitor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

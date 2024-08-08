@@ -1,6 +1,6 @@
 package com.example.sharesphere.data.remote.dto.username
 
-import com.example.sharesphere.domain.model.UsernameModel
+import com.example.sharesphere.domain.model.auth.UsernameModel
 
 data class UsernameResponseDto(
     val `data`: Data?=null,
@@ -12,6 +12,6 @@ data class Data(
     val available: Boolean?=false
 )
 
-fun UsernameResponseDto.toUsernameModel():UsernameModel{
+fun UsernameResponseDto.toUsernameModel(): UsernameModel {
     return UsernameModel(available = data?.available,message=message)
 }

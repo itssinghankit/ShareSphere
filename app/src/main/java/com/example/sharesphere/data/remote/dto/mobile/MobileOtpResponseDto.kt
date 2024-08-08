@@ -1,6 +1,6 @@
 package com.example.sharesphere.data.remote.dto.mobile
 
-import com.example.sharesphere.domain.model.MobileModel
+import com.example.sharesphere.domain.model.auth.MobileModel
 
 data class MobileOtpResponseDto(
     val message: String,

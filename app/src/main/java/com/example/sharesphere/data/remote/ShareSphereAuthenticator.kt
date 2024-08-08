@@ -3,7 +3,7 @@ package com.example.sharesphere.data.remote
 import com.example.sharesphere.BuildConfig
 import com.example.sharesphere.data.remote.dto.refreshToken.RefreshTokenRequestDto
 import com.example.sharesphere.data.repository.datastore.PreferencesKeys
-import com.example.sharesphere.domain.repository.DataStoreRepositoryInterface
+import com.example.sharesphere.domain.repository.DataStoreRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -18,19 +18,19 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class ShareSphereAuthenticator @Inject constructor(
-    private val dataStoreRepositoryInterface: DataStoreRepositoryInterface
+    private val dataStoreRepository: DataStoreRepository
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
         val refreshToken = runBlocking {
-            dataStoreRepositoryInterface.getString(PreferencesKeys.RefreshToken).first()
+            dataStoreRepository.getString(PreferencesKeys.REFRESH_TOKEN).first()
         }
         return runBlocking {
             val accessToken = getNewToken(refreshToken)
 
             if (accessToken.isNullOrBlank()) { //Couldn't refresh the token, so restart the login process
                 Timber.d("failed to refresh token")
-                dataStoreRepositoryInterface.deleteString(PreferencesKeys.RefreshToken)
+                dataStoreRepository.deleteString(PreferencesKeys.REFRESH_TOKEN)
             }
 
             accessToken?.let {
@@ -62,8 +62,8 @@ class ShareSphereAuthenticator @Inject constructor(
             Timber.d(response.toString())
 
             //if access token refreshed successfully save token to datastore
-            dataStoreRepositoryInterface.save(PreferencesKeys.AccessToken, response.data.accessToken)
-            dataStoreRepositoryInterface.save(PreferencesKeys.RefreshToken, response.data.refreshToken)
+            dataStoreRepository.save(PreferencesKeys.ACCESS_TOKEN, response.data.accessToken)
+            dataStoreRepository.save(PreferencesKeys.REFRESH_TOKEN, response.data.refreshToken)
 
             response.data.accessToken
         } catch (e: retrofit2.HttpException) {

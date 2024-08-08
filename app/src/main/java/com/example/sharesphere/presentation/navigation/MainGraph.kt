@@ -9,8 +9,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import com.example.sharesphere.presentation.ScreenSealedClass
 import com.example.sharesphere.presentation.screens.Splash.SplashScreen
+import com.example.sharesphere.presentation.screens.Splash.SplashViewModel
 import com.example.sharesphere.presentation.screens.authentication.avatar.AvatarScreen
 import com.example.sharesphere.presentation.screens.authentication.avatar.AvatarViewModel
 import com.example.sharesphere.presentation.screens.authentication.details.DetailsScreen
@@ -25,16 +25,15 @@ import com.example.sharesphere.presentation.screens.authentication.username.User
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpScreen
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpViewModel
-import com.example.sharesphere.presentation.screens.user.home.HomeScreen
-import com.example.sharesphere.presentation.ui.screens.home.LandingScreen
+import com.example.sharesphere.presentation.screens.user.UserScreen
 import com.example.sharesphere.util.composeAnimatedSlide
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
-fun App(mainNavController: NavHostController, navigator: Navigator) {
+fun RootNavGraph(rootNavController: NavHostController, navigator: Navigator) {
 
     NavHost(
-        navController = mainNavController,
+        navController = rootNavController,
         startDestination = ScreenSealedClass.SplashScreen.route
     ) {
 
@@ -58,17 +57,19 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
             AvatarScreen(
                 viewModel = viewModel,
                 onEvent = viewModel::onEvent,
-                onBackClicked = { mainNavController.popBackStack() }) {
+                onBackClicked = { rootNavController.popBackStack() }) {
                 navigator.onAction(NavigationActions.NavigateToUserScreens)
             }
         }
+
+        //////////////// apart from nested navigation /////////////////
 
         composeAnimatedSlide(ScreenSealedClass.AuthScreens.DetailsScreen.route) {
             val viewModel: DetailsViewModel = hiltViewModel()
             DetailsScreen(
                 viewModel = viewModel,
                 onEvent = viewModel::onEvent,
-                onBackClick = { mainNavController.popBackStack() }) { fullName, dob, gender ->
+                onBackClick = { rootNavController.popBackStack() }) { fullName, dob, gender ->
 
                 navigator.onAction(
                     NavigationActions.NavigateToAuthScreens.NavigateToAvatar(
@@ -86,7 +87,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
             MobileScreen(
                 viewModel = viewModel,
                 onEvent = viewModel::onEvent,
-                onBackClick = { mainNavController.popBackStack() }) {
+                onBackClick = { rootNavController.popBackStack() }) {
                 navigator.onAction(
                     NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp
                 )
@@ -95,14 +96,19 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
 
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-                                    //Splash Screen
-
+        //Splash Screen
         composeAnimatedSlide(route = ScreenSealedClass.SplashScreen.route) {
-            SplashScreen(navigator)
+            val viewModel: SplashViewModel = hiltViewModel()
+            SplashScreen(
+                viewModel = viewModel,
+                navigateToHomeScreen = { navigator.onAction(NavigationActions.NavigateToUserFromSplash) },
+                navigateToSignInScreen = { navigator.onAction(NavigationActions.NavigateToAuthScreens) },
+                navigateToMobileScreen = { navigator.onAction(NavigationActions.NavigateToMobileFromSplash) },
+                navigateToDetailsScreen = { navigator.onAction(NavigationActions.NavigateToDetailsFromSplash) }
+            )
         }
 
-                                    //Auth Screens
-
+        //Auth Screens
         navigation(
             startDestination = ScreenSealedClass.AuthScreens.SigninScreen.route,
             route = ScreenSealedClass.AuthScreens.route
@@ -113,7 +119,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 SignInScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() },
+                    onBackClick = { rootNavController.popBackStack() },
                     navigateToForgetPasswordScreen = {},
                     navigateToUsernameScreen = { navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToUsername) }) {
                     navigator.onAction(NavigationActions.NavigateToUserScreens)
@@ -129,7 +135,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 RegisterScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvents,
-                    onBackClick = { mainNavController.popBackStack() }) {
+                    onBackClick = { rootNavController.popBackStack() }) {
                     navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToMobile)
                 }
             }
@@ -138,7 +144,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 UsernameScreen(
                     viewModel = viewmodel,
                     onEvent = viewmodel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() }) {
+                    onBackClick = { rootNavController.popBackStack() }) {
                     navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToRegister(it))
                 }
             }
@@ -147,7 +153,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 MobileScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() }) {
+                    onBackClick = { rootNavController.popBackStack() }) {
                     navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToVerifyOtp)
                 }
             }
@@ -156,7 +162,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 VerifyOtpScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() }) {
+                    onBackClick = { rootNavController.popBackStack() }) {
                     navigator.onAction(NavigationActions.NavigateToAuthScreens.NavigateToDetails)
                 }
             }
@@ -165,7 +171,7 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 DetailsScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClick = { mainNavController.popBackStack() }) { fullName, dob, gender ->
+                    onBackClick = { rootNavController.popBackStack() }) { fullName, dob, gender ->
 
                     navigator.onAction(
                         NavigationActions.NavigateToAuthScreens.NavigateToAvatar(
@@ -195,26 +201,19 @@ fun App(mainNavController: NavHostController, navigator: Navigator) {
                 AvatarScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
-                    onBackClicked = { mainNavController.popBackStack() }) {
+                    onBackClicked = { rootNavController.popBackStack() }) {
                     navigator.onAction(NavigationActions.NavigateToUserScreens)
                 }
             }
 
         }
 
-                                    //User Screens
-        navigation(
-            startDestination = ScreenSealedClass.UserScreens.HomeScreen.route,
-            route = ScreenSealedClass.UserScreens.route
-        ) {
-            composeAnimatedSlide(ScreenSealedClass.UserScreens.LandingScreen.route) {
-                LandingScreen(navController = mainNavController)
-            }
-            composeAnimatedSlide(ScreenSealedClass.UserScreens.HomeScreen.route) {
-                HomeScreen()
-            }
+        //User Screens
+        composeAnimatedSlide(
+            route= ScreenSealedClass.UserScreens.route
+        ){
+            UserScreen()
         }
-
 
     }
 }

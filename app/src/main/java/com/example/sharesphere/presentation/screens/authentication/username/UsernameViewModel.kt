@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
-import com.example.sharesphere.domain.use_case.username.CheckAvailabilityUseCase
-import com.example.sharesphere.domain.use_case.username.SaveUsernameDatastoreUseCase
-import com.example.sharesphere.domain.use_case.username.UsernameValidationUseCase
+import com.example.sharesphere.domain.use_case.auth.username.CheckAvailabilityUseCase
+import com.example.sharesphere.domain.use_case.auth.username.SaveUsernameDatastoreUseCase
+import com.example.sharesphere.domain.use_case.auth.username.UsernameValidationUseCase
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText

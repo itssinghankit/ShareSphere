@@ -4,11 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharesphere.domain.model.SignInModel
-import com.example.sharesphere.domain.use_case.signin.EmailValidationUseCase
-import com.example.sharesphere.domain.use_case.signin.PasswordValidationUseCase
-import com.example.sharesphere.domain.use_case.signin.SaveUserDataStoreUseCase
-import com.example.sharesphere.domain.use_case.signin.SignInUseCase
+import com.example.sharesphere.domain.model.auth.SignInModel
+import com.example.sharesphere.domain.use_case.auth.signin.EmailValidationUseCase
+import com.example.sharesphere.domain.use_case.auth.signin.PasswordValidationUseCase
+import com.example.sharesphere.domain.use_case.auth.signin.SaveUserDataStoreUseCase
+import com.example.sharesphere.domain.use_case.auth.signin.SignInUseCase
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText

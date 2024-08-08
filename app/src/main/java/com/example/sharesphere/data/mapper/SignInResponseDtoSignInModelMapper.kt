@@ -1,7 +1,7 @@
 package com.example.sharesphere.data.mapper
 
 import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
-import com.example.sharesphere.domain.model.SignInModel
+import com.example.sharesphere.domain.model.auth.SignInModel
 
 fun SignInResponseDto.toSignInModel(): SignInModel {
     return SignInModel(

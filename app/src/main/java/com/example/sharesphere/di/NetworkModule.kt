@@ -58,5 +58,4 @@ class NetworkModule {
         return AuthRepositoryImplementation(shareSphereApi)
     }
 
-
 }

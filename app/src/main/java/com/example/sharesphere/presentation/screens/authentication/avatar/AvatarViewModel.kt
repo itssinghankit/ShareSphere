@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sharesphere.domain.model.AvatarModel
-import com.example.sharesphere.domain.use_case.avatar.AvatarDetailsUploadUseCase
-import com.example.sharesphere.domain.use_case.avatar.BioValidationUseCase
-import com.example.sharesphere.domain.use_case.avatar.SaveAvatarDataStoreUseCase
+import com.example.sharesphere.domain.model.auth.AvatarModel
+import com.example.sharesphere.domain.use_case.auth.avatar.AvatarDetailsUploadUseCase
+import com.example.sharesphere.domain.use_case.auth.avatar.BioValidationUseCase
+import com.example.sharesphere.domain.use_case.auth.avatar.SaveAvatarDataStoreUseCase
 import com.example.sharesphere.util.ApiResponse
 import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText

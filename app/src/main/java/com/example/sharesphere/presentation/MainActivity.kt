@@ -10,7 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.sharesphere.presentation.navigation.App
+import com.example.sharesphere.presentation.navigation.RootNavGraph
 import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.ShareSphereTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,9 +28,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val mainNavController = rememberNavController()
-                    val navigator= Navigator(mainNavController)
-                    App(mainNavController,navigator)
+                    val rootNavController = rememberNavController()
+                    val navigator= Navigator(rootNavController)
+                    RootNavGraph(rootNavController,navigator)
                 }
             }
         }

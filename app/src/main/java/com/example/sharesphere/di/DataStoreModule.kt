@@ -2,7 +2,7 @@ package com.example.sharesphere.di
 
 import android.content.Context
 import com.example.sharesphere.data.repository.datastore.DataStoreRepositoryImplementation
-import com.example.sharesphere.domain.repository.DataStoreRepositoryInterface
+import com.example.sharesphere.domain.repository.DataStoreRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ class DataStoreModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context:Context): DataStoreRepositoryInterface {
+    fun provideDataStore(@ApplicationContext context:Context): DataStoreRepository {
         return DataStoreRepositoryImplementation(context)
     }
 

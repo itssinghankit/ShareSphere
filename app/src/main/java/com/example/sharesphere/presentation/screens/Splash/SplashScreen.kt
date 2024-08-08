@@ -11,40 +11,51 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
 import com.example.sharesphere.R
-import com.example.sharesphere.data.repository.datastore.DataStoreRepositoryImplementation
-import com.example.sharesphere.data.repository.datastore.PreferencesKeys
-import com.example.sharesphere.presentation.navigation.NavigationActions
-import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.ui.theme.orange
 import com.example.sharesphere.presentation.ui.theme.orangebg
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
-
 
 @Composable
-fun SplashScreen(navigator: Navigator) {
-    val dataStoreRepositoryImplementation= DataStoreRepositoryImplementation(LocalContext.current)
+fun SplashScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SplashViewModel,
+    navigateToHomeScreen: () -> Unit,
+    navigateToSignInScreen: () -> Unit,
+    navigateToMobileScreen: () -> Unit,
+    navigateToDetailsScreen: () -> Unit
+) {
 
+    val state = viewModel.state
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = state.navigate) {
         delay(2000)
-
-        navigator.onAction(NavigationActions.NavigateToAuthScreens)
-    }
-    SplashContent()
+       if(state.navigate){
+           if (state.isDetailsFilled) {
+               navigateToHomeScreen()
+           } else {
+               if (state.isVerified) {
+                   navigateToDetailsScreen()
+               } else {
+                   if (state.isSignedUp) {
+                       navigateToMobileScreen()
+                   } else {
+                       navigateToSignInScreen()
+                   }
+               }
+           }
+       }
+       }
+    SplashContent(modifier)
 }
 
 @Composable
-fun SplashContent() {
+fun SplashContent(modifier: Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(orangebg)
             .padding(24.dp),
