@@ -2,10 +2,12 @@ package com.example.sharesphere.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.sharesphere.presentation.screens.user.home.HomeScreen
+import com.example.sharesphere.presentation.screens.user.home.HomeViewModel
 import com.example.sharesphere.presentation.screens.user.notification.NotificationScreen
 import com.example.sharesphere.presentation.screens.user.post.PostScreen
 import com.example.sharesphere.presentation.screens.user.profile.ProfileScreen
@@ -21,7 +23,8 @@ fun UserGraph(modifier: Modifier, navController: NavHostController, userNavigato
         startDestination = ScreenSealedClass.UserScreens.HomeScreen.route
     ) {
         composable(ScreenSealedClass.UserScreens.HomeScreen.route) {
-            HomeScreen()
+            val viewModel:HomeViewModel = hiltViewModel()
+            HomeScreen(viewModel=viewModel, onEvent = viewModel::onEvent)
         }
         composable(ScreenSealedClass.UserScreens.SearchScreen.route) {
             SearchScreen()

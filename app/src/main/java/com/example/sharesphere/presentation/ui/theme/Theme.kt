@@ -45,9 +45,11 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = Black05, //
     onSurfaceVariant = Black43,//
 
+    surfaceContainer = Color.Black,
+
     outline = Black13, //
 //    outlineVariant = Black15 //
-outlineVariant = Grey79
+outlineVariant =  Grey10//Grey79
 
 )
 
@@ -73,8 +75,9 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Grey10,
     surface = Color.White, // main background
     onSurface = BlueGrey31, //main text
-    surfaceVariant = Color.White, //navigation bar-surface container
+    surfaceVariant = Color.White, //navigation bar-surface container- changed
     onSurfaceVariant = Grey65, //supporting text
+    surfaceContainer = Color.White, //bottom navigation bar
     inverseSurface = Grey20,
     inverseOnSurface = Grey95,
     outline = Grey92, //outline
