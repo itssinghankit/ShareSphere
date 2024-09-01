@@ -1,11 +1,14 @@
 package com.example.sharesphere.di
 
 import com.example.sharesphere.BuildConfig
-import com.example.sharesphere.data.remote.ShareSphereAuthenticator
+import com.example.sharesphere.data.local.HomePostDatabase
 import com.example.sharesphere.data.remote.ShareSphereApi
+import com.example.sharesphere.data.remote.ShareSphereAuthenticator
 import com.example.sharesphere.data.remote.ShareSphereInterceptor
 import com.example.sharesphere.data.repository.AuthRepositoryImplementation
+import com.example.sharesphere.data.repository.UserRepositoryImplementation
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
+import com.example.sharesphere.domain.repository.UserRepositoryInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,6 +59,18 @@ class NetworkModule {
     @Provides
     fun providesAuthRepository(shareSphereApi: ShareSphereApi): AuthRepositoryInterface {
         return AuthRepositoryImplementation(shareSphereApi)
+    }
+
+    @Singleton
+    @Provides
+    fun providesUserRepository(
+        shareSphereApi: ShareSphereApi,
+        homePostDatabase: HomePostDatabase
+    ): UserRepositoryInterface {
+        return UserRepositoryImplementation(
+            shareSphereApi = shareSphereApi,
+            homePostDatabase = homePostDatabase
+        )
     }
 
 }

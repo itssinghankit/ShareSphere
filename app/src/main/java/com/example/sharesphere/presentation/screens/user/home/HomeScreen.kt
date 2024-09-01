@@ -24,17 +24,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.sharesphere.R
+import com.example.sharesphere.data.commonDto.user.home.post.Post
 import com.example.sharesphere.presentation.components.DefinedSnackBarHost
-import com.example.sharesphere.presentation.screens.user.components.PostItem
+import com.example.sharesphere.presentation.screens.user.components.PostListContent
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -51,6 +54,8 @@ fun HomeScreen(
     viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val posts=viewModel.posts.collectAsLazyPagingItems()
 
     //Showing snackBar for Errors
     uiState.errorMessage?.let { errorMessage ->
@@ -69,15 +74,14 @@ fun HomeScreen(
             }
         }) { padding ->
 
-        HomeContent(modifier = Modifier.padding(padding))
+        HomeContent(modifier = Modifier.padding(padding),posts)
     }
 }
 
 @Composable
-fun HomeContent(modifier: Modifier) {
+fun HomeContent(modifier: Modifier, posts: LazyPagingItems<Post>) {
     Column(
         modifier = modifier
-            .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.surface)
     ) {
 
@@ -104,11 +108,9 @@ fun HomeContent(modifier: Modifier) {
             }
 
         }
-        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
+        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
 
-        PostItem()
-        PostItem()
-        PostItem()
+       PostListContent(posts)
 
     }
 

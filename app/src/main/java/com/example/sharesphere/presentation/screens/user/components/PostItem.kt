@@ -24,8 +24,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults.cardElevation
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
@@ -42,51 +40,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import com.example.sharesphere.R
+import com.example.sharesphere.data.commonDto.user.home.post.Post
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PostItem(modifier: Modifier = Modifier) {
-    val isFollowed = false
+fun PostItem(modifier: Modifier = Modifier, post: Post) {
     var likes by rememberSaveable { mutableIntStateOf(1234) }
     var isLiked by rememberSaveable { mutableStateOf(false) }
     var saveIconChecked by rememberSaveable { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         PosterDetails(
-            avatar = "https://avatars.githubusercontent.com/u/20736539?v=4",
-            isFollowed = isFollowed
+            avatar = post.postedBy.avatar,
+            isFollowed = post.isFollowed,
+            name = post.postedBy.fullName,
+            username = post.postedBy.username
         )
-        val images = listOf(
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo,
-            R.drawable.photo
-        )
+
+        val images = post.postImages
         ImageCarousel(images = images)
 
         //likes comment share
         PostBottomBar(
-            likes = likes,
-            comments = 123,
+            likes = post.likeCount,
+            comments = post.commentCount,
             isLiked = isLiked,
             onLikeClicked = {
                 if (isLiked) {
@@ -96,123 +84,27 @@ fun PostItem(modifier: Modifier = Modifier) {
                 }
                 isLiked = !isLiked
             },
-            saveIconChecked = saveIconChecked,
+            saveIconChecked = post.isSaved,
             onSaveClicked = {
                 saveIconChecked = !saveIconChecked
-            }
+            },
+            caption = post.caption
         )
 
     }
 
 }
 
-@Composable
-fun PostBottomBar(
-    comments: Int,
-    likes: Int,
-    isLiked: Boolean,
-    onLikeClicked: () -> Unit,
-    saveIconChecked: Boolean,
-    onSaveClicked: () -> Unit
-) {
-
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 4.dp, top = 4.dp, bottom = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-
-            Icon(
-                modifier = Modifier
-                    .size(30.dp)
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }) {
-                        onLikeClicked()
-                    },
-                imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                contentDescription = "like",
-                tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.primary
-            )
-            Text(
-                modifier = Modifier.padding(start = 2.dp),
-                text = likes.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontFamily = FontFamily(Font(R.font.gilroy_regular)),
-                fontWeight = FontWeight.Bold
-            )
-
-            Icon(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .size(27.dp),
-                imageVector = Icons.AutoMirrored.Outlined.Chat,
-                contentDescription = "Chat",
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Text(
-                modifier = Modifier.padding(start = 2.dp),
-                text = comments.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontFamily = FontFamily(Font(R.font.gilroy_regular)),
-                fontWeight = FontWeight.Bold
-            )
-
-            Icon(
-                modifier = Modifier
-                    .padding(start = 25.dp)
-                    .size(27.dp)
-                    .graphicsLayer {
-                        rotationZ = -25f
-                        transformOrigin = TransformOrigin(0f, 1f)  // Bottom start pivot
-                    },
-                imageVector = Icons.AutoMirrored.Outlined.Send,
-                contentDescription = "Send",
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-
-        }
-        //save post
-        IconToggleButton(
-            checked = saveIconChecked,
-            onCheckedChange = { onSaveClicked() }
-
-        ) {
-            if (saveIconChecked) {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Outlined.Bookmark,
-                    contentDescription = "bookmark",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            } else {
-                Icon(
-                    modifier = Modifier.size(28.dp),
-                    imageVector = Icons.Outlined.BookmarkBorder,
-                    contentDescription = "bookmark",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-    }
-}
 
 @Composable
-fun PosterDetails(avatar: String, isFollowed: Boolean) {
+fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: String) {
 
     var followChecked by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp),
+            .padding(top = 8.dp, bottom = 8.dp, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -229,14 +121,14 @@ fun PosterDetails(avatar: String, isFollowed: Boolean) {
 
             Column(modifier = Modifier.padding(start = 10.dp)) {
                 Text(
-                    text = "Ankit Singh",
+                    text = name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.gilroy_regular))
                 )
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
-                    text = "itssinghankit",
+                    text = username,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
                     fontFamily = FontFamily(Font(R.font.gilroy_semibold))
@@ -247,10 +139,10 @@ fun PosterDetails(avatar: String, isFollowed: Boolean) {
         Row {
             if (!isFollowed) {
                 FilterChip(
-                    selected = followChecked,
+                    selected = !followChecked,
                     label = {
                         Text(
-                            text = if (followChecked) "Follow" else "Following",
+                            text = if (followChecked) "Following" else "Follow",
                             style = MaterialTheme.typography.bodyMedium,
                             fontFamily = FontFamily(Font(R.font.gilroy_semibold))
                         )
@@ -266,7 +158,7 @@ fun PosterDetails(avatar: String, isFollowed: Boolean) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageCarousel(images: List<Int>) {
+fun ImageCarousel(images: List<String>) {
     val pagerState = rememberPagerState(pageCount = { images.size })
 
     Column(
@@ -279,20 +171,24 @@ fun ImageCarousel(images: List<Int>) {
                 .aspectRatio(1f)
                 .fillMaxWidth()
         ) { page ->
-            Card(
+//            val painter = rememberAsyncImagePainter(images[page])
+//            Image(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .padding(bottom = 8.dp),
+//                painter = painter,
+//                contentDescription = "Image ${page + 1}",
+//                contentScale = ContentScale.Crop
+//            )
+            AsyncImage(
+                model = images[page],
+                contentDescription = "Image ${page + 1}",
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 8.dp),
-                shape = RectangleShape,
-                elevation = cardElevation(4.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = images[page]),
-                    contentDescription = "Image ${page + 1}",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+                contentScale = ContentScale.Crop,
+                placeholder = MaterialTheme.colorScheme.outlineVariant.let { ColorPainter(it) },
+            )
         }
 
         // Pager indicator
@@ -312,5 +208,115 @@ fun ImageCarousel(images: List<Int>) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun PostBottomBar(
+    comments: Int,
+    likes: Int,
+    isLiked: Boolean,
+    onLikeClicked: () -> Unit,
+    saveIconChecked: Boolean,
+    onSaveClicked: () -> Unit,
+    caption: String
+) {
+
+
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                Icon(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            onLikeClicked()
+                        },
+                    imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "like",
+                    tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    modifier = Modifier.padding(start = 2.dp),
+                    text = likes.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontFamily = FontFamily(Font(R.font.gilroy_regular)),
+                    fontWeight = FontWeight.Bold
+                )
+
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 20.dp)
+                        .size(27.dp),
+                    imageVector = Icons.AutoMirrored.Outlined.Chat,
+                    contentDescription = "Chat",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    modifier = Modifier.padding(start = 2.dp),
+                    text = comments.toString(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontFamily = FontFamily(Font(R.font.gilroy_regular)),
+                    fontWeight = FontWeight.Bold
+                )
+
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 25.dp)
+                        .size(27.dp)
+                        .graphicsLayer {
+                            rotationZ = -25f
+                            transformOrigin = TransformOrigin(0f, 1f)  // Bottom start pivot
+                        },
+                    imageVector = Icons.AutoMirrored.Outlined.Send,
+                    contentDescription = "Send",
+                    tint = MaterialTheme.colorScheme.primary
+                )
+
+
+            }
+            //save post
+            IconToggleButton(
+                checked = saveIconChecked,
+                onCheckedChange = { onSaveClicked() }
+
+            ) {
+                if (saveIconChecked) {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Outlined.Bookmark,
+                        contentDescription = "bookmark",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Icon(
+                        modifier = Modifier.size(28.dp),
+                        imageVector = Icons.Outlined.BookmarkBorder,
+                        contentDescription = "bookmark",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+        Text(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
+            text = caption,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontFamily = FontFamily(Font(R.font.gilroy_medium)),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
