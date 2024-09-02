@@ -11,6 +11,14 @@
     <string name="internetError">Check your Internet</string>
     <string name="validate_bio_error">Bio must be of length between 3 to 100 characters</string>
 
+    //server errors
+    <string name="errorInternalServerError"> Something went wrong</string>
+    <string name="errorLikePostNotFound">Post cannot be liked</string>
+    <string name="errorLikeBadRequest">Wrong post info</string>
+    <string name="errorCheckInternet">Check your Internet connection</string>
+    <string name="errorSavePostNotFound">Post cannot be saved</string>
+    <string name="errorSaveBadRequest">Wrong post info</string>
+
     //usernameScreen response
     <string name="usernameError">This username is not available</string>
     <string name="mobileOtpError">Failed to send OTP</string>

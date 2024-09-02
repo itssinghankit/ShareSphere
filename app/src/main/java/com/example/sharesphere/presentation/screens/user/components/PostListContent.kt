@@ -8,7 +8,17 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.sharesphere.data.commonDto.user.home.post.Post
 
 @Composable
-fun PostListContent(items: LazyPagingItems<Post>) {
+fun PostListContent(
+    items: LazyPagingItems<Post>,
+    onLikeClicked: (String) -> Unit,
+    onSaveClicked: (String) -> Unit,
+    isLikeError: Boolean,
+    likedPostId: String?,
+    onLikeErrorUpdated: () -> Unit,
+    isSaveError: Boolean,
+    savedPostId: String?,
+    onSaveErrorUpdated: () -> Unit
+) {
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -16,7 +26,19 @@ fun PostListContent(items: LazyPagingItems<Post>) {
         items(count = items.itemCount, key = { index -> items[index]?._id ?: 1 }
         ) { index ->
             val item = items[index]
-            item?.let { PostItem(post = item) }
+            item?.let {
+                PostItem(
+                    post = item,
+                    onLikeClicked = onLikeClicked,
+                    likedPostId = likedPostId,
+                    onSaveClicked = onSaveClicked,
+                    isLikeError = isLikeError,
+                    onLikeErrorUpdated = onLikeErrorUpdated,
+                    isSaveError = isSaveError,
+                    savedPostId = savedPostId,
+                    onSaveErrorUpdated = onSaveErrorUpdated
+                )
+            }
         }
 
     }

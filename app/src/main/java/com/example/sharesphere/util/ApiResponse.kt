@@ -6,5 +6,3 @@ sealed class ApiResponse<T>(val data: T? = null, val message: UiText? = null) {
     class Loading<T>() : ApiResponse<T>(null)
 
 }
-
-//isloading true false parameter in loading

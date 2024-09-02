@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary= Color.White, //
+    primary = Color.White, //
     onPrimary = Black05, //
     primaryContainer = Black15, //
     onPrimaryContainer = Grey96, //
@@ -24,18 +24,18 @@ private val DarkColorScheme = darkColorScheme(
     secondaryContainer = Black30, //
     onSecondaryContainer = darkblack90,
 
-    tertiary = Violet80,
-    onTertiary = Violet20,
-    tertiaryContainer = Violet30,
-    onTertiaryContainer = Violet90,
+    tertiary = Orange80, //violet shades
+    onTertiary = Orange20,
+    tertiaryContainer = Orange30,
+    onTertiaryContainer = Orange90,
 
-    error= Red80,
+    error = Red80,
     onError = Red20,
     errorContainer = Red30,
     onErrorContainer = Red90,
 
-    background = Color.White, //
-    onBackground = Black13, //
+    background = Black05, //black13 and background and onbackground switched
+    onBackground = Color.White, //
 
     surface = Black05,
     onSurface = Black91,
@@ -49,7 +49,7 @@ private val DarkColorScheme = darkColorScheme(
 
     outline = Black13, //
 //    outlineVariant = Black15 //
-outlineVariant =  Grey10//Grey79
+    outlineVariant = Grey10//Grey79
 
 )
 
@@ -59,14 +59,14 @@ private val LightColorScheme = lightColorScheme(
     primaryContainer = Black90, //
     onPrimaryContainer = Black10, //
     inversePrimary = Black80, //
-    secondary = DarkGreen40,
+    secondary = Grey53,//green blue 40
     onSecondary = Color.White,
     secondaryContainer = Black90,  //navigation bar selected
     onSecondaryContainer = Black10, //navigation bar selected icon
-    tertiary = Violet40,
+    tertiary = Orange50,//40 shade
     onTertiary = Color.White,
-    tertiaryContainer = Violet90,
-    onTertiaryContainer = Violet10,
+    tertiaryContainer = Orange90,
+    onTertiaryContainer = Orange10,
     error = Red40,
     onError = Color.White,
     errorContainer = Red90,
@@ -105,7 +105,8 @@ fun ShareSphereTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = if (darkTheme) DarkColorScheme.surface.toArgb() else LightColorScheme.surface.toArgb()
+            window.statusBarColor =
+                if (darkTheme) DarkColorScheme.surface.toArgb() else LightColorScheme.surface.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

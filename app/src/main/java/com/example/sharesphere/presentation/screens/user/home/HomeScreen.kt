@@ -1,14 +1,13 @@
 package com.example.sharesphere.presentation.screens.user.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
@@ -22,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -37,7 +37,6 @@ import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.screens.user.components.PostListContent
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -54,8 +53,8 @@ fun HomeScreen(
     viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val posts = viewModel.posts.collectAsLazyPagingItems()
 
-    val posts=viewModel.posts.collectAsLazyPagingItems()
 
     //Showing snackBar for Errors
     uiState.errorMessage?.let { errorMessage ->
@@ -74,17 +73,40 @@ fun HomeScreen(
             }
         }) { padding ->
 
-        HomeContent(modifier = Modifier.padding(padding),posts)
+        HomeContent(
+            modifier = Modifier.padding(padding),
+            posts,
+            onLikeClicked = { postId ->
+                onEvent(HomeEvents.LikePost(postId))
+            },
+            isLikeError = uiState.isLikeError,
+            likedPostId = uiState.likedPostId,
+            onLikeErrorUpdated = { onEvent(HomeEvents.LikeErrorUpdatedSuccessfully) },
+            isSaveError = uiState.isSaveError,
+            savedPostId = uiState.savedPostId,
+            onSaveClicked = {onEvent(HomeEvents.SavePost(it))},
+            onSaveErrorUpdated = { onEvent(HomeEvents.SaveErrorUpdatedSuccessfully) }
+        )
+
     }
 }
 
 @Composable
-fun HomeContent(modifier: Modifier, posts: LazyPagingItems<Post>) {
+fun HomeContent(
+    modifier: Modifier,
+    posts: LazyPagingItems<Post>,
+    onLikeClicked: (String) -> Unit,
+    onSaveClicked: (String) -> Unit,
+    isLikeError: Boolean,
+    likedPostId: String?,
+    onLikeErrorUpdated: () -> Unit,
+    isSaveError: Boolean,
+    savedPostId: String?,
+    onSaveErrorUpdated: () -> Unit
+) {
     Column(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.surface)
     ) {
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -110,7 +132,17 @@ fun HomeContent(modifier: Modifier, posts: LazyPagingItems<Post>) {
         }
         HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
 
-       PostListContent(posts)
+        PostListContent(
+            posts,
+            onLikeClicked = onLikeClicked,
+            onSaveClicked = onSaveClicked,
+            isLikeError = isLikeError,
+            onLikeErrorUpdated = onLikeErrorUpdated,
+            likedPostId = likedPostId,
+            isSaveError = isSaveError,
+            savedPostId = savedPostId,
+            onSaveErrorUpdated = onSaveErrorUpdated
+        )
 
     }
 

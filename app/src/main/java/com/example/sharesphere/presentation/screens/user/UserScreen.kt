@@ -127,7 +127,7 @@ private fun BottomBar(userNavController: NavHostController) {
 
     NavigationBar(
         modifier = Modifier.height(56.dp),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        containerColor = MaterialTheme.colorScheme.background,
         tonalElevation = 0.dp
     ) {
         items.forEachIndexed { index, screen ->

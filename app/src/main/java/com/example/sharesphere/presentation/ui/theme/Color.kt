@@ -103,3 +103,11 @@ val GreenGrey90 = Color(0xFFdcefe4)
 
 val BlueGrey31 = Color(0xFF44475B)
 val BlueGrey71 = Color(0xFFB0B2BA)
+
+val Orange90 = Color(0xFFffe5cc)
+val Orange80 = Color(0xFFffca99)
+val Orange50 = Color(0xFFff7b01)
+val Orange40 = Color(0xFFcc6300)
+val Orange30 = Color(0xFF994a00)
+val Orange20 = Color(0xFF663100)
+val Orange10 = Color(0xFF331900)

@@ -11,6 +11,7 @@ import com.example.sharesphere.presentation.screens.user.home.HomeViewModel
 import com.example.sharesphere.presentation.screens.user.notification.NotificationScreen
 import com.example.sharesphere.presentation.screens.user.post.PostScreen
 import com.example.sharesphere.presentation.screens.user.profile.ProfileScreen
+import com.example.sharesphere.presentation.screens.user.profile.ProfileViewModel
 import com.example.sharesphere.presentation.screens.user.search.SearchScreen
 
 @Composable
@@ -36,7 +37,8 @@ fun UserGraph(modifier: Modifier, navController: NavHostController, userNavigato
             NotificationScreen()
         }
         composable(ScreenSealedClass.UserScreens.ProfileScreen.route) {
-            ProfileScreen()
+            val viewModel:ProfileViewModel = hiltViewModel()
+            ProfileScreen(viewModel=viewModel, onEvent = viewModel::onEvent)
         }
 
     }

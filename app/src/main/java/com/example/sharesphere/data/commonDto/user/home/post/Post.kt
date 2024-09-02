@@ -20,6 +20,7 @@ data class Post(
     val createdAt: String,
     val isFollowed: Boolean,
     val isSaved: Boolean,
+    var isLiked: Boolean,
     val likeCount: Int,
     val postImages: List<String>,
     @Embedded

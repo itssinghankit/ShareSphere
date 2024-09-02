@@ -10,6 +10,8 @@ import com.example.sharesphere.data.remote.dto.register.RegisterRequestDto
 import com.example.sharesphere.data.remote.dto.register.RegisterResponseDto
 import com.example.sharesphere.data.remote.dto.signin.SignInRequestDto
 import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
+import com.example.sharesphere.data.remote.dto.user.home.like.LikePostDto
+import com.example.sharesphere.data.remote.dto.user.home.save.SavePostDto
 import com.example.sharesphere.data.remote.dto.username.UsernameResponseDto
 import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpRequestDto
 import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpResponseDto
@@ -66,6 +68,14 @@ interface ShareSphereApi {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): PostsDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @POST("post/like-post/{postId}")
+    suspend fun likePost(@Path("postId") postId: String):LikePostDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @POST("post/save-post/{postId}")
+    suspend fun savePost(@Path("postId") postId: String):SavePostDto
 
 
 }

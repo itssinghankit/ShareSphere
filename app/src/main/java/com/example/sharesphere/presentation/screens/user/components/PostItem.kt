@@ -1,7 +1,6 @@
 package com.example.sharesphere.presentation.screens.user.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +30,7 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,15 +51,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.example.sharesphere.R
 import com.example.sharesphere.data.commonDto.user.home.post.Post
+import com.example.sharesphere.presentation.ui.theme.orange
 
 @Composable
-fun PostItem(modifier: Modifier = Modifier, post: Post) {
-    var likes by rememberSaveable { mutableIntStateOf(1234) }
-    var isLiked by rememberSaveable { mutableStateOf(false) }
-    var saveIconChecked by rememberSaveable { mutableStateOf(false) }
+fun PostItem(
+    modifier: Modifier = Modifier,
+    post: Post,
+    onLikeClicked: (String) -> Unit,
+    onSaveClicked: (String) -> Unit,
+    isLikeError: Boolean,
+    likedPostId: String?,
+    onLikeErrorUpdated: () -> Unit,
+    isSaveError: Boolean,
+    savedPostId: String?,
+    onSaveErrorUpdated: () -> Unit
+) {
 
     Column(modifier = modifier) {
         PosterDetails(
@@ -75,20 +84,19 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
         PostBottomBar(
             likes = post.likeCount,
             comments = post.commentCount,
-            isLiked = isLiked,
-            onLikeClicked = {
-                if (isLiked) {
-                    likes--
-                } else {
-                    likes++
-                }
-                isLiked = !isLiked
-            },
+            isLiked = post.isLiked,
+            onLikeClicked = onLikeClicked,
             saveIconChecked = post.isSaved,
-            onSaveClicked = {
-                saveIconChecked = !saveIconChecked
-            },
-            caption = post.caption
+            onSaveClicked = onSaveClicked,
+            caption = post.caption,
+            postId = post._id,
+            isLikeError = isLikeError,
+            likedPostId = likedPostId,
+            onLikeErrorUpdated = onLikeErrorUpdated,
+            isSaveError = isSaveError,
+            savedPostId = savedPostId,
+            onSaveErrorUpdated = onSaveErrorUpdated
+
         )
 
     }
@@ -98,9 +106,6 @@ fun PostItem(modifier: Modifier = Modifier, post: Post) {
 
 @Composable
 fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: String) {
-
-    var followChecked by remember { mutableStateOf(false) }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,6 +143,7 @@ fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: S
 
         Row {
             if (!isFollowed) {
+                var followChecked by rememberSaveable { mutableStateOf(false) }
                 FilterChip(
                     selected = !followChecked,
                     label = {
@@ -160,7 +166,6 @@ fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: S
 @Composable
 fun ImageCarousel(images: List<String>) {
     val pagerState = rememberPagerState(pageCount = { images.size })
-
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -180,6 +185,7 @@ fun ImageCarousel(images: List<String>) {
 //                contentDescription = "Image ${page + 1}",
 //                contentScale = ContentScale.Crop
 //            )
+
             AsyncImage(
                 model = images[page],
                 contentDescription = "Image ${page + 1}",
@@ -192,11 +198,11 @@ fun ImageCarousel(images: List<String>) {
         }
 
         // Pager indicator
-        Row(
-            Modifier.fillMaxWidth(),
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(pagerState.pageCount) { iteration ->
+            items(pagerState.pageCount) { iteration ->
                 val color =
                     if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.tertiary else Color.LightGray
                 Box(
@@ -216,12 +222,35 @@ fun PostBottomBar(
     comments: Int,
     likes: Int,
     isLiked: Boolean,
-    onLikeClicked: () -> Unit,
+    onLikeClicked: (String) -> Unit,
     saveIconChecked: Boolean,
-    onSaveClicked: () -> Unit,
-    caption: String
+    onSaveClicked: (String) -> Unit,
+    caption: String,
+    postId: String,
+    isLikeError: Boolean,
+    likedPostId: String?,
+    onLikeErrorUpdated: () -> Unit,
+    isSaveError: Boolean,
+    savedPostId: String?,
+    onSaveErrorUpdated: () -> Unit
 ) {
+    var isLikedState by rememberSaveable { mutableStateOf(isLiked) }
+    var likeCountState by rememberSaveable { mutableIntStateOf(likes) }
+    var saveIconCheckedState by rememberSaveable { mutableStateOf(saveIconChecked) }
 
+    LaunchedEffect(isLikeError) {
+        if(isLikeError && postId==likedPostId){
+            isLikedState = !isLikedState
+            likeCountState = if(isLikedState) likeCountState+1 else likeCountState-1
+            onLikeErrorUpdated()
+        }
+    }
+    LaunchedEffect(isSaveError) {
+        if(isSaveError && postId==savedPostId){
+            saveIconCheckedState = !saveIconCheckedState
+            onSaveErrorUpdated()
+        }
+    }
 
     Column {
         Row(
@@ -239,15 +268,17 @@ fun PostBottomBar(
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }) {
-                            onLikeClicked()
+                            if (isLikedState) likeCountState-- else likeCountState++
+                            isLikedState = !isLikedState
+                            onLikeClicked(postId)
                         },
-                    imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    imageVector = if (isLikedState) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = "like",
-                    tint = if (isLiked) Color.Red else MaterialTheme.colorScheme.primary
+                    tint = if (isLikedState) Color.Red else MaterialTheme.colorScheme.primary
                 )
                 Text(
                     modifier = Modifier.padding(start = 2.dp),
-                    text = likes.toString(),
+                    text = likeCountState.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.gilroy_regular)),
@@ -288,11 +319,13 @@ fun PostBottomBar(
             }
             //save post
             IconToggleButton(
-                checked = saveIconChecked,
-                onCheckedChange = { onSaveClicked() }
+                checked = saveIconCheckedState,
+                onCheckedChange = {
+                    saveIconCheckedState=!saveIconCheckedState
+                    onSaveClicked(postId) }
 
             ) {
-                if (saveIconChecked) {
+                if (saveIconCheckedState) {
                     Icon(
                         modifier = Modifier.size(28.dp),
                         imageVector = Icons.Outlined.Bookmark,
@@ -309,14 +342,16 @@ fun PostBottomBar(
                 }
             }
         }
-        Text(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
-            text = caption,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontFamily = FontFamily(Font(R.font.gilroy_medium)),
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (caption.isNotEmpty() && caption.isNotBlank()) {
+            Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                text = caption,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontFamily = FontFamily(Font(R.font.gilroy_medium)),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
