@@ -10,6 +10,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun NotificationScreen(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "Notification")
+        Text(text = "No Notification Yet")
     }
 }

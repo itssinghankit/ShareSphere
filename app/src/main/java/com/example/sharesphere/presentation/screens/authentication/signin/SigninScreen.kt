@@ -1,5 +1,6 @@
 package com.example.sharesphere.presentation.screens.authentication.signin
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -112,6 +113,7 @@ fun SignInScreen(
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
+        containerColor = Color.White,
         topBar = {
             AuthTopBar(
                 modifier = Modifier,

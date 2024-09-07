@@ -71,6 +71,7 @@ fun UsernameScreen(
     Scaffold(
         modifier = modifier
             .fillMaxSize(),
+        containerColor = Color.White,
         topBar = {
             AuthTopBar(
                 modifier = Modifier,

@@ -12,6 +12,9 @@ import com.example.sharesphere.data.remote.dto.signin.SignInRequestDto
 import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
 import com.example.sharesphere.data.remote.dto.user.home.like.LikePostDto
 import com.example.sharesphere.data.remote.dto.user.home.save.SavePostDto
+import com.example.sharesphere.data.remote.dto.user.profile.SavedPostsDto
+import com.example.sharesphere.data.remote.dto.user.profile.myPost.MyPostDto
+import com.example.sharesphere.data.remote.dto.user.profile.viewProfile.ViewAccountDto
 import com.example.sharesphere.data.remote.dto.username.UsernameResponseDto
 import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpRequestDto
 import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpResponseDto
@@ -77,5 +80,16 @@ interface ShareSphereApi {
     @POST("post/save-post/{postId}")
     suspend fun savePost(@Path("postId") postId: String):SavePostDto
 
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/view-account/{userId}")
+    suspend fun viewAccount(@Path("userId") userId: String): ViewAccountDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/get-my-posts")
+    suspend fun getMyPosts(): MyPostDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/show-saved-post")
+    suspend fun getSavedPosts(): SavedPostsDto
 
 }
