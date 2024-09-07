@@ -37,5 +37,8 @@ object TextFieldValidation {
     fun isBioValid(bio:String):Boolean{
        return bio.length in 3..100
     }
+    fun isCaptionValid(caption:String):Boolean{
+        return caption.length in 3..100
+    }
 
 }

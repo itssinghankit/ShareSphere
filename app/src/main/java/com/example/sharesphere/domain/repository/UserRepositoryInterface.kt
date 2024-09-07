@@ -4,13 +4,15 @@ import androidx.paging.PagingData
 import com.example.sharesphere.data.commonDto.user.home.post.Post
 import com.example.sharesphere.data.remote.dto.user.home.like.LikePostDto
 import com.example.sharesphere.data.remote.dto.user.home.save.SavePostDto
-import com.example.sharesphere.data.remote.dto.user.profile.SavedPostsDto
+import com.example.sharesphere.data.remote.dto.user.post.CreatePostResDto
 import com.example.sharesphere.domain.model.user.profile.MyPostModel
 import com.example.sharesphere.domain.model.user.profile.SavedPostModel
 import com.example.sharesphere.domain.model.user.profile.ViewAccountModel
 import com.example.sharesphere.util.ApiResult
 import com.example.sharesphere.util.DataError
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 interface UserRepositoryInterface {
 
@@ -20,4 +22,8 @@ interface UserRepositoryInterface {
     suspend fun viewAccount(userId: String): Flow<ApiResult<ViewAccountModel, DataError.Network>>
     suspend fun getMyPosts(): Flow<ApiResult<List<MyPostModel>, DataError.Network>>
     suspend fun getSavedPosts():Flow<ApiResult<List<SavedPostModel>,DataError.Network>>
+    suspend fun createPost(
+        postImages: List<MultipartBody.Part>,
+        caption: RequestBody,
+    ):Flow<ApiResult<CreatePostResDto,DataError.Network>>
 }

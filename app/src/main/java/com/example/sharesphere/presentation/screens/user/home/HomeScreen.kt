@@ -130,7 +130,7 @@ fun HomeContent(
             }
 
         }
-        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
+        HorizontalDivider(thickness = 1.dp, modifier = Modifier.padding(top = 4.dp))
 
         PostListContent(
             posts,

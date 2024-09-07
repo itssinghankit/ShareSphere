@@ -9,10 +9,13 @@ sealed interface DataError: Error {
         TIMEOUT,
         UNKNOWN,
         ALREADY_CREATED,
-        BAD_REQUEST
+        BAD_REQUEST,
+        PAYLOAD_TOO_LARGE
     }
     enum class Local:DataError{
         DISK_FULL,
-        STORAGE_PERMISSION_DENIED
+        STORAGE_PERMISSION_DENIED,
+        EMPTY,
+        INCORRECT_LENGTH
     }
 }

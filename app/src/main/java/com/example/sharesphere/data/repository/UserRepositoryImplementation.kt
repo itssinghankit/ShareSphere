@@ -13,8 +13,7 @@ import com.example.sharesphere.data.paging.HomePostRemoteMediator
 import com.example.sharesphere.data.remote.ShareSphereApi
 import com.example.sharesphere.data.remote.dto.user.home.like.LikePostDto
 import com.example.sharesphere.data.remote.dto.user.home.save.SavePostDto
-import com.example.sharesphere.data.remote.dto.user.profile.SavedPostsDto
-import com.example.sharesphere.data.remote.dto.user.profile.viewProfile.ViewAccountDto
+import com.example.sharesphere.data.remote.dto.user.post.CreatePostResDto
 import com.example.sharesphere.domain.model.user.profile.MyPostModel
 import com.example.sharesphere.domain.model.user.profile.SavedPostModel
 import com.example.sharesphere.domain.model.user.profile.ViewAccountModel
@@ -24,6 +23,8 @@ import com.example.sharesphere.util.Constants.ITEMS_PER_PAGE
 import com.example.sharesphere.util.DataError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okio.IOException
 import retrofit2.HttpException
 import timber.log.Timber
@@ -115,7 +116,6 @@ class UserRepositoryImplementation @Inject constructor(
 
     override suspend fun getSavedPosts(): Flow<ApiResult<List<SavedPostModel>, DataError.Network>>  =
         flow {
-            Timber.d("get saved called")
             try {
                 val response = shareSphereApi.getSavedPosts().toSavedPostModelList()
                 emit(ApiResult.Success(response))
@@ -124,6 +124,26 @@ class UserRepositoryImplementation @Inject constructor(
                     400 -> emit(ApiResult.Error(DataError.Network.BAD_REQUEST))
                     404 -> emit(ApiResult.Error(DataError.Network.NOT_FOUND))
                     500 -> emit(ApiResult.Error(DataError.Network.INTERNAL_SERVER_ERROR))
+                }
+            } catch (e: IOException) {
+                emit(ApiResult.Error(DataError.Network.UNKNOWN))
+            }
+        }
+
+    override suspend fun createPost(
+        postImages: List<MultipartBody.Part>,
+        caption: RequestBody
+    ): Flow<ApiResult<CreatePostResDto, DataError.Network>> =
+        flow {
+            try {
+                val response = shareSphereApi.createPost(postImages,caption)
+                emit(ApiResult.Success(response))
+            } catch (e: HttpException) {
+                when (e.code()) {
+                    400 -> emit(ApiResult.Error(DataError.Network.BAD_REQUEST))
+                    404 -> emit(ApiResult.Error(DataError.Network.NOT_FOUND))
+                    413 -> emit(ApiResult.Error(DataError.Network.PAYLOAD_TOO_LARGE))
+                    else -> emit(ApiResult.Error(DataError.Network.INTERNAL_SERVER_ERROR))
                 }
             } catch (e: IOException) {
                 emit(ApiResult.Error(DataError.Network.UNKNOWN))

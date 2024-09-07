@@ -3,6 +3,8 @@ package com.example.sharesphere.presentation.screens.user.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -164,10 +167,11 @@ fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: S
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageCarousel(images: List<String>) {
+fun ImageCarousel(modifier: Modifier=Modifier,images: List<String>) {
     val pagerState = rememberPagerState(pageCount = { images.size })
+
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HorizontalPager(
@@ -175,6 +179,7 @@ fun ImageCarousel(images: List<String>) {
             modifier = Modifier
                 .aspectRatio(1f)
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.outlineVariant)
         ) { page ->
 //            val painter = rememberAsyncImagePainter(images[page])
 //            Image(
@@ -190,8 +195,7 @@ fun ImageCarousel(images: List<String>) {
                 model = images[page],
                 contentDescription = "Image ${page + 1}",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 8.dp),
+                    .fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 placeholder = MaterialTheme.colorScheme.outlineVariant.let { ColorPainter(it) },
             )
@@ -199,7 +203,7 @@ fun ImageCarousel(images: List<String>) {
 
         // Pager indicator
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             items(pagerState.pageCount) { iteration ->

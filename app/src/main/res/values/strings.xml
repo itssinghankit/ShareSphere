@@ -10,6 +10,11 @@
     <string name="validateFullNameError">Must be a valid Name with Alphabets only</string>
     <string name="internetError">Check your Internet</string>
     <string name="validate_bio_error">Bio must be of length between 3 to 100 characters</string>
+    <string name="validate_images_error">Images must be lesser than or equal to 10</string>
+    <string name="validate_images_empty_error">Select some images to post</string>
+    <string name="validate_caption_not_empty_error">Caption should not be empty or blank</string>
+    <string name="validate_caption_length_error">Caption should contain atleast 3 characters</string>
+
 
     //server errors
     <string name="errorInternalServerError"> Something went wrong</string>
@@ -18,6 +23,7 @@
     <string name="errorCheckInternet">Check your Internet connection</string>
     <string name="errorSavePostNotFound">Post cannot be saved</string>
     <string name="errorSaveBadRequest">Wrong post info</string>
+    <string name="errorPayloadTooLarge">Image size is too large</string>
 
     //usernameScreen response
     <string name="usernameError">This username is not available</string>

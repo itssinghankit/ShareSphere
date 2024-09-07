@@ -1,4 +1,4 @@
-package com.example.sharesphere.data.remote.dto.user.profile
+package com.example.sharesphere.data.remote.dto.user.profile.savedpost
 
 data class PostDetails(
     val __v: Int,

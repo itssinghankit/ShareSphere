@@ -255,68 +255,6 @@ fun ProfileContent(
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun TabView(
-    modifier: Modifier = Modifier,
-    tabItems: List<ProfileTabItems>,
-) {
-    val pagerState = rememberPagerState(pageCount = { tabItems.size })
-    val coroutineScope = rememberCoroutineScope()
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(top = 16.dp)
-    ) {
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            containerColor = MaterialTheme.colorScheme.background
-        ) {
-            tabItems.forEachIndexed { index, item ->
-                Tab(
-                    icon = {
-                        if (pagerState.currentPage == index) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(24.dp),
-                                imageVector = item.filledIcon,
-                                contentDescription = "photos",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        } else {
-                            Icon(
-                                modifier = Modifier
-                                    .size(24.dp),
-                                imageVector = item.outlinedIcon,
-                                contentDescription = "photos",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    },
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    }
-                )
-            }
-        }
-
-        HorizontalPager(
-            state = pagerState,
-        ) { page ->
-
-            ProfileGridImages(
-                imagesList = tabItems[page].contentList,
-                onItemClick = tabItems[page].onItemClick
-            )
-
-        }
-    }
-
-}
 
 
 @Composable
@@ -572,6 +510,69 @@ fun TopBar(owner: Boolean, userId: String) {
 
 
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TabView(
+    modifier: Modifier = Modifier,
+    tabItems: List<ProfileTabItems>,
+) {
+    val pagerState = rememberPagerState(pageCount = { tabItems.size })
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = 16.dp)
+    ) {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = MaterialTheme.colorScheme.background
+        ) {
+            tabItems.forEachIndexed { index, item ->
+                Tab(
+                    icon = {
+                        if (pagerState.currentPage == index) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(24.dp),
+                                imageVector = item.filledIcon,
+                                contentDescription = "photos",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        } else {
+                            Icon(
+                                modifier = Modifier
+                                    .size(24.dp),
+                                imageVector = item.outlinedIcon,
+                                contentDescription = "photos",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    }
+                )
+            }
+        }
+
+        HorizontalPager(
+            state = pagerState,
+        ) { page ->
+
+            ProfileGridImages(
+                imagesList = tabItems[page].contentList,
+                onItemClick = tabItems[page].onItemClick
+            )
+
+        }
+    }
+
 }
 
 @Composable
