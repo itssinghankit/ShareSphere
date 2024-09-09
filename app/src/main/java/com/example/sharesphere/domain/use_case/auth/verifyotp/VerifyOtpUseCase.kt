@@ -2,8 +2,8 @@ package com.example.sharesphere.domain.use_case.auth.verifyotp
 
 import com.example.sharesphere.R
 import com.example.sharesphere.data.mapper.toVerifyOtpModel
-import com.example.sharesphere.data.remote.dto.error.ServerErrorDto
-import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpRequestDto
+import com.example.sharesphere.data.remote.dto.auth.error.ServerErrorDto
+import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpRequestDto
 import com.example.sharesphere.domain.model.auth.VerifyOtpModel
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import com.example.sharesphere.util.ApiResponse

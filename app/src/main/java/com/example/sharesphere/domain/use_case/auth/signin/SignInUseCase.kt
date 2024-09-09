@@ -2,8 +2,8 @@ package com.example.sharesphere.domain.use_case.auth.signin
 
 import com.example.sharesphere.R
 import com.example.sharesphere.data.mapper.toSignInModel
-import com.example.sharesphere.data.remote.dto.error.ServerErrorDto
-import com.example.sharesphere.data.remote.dto.signin.SignInRequestDto
+import com.example.sharesphere.data.remote.dto.auth.error.ServerErrorDto
+import com.example.sharesphere.data.remote.dto.auth.signin.SignInRequestDto
 import com.example.sharesphere.domain.model.auth.SignInModel
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import com.example.sharesphere.util.ApiResponse

@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,10 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
 import com.example.sharesphere.presentation.components.ComponentButton
+import com.example.sharesphere.presentation.components.ComponentDayNightTextField
 import com.example.sharesphere.presentation.components.ConnectionLostScreen
 import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.components.Loading
 import com.example.sharesphere.presentation.screens.user.components.ImageCarousel
+import com.example.sharesphere.presentation.screens.user.search.SearchTopBar
 import com.example.sharesphere.util.NetworkMonitor
 import com.example.sharesphere.util.UiText
 import kotlinx.coroutines.launch
@@ -197,7 +200,7 @@ fun PostContent(
             images = images
         )
         PostCaption(
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             caption = caption,
             onCaptionChanged = onCaptionChanged,
             showError = isCaptionError,
@@ -271,54 +274,18 @@ fun PostCaption(
     onCaptionChanged: (String) -> Unit,
     showError: Boolean,
     captionError: String,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
-
-    Column(modifier = modifier) {
-        OutlinedTextField(
-            value = caption,
-            onValueChange = { onCaptionChanged(it) },
-            modifier = modifier
-                .fillMaxWidth(),
-            shape = RectangleShape,
-            maxLines = 3,
-            label = { Text(text = "Caption") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Outlined.Subtitles,
-                    contentDescription = "caption"
-                )
-            },
-            isError = showError,
-            trailingIcon = {
-                if (showError) {
-                    Icon(
-                        imageVector = Icons.Filled.Error,
-                        contentDescription = stringResource(R.string.show_error_icon)
-                    )
-                }
-            },
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            textStyle = TextStyle(
-                fontFamily = FontFamily(Font(R.font.lato_regular)),
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize
-            )
-        )
-        //to show error messages
-        if (showError) {
-            Text(
-                modifier = Modifier
-                    .padding(top = 4.dp, start = 10.dp, end = 8.dp)
-                    .fillMaxWidth(0.9f),
-                text = captionError,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                fontFamily = FontFamily(Font(R.font.lato_regular))
-            )
-        }
-    }
+    ComponentDayNightTextField(
+        modifier = modifier,
+        value = caption,
+        onValueChange = { onCaptionChanged(it)},
+        leadingIconImageVector = Icons.Outlined.Subtitles,
+        label = "Caption",
+        maxLines = 3,
+        singleLine = false,
+        showError = showError,
+        errorMessage = captionError,
+    )
 
 }
 

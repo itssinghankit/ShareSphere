@@ -516,7 +516,7 @@ fun TopBar(owner: Boolean, userId: String) {
 @Composable
 fun TabView(
     modifier: Modifier = Modifier,
-    tabItems: List<ProfileTabItems>,
+    tabItems: List<ProfileTabItems>
 ) {
     val pagerState = rememberPagerState(pageCount = { tabItems.size })
     val coroutineScope = rememberCoroutineScope()
@@ -661,7 +661,8 @@ fun ViewImagesDialog(
             onLikeErrorUpdated = onLikeErrorUpdated,
             isSaveError = isSaveError,
             savedPostId = savedPostId,
-            onSaveErrorUpdated = onSaveErrorUpdated
+            onSaveErrorUpdated = onSaveErrorUpdated,
+            onFollowClicked = {}
         )
     }
 

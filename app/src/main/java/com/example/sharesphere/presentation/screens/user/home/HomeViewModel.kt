@@ -3,6 +3,8 @@ package com.example.sharesphere.presentation.screens.user.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
+import com.example.sharesphere.domain.use_case.user.common.follow.FollowUserUseCase
+import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
 import com.example.sharesphere.domain.use_case.user.home.GetAllPostUseCase
 import com.example.sharesphere.domain.use_case.user.home.LikePostUseCase
 import com.example.sharesphere.domain.use_case.user.home.SavePostUseCase
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 data class HomeStates(
@@ -33,11 +36,13 @@ class HomeViewModel @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val getAllPostUseCase: GetAllPostUseCase,
     private val likePostUseCase: LikePostUseCase,
-    private val savePostUseCase: SavePostUseCase
+    private val savePostUseCase: SavePostUseCase,
+    private val getUserIdDataStoreUseCase: GetUserIdDataStoreUseCase,
+    private val followUserUseCase: FollowUserUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeStates())
-    val uiState: StateFlow<HomeStates> = _uiState
+    private val _uiStates = MutableStateFlow(HomeStates())
+    val uiStates: StateFlow<HomeStates> = _uiStates
 
     var posts = getAllPostUseCase()
     val networkState = networkMonitor.networkState
@@ -45,7 +50,7 @@ class HomeViewModel @Inject constructor(
     fun onEvent(event: HomeEvents) {
         when (event) {
             HomeEvents.ResetErrorMessage -> {
-                _uiState.update {
+                _uiStates.update {
                     it.copy(errorMessage = null)
                 }
             }
@@ -55,13 +60,13 @@ class HomeViewModel @Inject constructor(
             }
 
             HomeEvents.LikeErrorUpdatedSuccessfully ->{
-                _uiState.update {
+                _uiStates.update {
                     it.copy(isLikeError = false, likedPostId = null)
                 }
             }
 
             HomeEvents.SaveErrorUpdatedSuccessfully -> {
-                _uiState.update {
+                _uiStates.update {
                     it.copy(isSaveError = false, savedPostId = null)
                 }
             }
@@ -69,13 +74,17 @@ class HomeViewModel @Inject constructor(
             is HomeEvents.SavePost -> {
                 savePost(postId = event.postId)
             }
+
+            is HomeEvents.OnFollowClicked -> {
+                followUser(event.userId)
+            }
         }
 
     }
 
     private fun likePost(postId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update {
+            _uiStates.update {
                 it.copy(isLoading = true)
             }
 
@@ -84,7 +93,7 @@ class HomeViewModel @Inject constructor(
                     is ApiResult.Error -> {
 
                         withContext(Dispatchers.Main) {
-                            _uiState.update {
+                            _uiStates.update {
                                 it.copy(
                                     isLikeError = true,
                                     likedPostId = postId,
@@ -96,7 +105,7 @@ class HomeViewModel @Inject constructor(
                         when (result.error) {
                             DataError.Network.INTERNAL_SERVER_ERROR -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorInternalServerError)
                                         )
@@ -106,7 +115,7 @@ class HomeViewModel @Inject constructor(
 
                             DataError.Network.NOT_FOUND -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorLikePostNotFound)
                                         )
@@ -116,7 +125,7 @@ class HomeViewModel @Inject constructor(
 
                             DataError.Network.BAD_REQUEST -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorLikeBadRequest)
                                         )
@@ -126,7 +135,7 @@ class HomeViewModel @Inject constructor(
 
                             else -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorCheckInternet)
                                         )
@@ -138,7 +147,7 @@ class HomeViewModel @Inject constructor(
 
                     is ApiResult.Success -> {
                         withContext(Dispatchers.Main) {
-                            _uiState.update {
+                            _uiStates.update {
                                 it.copy(isLoading = false)
                             }
                         }
@@ -151,7 +160,7 @@ class HomeViewModel @Inject constructor(
 
     private fun savePost(postId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update {
+            _uiStates.update {
                 it.copy(isLoading = true)
             }
 
@@ -160,7 +169,7 @@ class HomeViewModel @Inject constructor(
                     is ApiResult.Error -> {
 
                         withContext(Dispatchers.Main) {
-                            _uiState.update {
+                            _uiStates.update {
                                 it.copy(
                                     isSaveError = true,
                                     savedPostId = postId,
@@ -172,7 +181,7 @@ class HomeViewModel @Inject constructor(
                         when (result.error) {
                             DataError.Network.INTERNAL_SERVER_ERROR -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorInternalServerError)
                                         )
@@ -182,7 +191,7 @@ class HomeViewModel @Inject constructor(
 
                             DataError.Network.NOT_FOUND -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorLikePostNotFound)
                                         )
@@ -192,7 +201,7 @@ class HomeViewModel @Inject constructor(
 
                             DataError.Network.BAD_REQUEST -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorLikeBadRequest)
                                         )
@@ -202,7 +211,7 @@ class HomeViewModel @Inject constructor(
 
                             else -> {
                                 withContext(Dispatchers.Main) {
-                                    _uiState.update {
+                                    _uiStates.update {
                                         it.copy(
                                             errorMessage = UiText.StringResource(R.string.errorCheckInternet)
                                         )
@@ -214,11 +223,60 @@ class HomeViewModel @Inject constructor(
 
                     is ApiResult.Success -> {
                         withContext(Dispatchers.Main) {
-                            _uiState.update {
+                            _uiStates.update {
                                 it.copy(isLoading = false)
                             }
                         }
 
+                    }
+                }
+            }
+        }
+    }
+
+    private fun followUser(accountId:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userId=getUserIdDataStoreUseCase()
+            if(userId==accountId){
+                withContext(Dispatchers.Main){
+                    _uiStates.update {
+                        it.copy(
+                            errorMessage = UiText.StringResource(R.string.errorFollowSelf)
+                        )
+                    }
+                }
+                Timber.d("called")
+                return@launch
+            }
+            followUserUseCase(accountId).collect { result ->
+                when (result) {
+                    is ApiResult.Error -> {
+
+                        when (result.error) {
+                            DataError.Network.INTERNAL_SERVER_ERROR -> {
+                                withContext(Dispatchers.Main) {
+                                    _uiStates.update {
+                                        it.copy(
+                                            errorMessage = UiText.StringResource(R.string.errorInternalServerError)
+                                        )
+                                    }
+                                }
+                            }
+
+                            else -> {
+                                withContext(Dispatchers.Main) {
+                                    _uiStates.update {
+                                        it.copy(
+                                            errorMessage = UiText.StringResource(R.string.errorCheckInternet)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    is ApiResult.Success -> {
+                        //do nothing
                     }
                 }
             }

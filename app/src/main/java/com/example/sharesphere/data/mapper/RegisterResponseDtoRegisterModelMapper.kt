@@ -1,6 +1,6 @@
 package com.example.sharesphere.data.mapper
 
-import com.example.sharesphere.data.remote.dto.register.RegisterResponseDto
+import com.example.sharesphere.data.remote.dto.auth.register.RegisterResponseDto
 import com.example.sharesphere.domain.model.auth.RegisterModel
 
 fun RegisterResponseDto.toRegisterModel(): RegisterModel {

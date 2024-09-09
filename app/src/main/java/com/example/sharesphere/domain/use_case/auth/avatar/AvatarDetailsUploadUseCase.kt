@@ -3,7 +3,7 @@ package com.example.sharesphere.domain.use_case.auth.avatar
 import android.net.Uri
 import com.example.sharesphere.R
 import com.example.sharesphere.data.mapper.toAvatarModel
-import com.example.sharesphere.data.remote.dto.error.ServerErrorDto
+import com.example.sharesphere.data.remote.dto.auth.error.ServerErrorDto
 import com.example.sharesphere.domain.model.auth.AvatarModel
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import com.example.sharesphere.util.ApiResponse

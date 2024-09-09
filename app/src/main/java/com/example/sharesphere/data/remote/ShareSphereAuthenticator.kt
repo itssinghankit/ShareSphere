@@ -1,7 +1,7 @@
 package com.example.sharesphere.data.remote
 
 import com.example.sharesphere.BuildConfig
-import com.example.sharesphere.data.remote.dto.refreshToken.RefreshTokenRequestDto
+import com.example.sharesphere.data.remote.dto.auth.refreshToken.RefreshTokenRequestDto
 import com.example.sharesphere.data.repository.datastore.PreferencesKeys
 import com.example.sharesphere.domain.repository.DataStoreRepository
 import kotlinx.coroutines.flow.first

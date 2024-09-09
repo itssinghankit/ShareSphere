@@ -2,8 +2,8 @@ package com.example.sharesphere.domain.use_case.auth.register
 
 import com.example.sharesphere.R
 import com.example.sharesphere.data.mapper.toRegisterModel
-import com.example.sharesphere.data.remote.dto.error.ServerErrorDto
-import com.example.sharesphere.data.remote.dto.register.RegisterRequestDto
+import com.example.sharesphere.data.remote.dto.auth.error.ServerErrorDto
+import com.example.sharesphere.data.remote.dto.auth.register.RegisterRequestDto
 import com.example.sharesphere.domain.model.auth.RegisterModel
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import com.example.sharesphere.util.ApiResponse

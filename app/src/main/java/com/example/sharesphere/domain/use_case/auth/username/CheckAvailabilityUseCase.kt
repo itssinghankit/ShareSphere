@@ -2,8 +2,8 @@ package com.example.sharesphere.domain.use_case.auth.username
 
 import android.os.Build
 import androidx.annotation.RequiresExtension
-import com.example.sharesphere.data.remote.dto.error.ServerErrorDto
-import com.example.sharesphere.data.remote.dto.username.toUsernameModel
+import com.example.sharesphere.data.remote.dto.auth.error.ServerErrorDto
+import com.example.sharesphere.data.remote.dto.auth.username.toUsernameModel
 import com.example.sharesphere.domain.model.auth.UsernameModel
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import com.example.sharesphere.util.ApiResponse

@@ -1,7 +1,5 @@
 package com.example.sharesphere.presentation.screens.user.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -35,6 +32,7 @@ import com.example.sharesphere.R
 import com.example.sharesphere.data.commonDto.user.home.post.Post
 import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.screens.user.components.PostListContent
+import com.example.sharesphere.presentation.screens.user.search.SearchEvents
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
 
@@ -52,7 +50,7 @@ fun HomeScreen(
     val networkState by
     viewModel.networkState.collectAsStateWithLifecycle(initialValue = NetworkMonitor.NetworkState.Lost)
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiStates.collectAsStateWithLifecycle()
     val posts = viewModel.posts.collectAsLazyPagingItems()
 
 
@@ -85,7 +83,8 @@ fun HomeScreen(
             isSaveError = uiState.isSaveError,
             savedPostId = uiState.savedPostId,
             onSaveClicked = {onEvent(HomeEvents.SavePost(it))},
-            onSaveErrorUpdated = { onEvent(HomeEvents.SaveErrorUpdatedSuccessfully) }
+            onSaveErrorUpdated = { onEvent(HomeEvents.SaveErrorUpdatedSuccessfully) },
+            onFollowClicked={onEvent(HomeEvents.OnFollowClicked(it))}
         )
 
     }
@@ -102,7 +101,8 @@ fun HomeContent(
     onLikeErrorUpdated: () -> Unit,
     isSaveError: Boolean,
     savedPostId: String?,
-    onSaveErrorUpdated: () -> Unit
+    onSaveErrorUpdated: () -> Unit,
+    onFollowClicked: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -141,7 +141,8 @@ fun HomeContent(
             likedPostId = likedPostId,
             isSaveError = isSaveError,
             savedPostId = savedPostId,
-            onSaveErrorUpdated = onSaveErrorUpdated
+            onSaveErrorUpdated = onSaveErrorUpdated,
+            onFollowClicked =onFollowClicked
         )
 
     }

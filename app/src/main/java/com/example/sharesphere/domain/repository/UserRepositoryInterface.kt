@@ -5,9 +5,11 @@ import com.example.sharesphere.data.commonDto.user.home.post.Post
 import com.example.sharesphere.data.remote.dto.user.home.like.LikePostDto
 import com.example.sharesphere.data.remote.dto.user.home.save.SavePostDto
 import com.example.sharesphere.data.remote.dto.user.post.CreatePostResDto
+import com.example.sharesphere.domain.model.user.followersFollowing.FFModel
 import com.example.sharesphere.domain.model.user.profile.MyPostModel
 import com.example.sharesphere.domain.model.user.profile.SavedPostModel
 import com.example.sharesphere.domain.model.user.profile.ViewAccountModel
+import com.example.sharesphere.domain.model.user.search.SearchUserModel
 import com.example.sharesphere.util.ApiResult
 import com.example.sharesphere.util.DataError
 import kotlinx.coroutines.flow.Flow
@@ -26,4 +28,8 @@ interface UserRepositoryInterface {
         postImages: List<MultipartBody.Part>,
         caption: RequestBody,
     ):Flow<ApiResult<CreatePostResDto,DataError.Network>>
+    suspend fun searchUser(usernameOrName:String):Flow<ApiResult<List<SearchUserModel>,DataError.Network>>
+    suspend fun followUser(accountId:String):Flow<ApiResult<Unit,DataError.Network>>
+    suspend fun getFollowers(userId:String):Flow<ApiResult<List<FFModel>,DataError.Network>>
+    suspend fun getFollowing(userId:String):Flow<ApiResult<List<FFModel>,DataError.Network>>
 }

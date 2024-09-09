@@ -1,24 +1,28 @@
 package com.example.sharesphere.data.remote
 
 import com.example.sharesphere.data.commonDto.user.home.post.PostsDto
-import com.example.sharesphere.data.remote.dto.avatar.AvatarResDto
-import com.example.sharesphere.data.remote.dto.mobile.MobileOtpRequestDto
-import com.example.sharesphere.data.remote.dto.mobile.MobileOtpResponseDto
-import com.example.sharesphere.data.remote.dto.refreshToken.RefreshTokenRequestDto
-import com.example.sharesphere.data.remote.dto.refreshToken.RefreshTokenResponseDto
-import com.example.sharesphere.data.remote.dto.register.RegisterRequestDto
-import com.example.sharesphere.data.remote.dto.register.RegisterResponseDto
-import com.example.sharesphere.data.remote.dto.signin.SignInRequestDto
-import com.example.sharesphere.data.remote.dto.signin.SignInResponseDto
+import com.example.sharesphere.data.remote.dto.auth.avatar.AvatarResDto
+import com.example.sharesphere.data.remote.dto.auth.mobile.MobileOtpRequestDto
+import com.example.sharesphere.data.remote.dto.auth.mobile.MobileOtpResponseDto
+import com.example.sharesphere.data.remote.dto.auth.refreshToken.RefreshTokenRequestDto
+import com.example.sharesphere.data.remote.dto.auth.refreshToken.RefreshTokenResponseDto
+import com.example.sharesphere.data.remote.dto.auth.register.RegisterRequestDto
+import com.example.sharesphere.data.remote.dto.auth.register.RegisterResponseDto
+import com.example.sharesphere.data.remote.dto.auth.signin.SignInRequestDto
+import com.example.sharesphere.data.remote.dto.auth.signin.SignInResponseDto
 import com.example.sharesphere.data.remote.dto.user.home.like.LikePostDto
 import com.example.sharesphere.data.remote.dto.user.home.save.SavePostDto
 import com.example.sharesphere.data.remote.dto.user.post.CreatePostResDto
 import com.example.sharesphere.data.remote.dto.user.profile.savedpost.SavedPostsResDto
 import com.example.sharesphere.data.remote.dto.user.profile.myPost.MyPostResDto
 import com.example.sharesphere.data.remote.dto.user.profile.viewProfile.ViewAccountResDto
-import com.example.sharesphere.data.remote.dto.username.UsernameResponseDto
-import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpRequestDto
-import com.example.sharesphere.data.remote.dto.verifyotp.VerifyOtpResponseDto
+import com.example.sharesphere.data.remote.dto.auth.username.UsernameResponseDto
+import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpRequestDto
+import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpResponseDto
+import com.example.sharesphere.data.remote.dto.user.common.follow.FollowUserResDto
+import com.example.sharesphere.data.remote.dto.user.followersFollowing.followers.FollowersResDto
+import com.example.sharesphere.data.remote.dto.user.followersFollowing.following.FollowingResDto
+import com.example.sharesphere.data.remote.dto.user.search.SearchResDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -101,5 +105,27 @@ interface ShareSphereApi {
         @Part("caption") caption: RequestBody
     ): CreatePostResDto
 
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/search-user/{username}")
+    suspend fun searchUser(
+        @Path("username") username:String
+    ): SearchResDto
 
+    @Headers("AddAuthorizationHeader: true")
+    @POST("post/follow-account/{accountId}")
+    suspend fun followUser(
+        @Path("accountId") accountId: String
+    ): FollowUserResDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/view-account-followers/{userId}")
+    suspend fun getFollowers(
+        @Path("userId") userId: String
+    ):FollowersResDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/view-account-following/{userId}")
+    suspend fun getFollowing(
+        @Path("userId") userId: String
+    ):FollowingResDto
 }

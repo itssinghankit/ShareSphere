@@ -2,8 +2,10 @@ package com.example.sharesphere.presentation.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +41,69 @@ import com.example.sharesphere.presentation.ui.theme.Black13
 import com.example.sharesphere.presentation.ui.theme.greytxtfieldlabel
 
 @Composable
+fun ComponentDayNightTextField(
+    modifier: Modifier=Modifier,
+    value: String,
+    label: String,
+    onValueChange: (String) -> Unit,
+    leadingIconImageVector: ImageVector,
+    leadingIconDescription: String = "",
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    showError: Boolean = false,
+    errorMessage: String = "",
+    singleLine:Boolean=true,
+    maxLines:Int=1
+) {
+    Column(modifier = modifier) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { onValueChange(it) },
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RectangleShape,
+            maxLines = maxLines,
+            label = { Text(text = label) },
+            leadingIcon = {
+                Icon(
+                    imageVector = leadingIconImageVector,
+                    contentDescription = leadingIconDescription
+                )
+            },
+            isError = showError,
+            trailingIcon = {
+                if (showError) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = stringResource(R.string.show_error_icon)
+                    )
+                }
+            },
+
+            singleLine = singleLine,
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardActions,
+            textStyle = TextStyle(
+                fontFamily = FontFamily(Font(R.font.lato_regular)),
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize
+            )
+        )
+        //to show error messages
+        if (showError) {
+            Text(
+                modifier = Modifier
+                    .padding(top = 4.dp, start = 2.dp, end = 2.dp)
+                    .fillMaxWidth(0.9f),
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = FontFamily(Font(R.font.lato_regular))
+            )
+        }
+    }
+}
+
+@Composable
 fun ComponentTextField(
     label: String,
     modifier: Modifier,
@@ -60,7 +126,8 @@ fun ComponentTextField(
         value = value,
         onValueChange = { onValueChange(it) },
         modifier = modifier
-            .fillMaxWidth(), shape = RectangleShape,
+            .fillMaxWidth(),
+        shape = RectangleShape,
         colors = TextFieldDefaults.colors(
             focusedTextColor = Black13,
             unfocusedTextColor = Black13,

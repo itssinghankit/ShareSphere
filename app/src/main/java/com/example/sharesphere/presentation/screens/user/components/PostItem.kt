@@ -3,8 +3,6 @@ package com.example.sharesphere.presentation.screens.user.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -56,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.sharesphere.R
 import com.example.sharesphere.data.commonDto.user.home.post.Post
-import com.example.sharesphere.presentation.ui.theme.orange
 
 @Composable
 fun PostItem(
@@ -69,15 +65,18 @@ fun PostItem(
     onLikeErrorUpdated: () -> Unit,
     isSaveError: Boolean,
     savedPostId: String?,
-    onSaveErrorUpdated: () -> Unit
+    onSaveErrorUpdated: () -> Unit,
+    onFollowClicked: (String) -> Unit
 ) {
 
     Column(modifier = modifier) {
-        PosterDetails(
+        UserDetails(
             avatar = post.postedBy.avatar,
             isFollowed = post.isFollowed,
             name = post.postedBy.fullName,
-            username = post.postedBy.username
+            username = post.postedBy.username,
+            userId = post.postedBy._id,
+            onFollowClicked = onFollowClicked
         )
 
         val images = post.postImages
@@ -108,7 +107,14 @@ fun PostItem(
 
 
 @Composable
-fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: String) {
+fun UserDetails(
+    avatar: String,
+    isFollowed: Boolean,
+    username: String,
+    name: String,
+    onFollowClicked: (userId: String) -> Unit = {},
+    userId: String = ""
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,7 +152,7 @@ fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: S
 
         Row {
             if (!isFollowed) {
-                var followChecked by rememberSaveable { mutableStateOf(false) }
+                var followChecked by rememberSaveable { mutableStateOf(isFollowed) }
                 FilterChip(
                     selected = !followChecked,
                     label = {
@@ -156,7 +162,10 @@ fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: S
                             fontFamily = FontFamily(Font(R.font.gilroy_semibold))
                         )
                     },
-                    onClick = { followChecked = !followChecked }
+                    onClick = {
+                        followChecked = !followChecked
+                        onFollowClicked(userId)
+                    }
                 )
             }
 
@@ -167,7 +176,7 @@ fun PosterDetails(avatar: String, isFollowed: Boolean, username: String, name: S
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageCarousel(modifier: Modifier=Modifier,images: List<String>) {
+fun ImageCarousel(modifier: Modifier = Modifier, images: List<String>) {
     val pagerState = rememberPagerState(pageCount = { images.size })
 
     Column(
@@ -203,7 +212,9 @@ fun ImageCarousel(modifier: Modifier=Modifier,images: List<String>) {
 
         // Pager indicator
         LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             items(pagerState.pageCount) { iteration ->
@@ -243,14 +254,14 @@ fun PostBottomBar(
     var saveIconCheckedState by rememberSaveable { mutableStateOf(saveIconChecked) }
 
     LaunchedEffect(isLikeError) {
-        if(isLikeError && postId==likedPostId){
+        if (isLikeError && postId == likedPostId) {
             isLikedState = !isLikedState
-            likeCountState = if(isLikedState) likeCountState+1 else likeCountState-1
+            likeCountState = if (isLikedState) likeCountState + 1 else likeCountState - 1
             onLikeErrorUpdated()
         }
     }
     LaunchedEffect(isSaveError) {
-        if(isSaveError && postId==savedPostId){
+        if (isSaveError && postId == savedPostId) {
             saveIconCheckedState = !saveIconCheckedState
             onSaveErrorUpdated()
         }
@@ -325,8 +336,9 @@ fun PostBottomBar(
             IconToggleButton(
                 checked = saveIconCheckedState,
                 onCheckedChange = {
-                    saveIconCheckedState=!saveIconCheckedState
-                    onSaveClicked(postId) }
+                    saveIconCheckedState = !saveIconCheckedState
+                    onSaveClicked(postId)
+                }
 
             ) {
                 if (saveIconCheckedState) {

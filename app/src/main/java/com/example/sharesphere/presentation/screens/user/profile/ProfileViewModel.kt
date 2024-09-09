@@ -10,7 +10,7 @@ import com.example.sharesphere.domain.model.user.profile.SavedPostModel
 import com.example.sharesphere.domain.model.user.profile.ViewAccountModel
 import com.example.sharesphere.domain.use_case.user.profile.GetMyPostsUseCase
 import com.example.sharesphere.domain.use_case.user.profile.GetSavedPostsUseCase
-import com.example.sharesphere.domain.use_case.user.profile.GetUserIdDataStoreUseCase
+import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
 import com.example.sharesphere.domain.use_case.user.profile.ViewAccountUseCase
 import com.example.sharesphere.util.ApiResult
 import com.example.sharesphere.util.DataError

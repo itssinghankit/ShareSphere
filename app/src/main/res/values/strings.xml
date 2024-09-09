@@ -59,5 +59,6 @@
     <string name="otp_sent_successfully">OTP Sent Successfully</string>
     <string name="tell_us_your_details">tell us your details</string>
     <string name="full_name">Full Name</string>
+    <string name="errorFollowSelf">You can\'t follow yourself</string>
 
 </resources>

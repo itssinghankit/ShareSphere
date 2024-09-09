@@ -1,7 +1,7 @@
 package com.example.sharesphere.domain.use_case.auth.mobile
 
 import com.example.sharesphere.R
-import com.example.sharesphere.data.remote.dto.mobile.toMobileModel
+import com.example.sharesphere.data.remote.dto.auth.mobile.toMobileModel
 import com.example.sharesphere.data.repository.AuthRepositoryImplementation
 import com.example.sharesphere.domain.model.auth.MobileModel
 import com.example.sharesphere.util.ApiResponse
