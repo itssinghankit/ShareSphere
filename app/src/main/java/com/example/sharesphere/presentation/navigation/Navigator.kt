@@ -1,6 +1,7 @@
 package com.example.sharesphere.presentation.navigation
 
 import androidx.navigation.NavController
+import timber.log.Timber
 
 //Navigator class has ability to do all the navigation in the app
 class Navigator(private val navController: NavController) {
@@ -99,7 +100,9 @@ class Navigator(private val navController: NavController) {
                 navController.navigate(ScreenSealedClass.UserScreens.HomeScreen.route)
             }
 
-
+            is NavigationActions.NavigateToUserScreens.NavigateToFFScreen -> {
+                navController.navigate("${ScreenSealedClass.UserScreens.FFScreen.route}/${action.userid}/${action.followers}/${action.username}")
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ sealed class ScreenSealedClass(val route:String) {
         object NotificationScreen: ScreenSealedClass("notification_screen")
         object ProfileScreen: ScreenSealedClass("profile_screen")
         object AccountScreen: ScreenSealedClass("account_screen")
+        object FFScreen:ScreenSealedClass("ff_screen")
     }
 
 }

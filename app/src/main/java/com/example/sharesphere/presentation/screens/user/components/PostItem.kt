@@ -66,7 +66,8 @@ fun PostItem(
     isSaveError: Boolean,
     savedPostId: String?,
     onSaveErrorUpdated: () -> Unit,
-    onFollowClicked: (String) -> Unit
+    onFollowClicked: (String) -> Unit,
+    showComments: (String) -> Unit = {}
 ) {
 
     Column(modifier = modifier) {
@@ -97,7 +98,8 @@ fun PostItem(
             onLikeErrorUpdated = onLikeErrorUpdated,
             isSaveError = isSaveError,
             savedPostId = savedPostId,
-            onSaveErrorUpdated = onSaveErrorUpdated
+            onSaveErrorUpdated = onSaveErrorUpdated,
+            showComments = showComments
 
         )
 
@@ -247,7 +249,8 @@ fun PostBottomBar(
     onLikeErrorUpdated: () -> Unit,
     isSaveError: Boolean,
     savedPostId: String?,
-    onSaveErrorUpdated: () -> Unit
+    onSaveErrorUpdated: () -> Unit,
+    showComments: (String) -> Unit
 ) {
     var isLikedState by rememberSaveable { mutableStateOf(isLiked) }
     var likeCountState by rememberSaveable { mutableIntStateOf(likes) }
@@ -303,9 +306,14 @@ fun PostBottomBar(
                 Icon(
                     modifier = Modifier
                         .padding(start = 20.dp)
-                        .size(27.dp),
+                        .size(27.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            showComments(postId)
+                        },
                     imageVector = Icons.AutoMirrored.Outlined.Chat,
-                    contentDescription = "Chat",
+                    contentDescription = "Comment",
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Text(

@@ -20,9 +20,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Forum
@@ -77,7 +75,8 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel,
-    onEvent: (ProfileEvents) -> Unit
+    onEvent: (ProfileEvents) -> Unit,
+    navigateToFFScreen: (userid: String, followers: Boolean,username:String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState: SnackbarHostState = remember {
@@ -127,6 +126,24 @@ fun ProfileScreen(
                         savedPostList = uiState.savedPostsData,
                         onGridImageClicked = { index, isMyPostDialog ->
                             onEvent(ProfileEvents.ShowImagesDialog(index, isMyPostDialog))
+                        },
+                        onFollowersClicked = {
+                            uiState.userId?.let {
+                                navigateToFFScreen(
+                                    it,
+                                    true,
+                                    uiState.accountDetails?.username?:""
+                                )
+                            }
+                        },
+                        onFollowingClicked = {
+                            uiState.userId?.let {
+                                navigateToFFScreen(
+                                    it,
+                                    false,
+                                    uiState.accountDetails?.username?:""
+                                )
+                            }
                         }
                     )
                     if (uiState.showDialog) {
@@ -164,7 +181,9 @@ fun ProfileContent(
     following: Int,
     myPostsList: List<MyPostModel>,
     savedPostList: List<SavedPostModel>,
-    onGridImageClicked: (index: Int, isMyPostDialog: Boolean?) -> Unit
+    onGridImageClicked: (index: Int, isMyPostDialog: Boolean?) -> Unit,
+    onFollowersClicked: () -> Unit,
+    onFollowingClicked: () -> Unit
 ) {
 
     val owner = true
@@ -173,8 +192,7 @@ fun ProfileContent(
     val isFollowed = false
     val onShareClicked = {}
     val posts = myPostsList.size
-    val onFollowersClicked = {}
-    val onFollowingClicked = {}
+
     val tabItems = listOf(
         ProfileTabItems(
             filledIcon = Icons.Filled.PhotoLibrary,
@@ -254,7 +272,6 @@ fun ProfileContent(
     }
 
 }
-
 
 
 @Composable
@@ -474,7 +491,7 @@ fun AvatarSection(avatar: String, name: String, bio: String) {
 }
 
 @Composable
-fun TopBar(owner: Boolean, userId: String) {
+fun TopBar(owner: Boolean, username: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -482,7 +499,7 @@ fun TopBar(owner: Boolean, userId: String) {
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            text = "@${userId}",
+            text = "@${username}",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.primary,
             textAlign = TextAlign.Center,
@@ -582,7 +599,7 @@ fun ProfileGridImages(
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxSize()
     ) {
         items(imagesList.size) { index ->
             ProfileGridItem(
@@ -603,7 +620,6 @@ fun ProfileGridItem(index: Int, image: String, onItemClick: (index: Int) -> Unit
             .padding(1.dp)
             .aspectRatio(1f)
             .clickable {
-
                 onItemClick(index)
             },
         contentScale = ContentScale.Crop,
@@ -649,10 +665,13 @@ fun ViewImagesDialog(
                 .padding(horizontal = 16.dp)
                 .background(
                     color = MaterialTheme.colorScheme.background,
-                            shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.medium
                 )
-                .border(1.5.dp,MaterialTheme.colorScheme.outline,shape = MaterialTheme.shapes.medium)
-            ,
+                .border(
+                    1.5.dp,
+                    MaterialTheme.colorScheme.outline,
+                    shape = MaterialTheme.shapes.medium
+                ),
             post = post,
             onLikeClicked = onLikeClicked,
             onSaveClicked = onSaveClicked,

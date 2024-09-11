@@ -1,0 +1,8 @@
+package com.example.sharesphere.data.remote.dto.user.common.comment.addComments
+
+data class AddCommentResDto(
+    val `data`: Data,
+    val message: String,
+    val statusCode: Int,
+    val success: Boolean
+)

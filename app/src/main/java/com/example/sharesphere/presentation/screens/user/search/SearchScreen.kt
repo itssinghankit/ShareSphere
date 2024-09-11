@@ -16,8 +16,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,11 +32,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.sharesphere.R
-import com.example.sharesphere.domain.model.user.search.SearchUserModel
+import com.example.sharesphere.domain.model.user.common.UserItemModel
 import com.example.sharesphere.presentation.components.ConnectionLostScreen
 import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.components.Loading
-import com.example.sharesphere.presentation.screens.user.components.UserDetails
+import com.example.sharesphere.presentation.screens.user.components.ComponentTopBar
 import com.example.sharesphere.presentation.screens.user.components.UserListItem
 import com.example.sharesphere.util.NetworkMonitor
 import kotlinx.coroutines.launch
@@ -73,7 +71,7 @@ fun SearchScreen(
             .fillMaxSize(),
         topBar = {
             if (!active) {
-                SearchTopBar()
+                ComponentTopBar(text="Search User")
             }
 
         },
@@ -116,7 +114,7 @@ fun SearchContent(
     isLoading: Boolean,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    searchResult: List<SearchUserModel>?,
+    searchResult: List<UserItemModel>?,
     onFollowClicked: (userId: String) -> Unit,
     onSearchClicked: (String) -> Unit,
     active: Boolean,
@@ -190,7 +188,7 @@ fun SearchContent(
 @Composable
 fun SearchList(
     modifier: Modifier = Modifier,
-    searchResult: List<SearchUserModel>,
+    searchResult: List<UserItemModel>,
     onFollowClicked: (userId: String) -> Unit,
     onUserClicked: (String) -> Unit
 ) {
@@ -210,22 +208,6 @@ fun SearchList(
     }
 }
 
-@Composable
-fun SearchTopBar(
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-            text = "Search User",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontFamily = FontFamily(Font(R.font.cirka_bold))
-        )
-        HorizontalDivider(
-            modifier = Modifier.padding(top = 4.dp)
-        )
-    }
-}
+
 
 

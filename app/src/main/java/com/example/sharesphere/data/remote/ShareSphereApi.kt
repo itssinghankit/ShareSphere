@@ -19,6 +19,9 @@ import com.example.sharesphere.data.remote.dto.user.profile.viewProfile.ViewAcco
 import com.example.sharesphere.data.remote.dto.auth.username.UsernameResponseDto
 import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpRequestDto
 import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpResponseDto
+import com.example.sharesphere.data.remote.dto.user.common.comment.addComments.AddCommentReqDto
+import com.example.sharesphere.data.remote.dto.user.common.comment.addComments.AddCommentResDto
+import com.example.sharesphere.data.remote.dto.user.common.comment.showComments.ShowCommentsResDto
 import com.example.sharesphere.data.remote.dto.user.common.follow.FollowUserResDto
 import com.example.sharesphere.data.remote.dto.user.followersFollowing.followers.FollowersResDto
 import com.example.sharesphere.data.remote.dto.user.followersFollowing.following.FollowingResDto
@@ -128,4 +131,19 @@ interface ShareSphereApi {
     suspend fun getFollowing(
         @Path("userId") userId: String
     ):FollowingResDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @GET("post/show-comments/{postId}")
+    suspend fun showComments(
+        @Path("postId") postId: String
+    ): ShowCommentsResDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @POST("post/comment/{postId}")
+    suspend fun addComment(
+        @Path("postId") postId: String,
+        @Body addCommentReqDto: AddCommentReqDto
+    ): AddCommentResDto
+
+
 }

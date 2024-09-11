@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
@@ -44,7 +45,8 @@ import com.example.sharesphere.presentation.ui.theme.greytxtfieldlabel
 fun ComponentDayNightTextField(
     modifier: Modifier=Modifier,
     value: String,
-    label: String,
+    label: String="",
+    placeHolderText:String="",
     onValueChange: (String) -> Unit,
     leadingIconImageVector: ImageVector,
     leadingIconDescription: String = "",
@@ -55,15 +57,20 @@ fun ComponentDayNightTextField(
     singleLine:Boolean=true,
     maxLines:Int=1
 ) {
+
     Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
             onValueChange = { onValueChange(it) },
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .imePadding(),
+            placeholder = {
+                Text(text = placeHolderText)
+            },
             shape = RectangleShape,
             maxLines = maxLines,
-            label = { Text(text = label) },
+            label = {Text(text = label)},
             leadingIcon = {
                 Icon(
                     imageVector = leadingIconImageVector,

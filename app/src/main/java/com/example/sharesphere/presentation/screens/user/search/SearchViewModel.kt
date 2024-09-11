@@ -1,17 +1,14 @@
 package com.example.sharesphere.presentation.screens.user.search
 
-import android.view.SearchEvent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.sharesphere.R
-import com.example.sharesphere.domain.model.user.search.SearchUserModel
+import com.example.sharesphere.domain.model.user.common.UserItemModel
 import com.example.sharesphere.domain.use_case.user.common.follow.FollowUserUseCase
 import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
-import com.example.sharesphere.domain.use_case.user.profile.ViewAccountUseCase
 import com.example.sharesphere.domain.use_case.user.search.SearchUserUseCase
 import com.example.sharesphere.util.ApiResult
 import com.example.sharesphere.util.DataError
@@ -32,7 +29,7 @@ import javax.inject.Inject
 data class SearchStates(
     val isLoading:Boolean=false,
     val errorMessage:UiText?=null,
-    val searchResult:List<SearchUserModel>? = null,
+    val searchResult:List<UserItemModel>? = null,
     val userId:String?=null
 )
 

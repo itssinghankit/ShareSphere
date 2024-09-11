@@ -1,12 +1,11 @@
 package com.example.sharesphere.data.mapper
 
-import com.example.sharesphere.data.remote.dto.user.followersFollowing.followers.FollowersResDto
 import com.example.sharesphere.data.remote.dto.user.followersFollowing.following.FollowingResDto
-import com.example.sharesphere.domain.model.user.followersFollowing.FFModel
+import com.example.sharesphere.domain.model.user.common.UserItemModel
 
-fun FollowingResDto.toFFModelList(): List<FFModel> {
+fun FollowingResDto.toUserItemModelList(): List<UserItemModel> {
     return this.data.following.map {
-       FFModel(
+       UserItemModel(
             _id = it.followingId,
             avatar = it.avatar,
             fullName = it.fullName,

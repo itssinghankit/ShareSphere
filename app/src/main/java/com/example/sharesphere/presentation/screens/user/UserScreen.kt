@@ -53,7 +53,7 @@ data class BottomNavigationItem(
 )
 
 @Composable
-fun UserScreen() {
+fun UserScreen(rootNavigator: Navigator) {
 
     val userNavController = rememberNavController()
     val userNavigator = Navigator(userNavController)
@@ -70,7 +70,8 @@ fun UserScreen() {
         UserGraph(
             navController = userNavController,
             modifier = Modifier.padding(innerPadding),
-            userNavigator = userNavigator
+            userNavigator = userNavigator,
+            rootNavigator = rootNavigator
         )
     }
 

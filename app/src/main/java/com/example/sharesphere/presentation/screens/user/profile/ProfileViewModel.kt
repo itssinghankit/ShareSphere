@@ -11,7 +11,7 @@ import com.example.sharesphere.domain.model.user.profile.ViewAccountModel
 import com.example.sharesphere.domain.use_case.user.profile.GetMyPostsUseCase
 import com.example.sharesphere.domain.use_case.user.profile.GetSavedPostsUseCase
 import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
-import com.example.sharesphere.domain.use_case.user.profile.ViewAccountUseCase
+import com.example.sharesphere.domain.use_case.user.common.comments.accountDetails.ViewAccountUseCase
 import com.example.sharesphere.util.ApiResult
 import com.example.sharesphere.util.DataError
 import com.example.sharesphere.util.NetworkMonitor
@@ -206,7 +206,6 @@ class ProfileViewModel @Inject constructor(
                         fetchMyPostsData()
                         fetchSavedPostsData()
                         withContext(Dispatchers.Main) {
-                            Timber.d("ViewAccountModel: ${result.data}")
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,

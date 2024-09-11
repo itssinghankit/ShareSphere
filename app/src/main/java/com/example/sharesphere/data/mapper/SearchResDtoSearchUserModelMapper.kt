@@ -1,11 +1,11 @@
 package com.example.sharesphere.data.mapper
 
 import com.example.sharesphere.data.remote.dto.user.search.SearchResDto
-import com.example.sharesphere.domain.model.user.search.SearchUserModel
+import com.example.sharesphere.domain.model.user.common.UserItemModel
 
-fun SearchResDto.toSearchUserModelList(): List<SearchUserModel> {
+fun SearchResDto.toUserItemModelList(): List<UserItemModel> {
     return this.data.map {
-        SearchUserModel(
+        UserItemModel(
             _id = it._id,
             avatar = it.avatar,
             fullName = it.fullName,

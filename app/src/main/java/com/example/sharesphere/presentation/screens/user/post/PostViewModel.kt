@@ -160,7 +160,7 @@ class PostViewModel @Inject constructor(
             ).collect { result ->
                 when (result) {
                     is ApiResult.Error -> {
-
+                        runOnce=true
                         when (result.error) {
                             DataError.Network.PAYLOAD_TOO_LARGE -> {
                                 withContext(Dispatchers.Main) {

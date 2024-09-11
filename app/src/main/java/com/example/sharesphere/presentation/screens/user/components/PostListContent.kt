@@ -25,7 +25,8 @@ fun PostListContent(
     isSaveError: Boolean,
     savedPostId: String?,
     onSaveErrorUpdated: () -> Unit,
-    onFollowClicked: (String) -> Unit
+    onFollowClicked: (String) -> Unit,
+    showComments:(String)->Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
@@ -44,7 +45,8 @@ fun PostListContent(
                     isSaveError = isSaveError,
                     savedPostId = savedPostId,
                     onSaveErrorUpdated = onSaveErrorUpdated,
-                    onFollowClicked = onFollowClicked
+                    onFollowClicked = onFollowClicked,
+                    showComments=showComments
                 )
             }
         }

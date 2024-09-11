@@ -15,9 +15,13 @@ import com.example.sharesphere.presentation.screens.user.profile.ProfileScreen
 import com.example.sharesphere.presentation.screens.user.profile.ProfileViewModel
 import com.example.sharesphere.presentation.screens.user.search.SearchScreen
 import com.example.sharesphere.presentation.screens.user.search.SearchViewModel
+import timber.log.Timber
 
 @Composable
-fun UserGraph(modifier: Modifier, navController: NavHostController, userNavigator: Navigator) {
+fun UserGraph(
+    modifier: Modifier, navController: NavHostController, userNavigator: Navigator,
+    rootNavigator: Navigator
+) {
 
     NavHost(
         modifier = modifier,
@@ -26,23 +30,35 @@ fun UserGraph(modifier: Modifier, navController: NavHostController, userNavigato
         startDestination = ScreenSealedClass.UserScreens.HomeScreen.route
     ) {
         composable(ScreenSealedClass.UserScreens.HomeScreen.route) {
-            val viewModel:HomeViewModel = hiltViewModel()
-            HomeScreen(viewModel=viewModel, onEvent = viewModel::onEvent)
+            val viewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(viewModel = viewModel, onEvent = viewModel::onEvent)
         }
         composable(ScreenSealedClass.UserScreens.SearchScreen.route) {
-            val viewModel:SearchViewModel= hiltViewModel()
-            SearchScreen(viewModel=viewModel,onEvent=viewModel::onEvent)
+            val viewModel: SearchViewModel = hiltViewModel()
+            SearchScreen(viewModel = viewModel, onEvent = viewModel::onEvent)
         }
         composable(ScreenSealedClass.UserScreens.PostScreen.route) {
-            val viewModel:PostViewModel = hiltViewModel()
-            PostScreen(viewModel=viewModel, onEvent = viewModel::onEvent)
+            val viewModel: PostViewModel = hiltViewModel()
+            PostScreen(viewModel = viewModel, onEvent = viewModel::onEvent)
         }
         composable(ScreenSealedClass.UserScreens.NotificationScreen.route) {
             NotificationScreen()
         }
         composable(ScreenSealedClass.UserScreens.ProfileScreen.route) {
-            val viewModel:ProfileViewModel = hiltViewModel()
-            ProfileScreen(viewModel=viewModel, onEvent = viewModel::onEvent)
+            val viewModel: ProfileViewModel = hiltViewModel()
+            ProfileScreen(
+                viewModel = viewModel,
+                onEvent = viewModel::onEvent,
+                navigateToFFScreen = { userid, followers,username ->
+                    rootNavigator.onAction(
+                        NavigationActions.NavigateToUserScreens.NavigateToFFScreen(
+                            userid = userid,
+                            followers = followers,
+                            username = username
+                        )
+                    )
+                }
+            )
         }
 
     }

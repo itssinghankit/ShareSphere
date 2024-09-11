@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
-import androidx.core.net.toFile
+import android.provider.MediaStore
 import com.example.sharesphere.data.remote.dto.user.post.CreatePostResDto
 import com.example.sharesphere.domain.repository.UserRepositoryInterface
 import com.example.sharesphere.util.ApiResult
@@ -51,71 +51,71 @@ class CreatePostUseCase @Inject constructor(
     private suspend fun Context.compressAndRotateImage(
         imageUri: Uri,
         maxFileSizeKB: Int = 1024
-    ): File =
-        withContext(Dispatchers.IO) {
-            contentResolver.openInputStream(imageUri)?.use { inputStream ->
-                val originalBitmap = BitmapFactory.decodeStream(inputStream)
+    ): File = withContext(Dispatchers.IO) {
+        contentResolver.openInputStream(imageUri)?.use { inputStream ->
+            val originalBitmap = BitmapFactory.decodeStream(inputStream)
 
-                val orientation = when (imageUri.scheme) {
-                    "content" -> contentResolver.query(
-                        imageUri,
-                        arrayOf(ExifInterface.TAG_ORIENTATION),
-                        null,
-                        null,
-                        null
-                    )
-                        ?.use { cursor ->
-                            if (cursor.moveToFirst()) cursor.getInt(0) else ExifInterface.ORIENTATION_NORMAL
-                        } ?: ExifInterface.ORIENTATION_NORMAL
+            val orientation = when (imageUri.scheme) {
+                "content" -> contentResolver.query(
+                    imageUri,
+                    arrayOf(MediaStore.Images.Media.ORIENTATION),
+                    null,
+                    null,
+                    null
+                )?.use { cursor ->
+                    if (cursor.moveToFirst()) cursor.getInt(0) else 0
+                } ?: 0
 
-                    "file" -> ExifInterface(imageUri.toFile().absolutePath).getAttributeInt(
-                        ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_NORMAL
-                    )
+                "file" -> ExifInterface(imageUri.path!!).getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL
+                )
 
-                    else -> ExifInterface.ORIENTATION_NORMAL
+                else -> ExifInterface.ORIENTATION_NORMAL
+            }
+
+            val matrix = Matrix().apply {
+                when (orientation) {
+                    90 -> postRotate(90f)
+                    180 -> postRotate(180f)
+                    270 -> postRotate(270f)
+                    ExifInterface.ORIENTATION_ROTATE_90 -> postRotate(90f)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> postRotate(180f)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> postRotate(270f)
+                    ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> postScale(-1f, 1f)
+                    ExifInterface.ORIENTATION_FLIP_VERTICAL -> postScale(1f, -1f)
                 }
+            }
 
-                val matrix = Matrix().apply {
-                    when (orientation) {
-                        ExifInterface.ORIENTATION_ROTATE_90 -> postRotate(90f)
-                        ExifInterface.ORIENTATION_ROTATE_180 -> postRotate(180f)
-                        ExifInterface.ORIENTATION_ROTATE_270 -> postRotate(270f)
+            val rotatedBitmap = Bitmap.createBitmap(
+                originalBitmap,
+                0,
+                0,
+                originalBitmap.width,
+                originalBitmap.height,
+                matrix,
+                true
+            )
+
+            ByteArrayOutputStream().use { bmpStream ->
+                var compressQuality = 100
+                do {
+                    bmpStream.reset()
+                    rotatedBitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        compressQuality,
+                        bmpStream
+                    )
+                    compressQuality -= 5
+                } while (bmpStream.size() > maxFileSizeKB * 1024 && compressQuality > 5)
+
+                File(cacheDir, "compressed_${System.currentTimeMillis()}.jpg").apply {
+                    outputStream().use { fileOut ->
+                        bmpStream.writeTo(fileOut)
                     }
                 }
+            }
+        } ?: throw IllegalArgumentException("Failed to open input stream for URI: $imageUri")
+    }
 
-                val rotatedBitmap = if (orientation != ExifInterface.ORIENTATION_NORMAL) {
-                    Bitmap.createBitmap(
-                        originalBitmap,
-                        0,
-                        0,
-                        originalBitmap.width,
-                        originalBitmap.height,
-                        matrix,
-                        true
-                    )
-                } else {
-                    originalBitmap
-                }
-
-                ByteArrayOutputStream().use { bmpStream ->
-                    var compressQuality = 100
-                    do {
-                        bmpStream.reset()
-                        rotatedBitmap.compress(
-                            Bitmap.CompressFormat.JPEG,
-                            compressQuality,
-                            bmpStream
-                        )
-                        compressQuality -= 5
-                    } while (bmpStream.size() > maxFileSizeKB * 1024 && compressQuality > 5)
-
-                    File(cacheDir, "compressed_${System.currentTimeMillis()}.jpg").apply {
-                        outputStream().use { fileOut ->
-                            bmpStream.writeTo(fileOut)
-                        }
-                    }
-                }
-            } ?: throw IllegalArgumentException("Failed to open input stream for URI: $imageUri")
-        }
 }
