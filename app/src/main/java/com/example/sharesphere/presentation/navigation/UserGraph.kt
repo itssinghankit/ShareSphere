@@ -15,7 +15,6 @@ import com.example.sharesphere.presentation.screens.user.profile.ProfileScreen
 import com.example.sharesphere.presentation.screens.user.profile.ProfileViewModel
 import com.example.sharesphere.presentation.screens.user.search.SearchScreen
 import com.example.sharesphere.presentation.screens.user.search.SearchViewModel
-import timber.log.Timber
 
 @Composable
 fun UserGraph(
@@ -31,7 +30,18 @@ fun UserGraph(
     ) {
         composable(ScreenSealedClass.UserScreens.HomeScreen.route) {
             val viewModel: HomeViewModel = hiltViewModel()
-            HomeScreen(viewModel = viewModel, onEvent = viewModel::onEvent)
+            HomeScreen(
+                viewModel = viewModel,
+                onEvent = viewModel::onEvent,
+                navigateToAccountScreen = { rootNavigator.onAction(NavigationActions.NavigateToUserScreens.NavigateToAccountScreen) },
+                navigateToViewProfileScreen = { userId ->
+                    rootNavigator.onAction(
+                        NavigationActions.NavigateToUserScreens.NavigateToViewProfile(
+                            userId = userId
+                        )
+                    )
+                },
+                navigateToChatScreens={rootNavigator.onAction(NavigationActions.NavigateToChatScreens)})
         }
         composable(ScreenSealedClass.UserScreens.SearchScreen.route) {
             val viewModel: SearchViewModel = hiltViewModel()
@@ -49,7 +59,7 @@ fun UserGraph(
             ProfileScreen(
                 viewModel = viewModel,
                 onEvent = viewModel::onEvent,
-                navigateToFFScreen = { userid, followers,username ->
+                navigateToFFScreen = { userid, followers, username ->
                     rootNavigator.onAction(
                         NavigationActions.NavigateToUserScreens.NavigateToFFScreen(
                             userid = userid,
@@ -57,7 +67,8 @@ fun UserGraph(
                             username = username
                         )
                     )
-                }
+                },
+                navigateToAccountScreen = { rootNavigator.onAction(NavigationActions.NavigateToUserScreens.NavigateToAccountScreen) }
             )
         }
 

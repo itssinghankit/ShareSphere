@@ -76,7 +76,8 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel,
     onEvent: (ProfileEvents) -> Unit,
-    navigateToFFScreen: (userid: String, followers: Boolean,username:String) -> Unit
+    navigateToFFScreen: (userid: String, followers: Boolean, username: String) -> Unit,
+    navigateToAccountScreen: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val snackBarHostState: SnackbarHostState = remember {
@@ -132,7 +133,7 @@ fun ProfileScreen(
                                 navigateToFFScreen(
                                     it,
                                     true,
-                                    uiState.accountDetails?.username?:""
+                                    uiState.accountDetails?.username ?: ""
                                 )
                             }
                         },
@@ -141,10 +142,11 @@ fun ProfileScreen(
                                 navigateToFFScreen(
                                     it,
                                     false,
-                                    uiState.accountDetails?.username?:""
+                                    uiState.accountDetails?.username ?: ""
                                 )
                             }
-                        }
+                        },
+                        onEditClicked = { navigateToAccountScreen() }
                     )
                     if (uiState.showDialog) {
                         ViewImagesDialog(
@@ -183,11 +185,12 @@ fun ProfileContent(
     savedPostList: List<SavedPostModel>,
     onGridImageClicked: (index: Int, isMyPostDialog: Boolean?) -> Unit,
     onFollowersClicked: () -> Unit,
-    onFollowingClicked: () -> Unit
+    onFollowingClicked: () -> Unit,
+    onEditClicked: () -> Unit
 ) {
 
     val owner = true
-    val onEditClicked = {}
+
     val onFollowClicked = {}
     val isFollowed = false
     val onShareClicked = {}
@@ -509,7 +512,7 @@ fun TopBar(owner: Boolean, username: String) {
             IconButton(modifier = Modifier.padding(end = 8.dp), onClick = {}) {
                 Icon(
                     imageVector = Icons.Filled.PhotoAlbum,
-                    contentDescription = "saved",
+                    contentDescription = "my photos",
                     tint = MaterialTheme.colorScheme.primary
 
                 )

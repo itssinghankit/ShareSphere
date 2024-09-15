@@ -1,4 +1,4 @@
-package com.example.sharesphere.domain.use_case.user.search
+package com.example.sharesphere.domain.use_case.user.common.search
 
 import com.example.sharesphere.domain.repository.UserRepositoryInterface
 import javax.inject.Inject

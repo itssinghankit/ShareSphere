@@ -67,7 +67,8 @@ fun PostItem(
     savedPostId: String?,
     onSaveErrorUpdated: () -> Unit,
     onFollowClicked: (String) -> Unit,
-    showComments: (String) -> Unit = {}
+    showComments: (String) -> Unit = {},
+    onProfileClicked: (String) -> Unit ={}
 ) {
 
     Column(modifier = modifier) {
@@ -77,7 +78,8 @@ fun PostItem(
             name = post.postedBy.fullName,
             username = post.postedBy.username,
             userId = post.postedBy._id,
-            onFollowClicked = onFollowClicked
+            onFollowClicked = onFollowClicked,
+            onProfileClicked= onProfileClicked
         )
 
         val images = post.postImages
@@ -115,7 +117,8 @@ fun UserDetails(
     username: String,
     name: String,
     onFollowClicked: (userId: String) -> Unit = {},
-    userId: String = ""
+    userId: String = "",
+    onProfileClicked: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -130,7 +133,8 @@ fun UserDetails(
                 contentDescription = "avatar",
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable { onProfileClicked(userId) },
                 contentScale = ContentScale.Crop,
                 placeholder = MaterialTheme.colorScheme.outlineVariant.let { ColorPainter(it) },
             )

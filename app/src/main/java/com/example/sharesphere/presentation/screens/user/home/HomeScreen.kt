@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,7 +40,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,15 +59,16 @@ import com.example.sharesphere.presentation.components.DefinedSnackBarHost
 import com.example.sharesphere.presentation.components.Loading
 import com.example.sharesphere.presentation.screens.user.components.PostListContent
 import com.example.sharesphere.util.NetworkMonitor
-import com.google.gson.annotations.Until
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
-    onEvent: (HomeEvents) -> Unit
+    onEvent: (HomeEvents) -> Unit,
+    navigateToAccountScreen: () -> Unit,
+    navigateToViewProfileScreen: (userId: String) -> Unit,
+    navigateToChatScreens: () -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -116,7 +117,10 @@ fun HomeScreen(
                 showComments = { postId ->
                     onEvent(HomeEvents.ShowComments(postId))
                     showCommentsBottomSheet = true
-                }
+                },
+                onAccountClicked = navigateToAccountScreen,
+                onProfileClicked={navigateToViewProfileScreen(it)},
+                onChatClicked=navigateToChatScreens
 
             )
             if (showCommentsBottomSheet) {
@@ -154,7 +158,9 @@ fun HomeContent(
     onSaveErrorUpdated: () -> Unit,
     onFollowClicked: (String) -> Unit,
     showComments: (String) -> Unit,
-
+    onAccountClicked:()->Unit,
+    onProfileClicked: (String) -> Unit,
+    onChatClicked:()->Unit
 ) {
 
     Column(
@@ -173,13 +179,24 @@ fun HomeContent(
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Font(R.font.cirka_bold))
             )
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = "Setting",
-                    tint = MaterialTheme.colorScheme.primary
+            Row {
+                IconButton(onClick = {onAccountClicked()}) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "Account",
+                        tint = MaterialTheme.colorScheme.primary
 
-                )
+                    )
+                }
+                IconButton(
+                    modifier=Modifier.padding(end = 8.dp),onClick = {onChatClicked()}) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Chat,
+                        contentDescription = "chat",
+                        tint = MaterialTheme.colorScheme.primary
+
+                    )
+                }
             }
 
         }
@@ -196,7 +213,8 @@ fun HomeContent(
             savedPostId = savedPostId,
             onSaveErrorUpdated = onSaveErrorUpdated,
             onFollowClicked = onFollowClicked,
-            showComments = showComments
+            showComments = showComments,
+            onProfileClicked=onProfileClicked
         )
 
     }

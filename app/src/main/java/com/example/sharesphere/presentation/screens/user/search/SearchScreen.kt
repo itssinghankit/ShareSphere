@@ -71,7 +71,7 @@ fun SearchScreen(
             .fillMaxSize(),
         topBar = {
             if (!active) {
-                ComponentTopBar(text="Search User")
+                ComponentTopBar(text="Search User", showStartIcon = false)
             }
 
         },

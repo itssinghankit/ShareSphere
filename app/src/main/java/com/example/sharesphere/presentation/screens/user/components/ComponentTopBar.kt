@@ -24,12 +24,13 @@ import com.example.sharesphere.R
 fun ComponentTopBar(
     modifier: Modifier = Modifier,
     text: String,
-    startIcon: ImageVector? = Icons.AutoMirrored.Filled.ArrowBack,
+    showStartIcon:Boolean=true,
+    startIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
     onStartIconClicked:()->Unit = {}
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
         Row(modifier = Modifier.padding(vertical = 2.dp)) {
-            startIcon?.let {
+            if(showStartIcon){
                 IconButton(onClick = {onStartIconClicked()}) {
                     Icon(
                         imageVector = startIcon,
@@ -39,7 +40,7 @@ fun ComponentTopBar(
                 }
             }
             Text(
-                modifier = Modifier.padding(start = 2.dp, top = 2.dp),
+                modifier = Modifier.padding(start = if(showStartIcon)2.dp else 16.dp, top = 2.dp),
                 text = text,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary,

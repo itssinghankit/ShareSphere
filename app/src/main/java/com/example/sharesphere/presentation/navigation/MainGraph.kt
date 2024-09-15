@@ -25,10 +25,16 @@ import com.example.sharesphere.presentation.screens.authentication.username.User
 import com.example.sharesphere.presentation.screens.authentication.username.UsernameViewModel
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpScreen
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpViewModel
+import com.example.sharesphere.presentation.screens.chat.chat.ChatScreen
+import com.example.sharesphere.presentation.screens.chat.chat.ChatViewModel
 import com.example.sharesphere.presentation.screens.user.UserScreen
+import com.example.sharesphere.presentation.screens.user.account.AccountScreen
 import com.example.sharesphere.presentation.screens.user.followersFollowing.FFArguments
 import com.example.sharesphere.presentation.screens.user.followersFollowing.FFViewModel
 import com.example.sharesphere.presentation.screens.user.followersFollowing.FollowersFollowingScreen
+import com.example.sharesphere.presentation.screens.user.viewProfile.ViewProfileArguments
+import com.example.sharesphere.presentation.screens.user.viewProfile.ViewProfileScreen
+import com.example.sharesphere.presentation.screens.user.viewProfile.ViewProfileViewModel
 import com.example.sharesphere.util.composeAnimatedSlide
 
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
@@ -212,34 +218,72 @@ fun RootNavGraph(rootNavController: NavHostController, navigator: Navigator) {
         }
 
         //User Screens
-        composeAnimatedSlide(
+        navigation(
+            startDestination = ScreenSealedClass.UserScreens.UserScreen.route,
             route = ScreenSealedClass.UserScreens.route
         ) {
-            UserScreen(
-                rootNavigator = navigator
-            )
+            composeAnimatedSlide(
+                route = ScreenSealedClass.UserScreens.UserScreen.route
+            ) {
+                UserScreen(
+                    rootNavigator = navigator
+                )
+            }
+
+            //other than bottom nav screens
+            composeAnimatedSlide(
+                route = "${ScreenSealedClass.UserScreens.FFScreen.route}/{${FFArguments.USER_ID.name}}/{${FFArguments.FOLLOWERS.name}}/{${FFArguments.USERNAME.name}}",
+                arguments = listOf(
+                    navArgument(FFArguments.USER_ID.name) {
+                        type = NavType.StringType
+                    },
+                    navArgument(FFArguments.FOLLOWERS.name) {
+                        type = NavType.BoolType
+                    },
+                    navArgument(FFArguments.USERNAME.name) {
+                        type = NavType.StringType
+                    }
+                )
+            ) {
+                val viewModel: FFViewModel = hiltViewModel()
+                FollowersFollowingScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    onBackPressed = { rootNavController.popBackStack() })
+            }
+
+            composeAnimatedSlide(
+                route = ScreenSealedClass.UserScreens.AccountScreen.route
+            ) {
+                AccountScreen()
+            }
+
+            composeAnimatedSlide(
+                route = "${ScreenSealedClass.UserScreens.ViewProfileScreen.route}/{${ViewProfileArguments.USER_ID.name}}",
+            ) {
+                val viewModel: ViewProfileViewModel = hiltViewModel()
+                ViewProfileScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvents,
+                    onBackPressed = { rootNavController.popBackStack() }
+                )
+            }
         }
 
-        //other than bottom nav screens
-        composeAnimatedSlide(
-            route = "${ScreenSealedClass.UserScreens.FFScreen.route}/{${FFArguments.USER_ID.name}}/{${FFArguments.FOLLOWERS.name}}/{${FFArguments.USERNAME.name}}",
-            arguments = listOf(
-                navArgument(FFArguments.USER_ID.name) {
-                    type = NavType.StringType
-                },
-                navArgument(FFArguments.FOLLOWERS.name) {
-                    type = NavType.BoolType
-                },
-                navArgument(FFArguments.USERNAME.name) {
-                    type = NavType.StringType
-                }
-            )
+        navigation(
+            startDestination = ScreenSealedClass.ChatScreens.ChatScreen.route,
+            route = ScreenSealedClass.ChatScreens.route
         ) {
-            val viewModel: FFViewModel = hiltViewModel()
-            FollowersFollowingScreen(
-                viewModel = viewModel,
-                onEvent = viewModel::onEvent,
-                onBackPressed = { rootNavController.popBackStack() })
+            composeAnimatedSlide(
+                route = ScreenSealedClass.ChatScreens.ChatScreen.route
+            ) {
+                val viewModel: ChatViewModel = hiltViewModel()
+                ChatScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    onBackPressed = { rootNavController.popBackStack() }
+                )
+            }
         }
 
     }

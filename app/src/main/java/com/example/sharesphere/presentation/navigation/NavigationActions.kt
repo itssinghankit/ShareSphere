@@ -23,12 +23,17 @@ sealed class NavigationActions {
     object NavigateToUserScreens : NavigationActions() {
         object NavigateToHome : NavigationActions()
         data class NavigateToFFScreen(val userid:String,val followers:Boolean,val username:String):NavigationActions()
+        object NavigateToAccountScreen:NavigationActions()
+        data class NavigateToViewProfile(val userId:String):NavigationActions()
     }
 
     //from splash screens
     object NavigateToUserFromSplash:NavigationActions()
     object NavigateToMobileFromSplash:NavigationActions()
     object NavigateToDetailsFromSplash:NavigationActions()
+
+    object NavigateToChatScreens:NavigationActions(){
+    }
 
 
 }

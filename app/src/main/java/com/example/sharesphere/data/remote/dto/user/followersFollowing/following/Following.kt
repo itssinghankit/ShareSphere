@@ -6,5 +6,6 @@ data class Following(
     val followingId: String,
     val fullName: String,
     val isFollowed: Boolean,
-    val username: String
+    val username: String,
+    val isOnline:Boolean=false
 )

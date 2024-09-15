@@ -16,6 +16,7 @@ sealed class ScreenSealedClass(val route:String) {
     }
 
     object UserScreens : ScreenSealedClass("user"){
+        object UserScreen:ScreenSealedClass("user_screen")
         object HomeScreen: ScreenSealedClass("home_screen")
         object SearchScreen: ScreenSealedClass("search_screen")
         object PostScreen: ScreenSealedClass("post_screen")
@@ -23,6 +24,11 @@ sealed class ScreenSealedClass(val route:String) {
         object ProfileScreen: ScreenSealedClass("profile_screen")
         object AccountScreen: ScreenSealedClass("account_screen")
         object FFScreen:ScreenSealedClass("ff_screen")
+        object ViewProfileScreen:ScreenSealedClass("view_profile_screen")
+    }
+
+    object ChatScreens :ScreenSealedClass("chat"){
+        object ChatScreen:ScreenSealedClass("chat_screen")
     }
 
 }

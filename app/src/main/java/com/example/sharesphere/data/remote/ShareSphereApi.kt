@@ -19,6 +19,7 @@ import com.example.sharesphere.data.remote.dto.user.profile.viewProfile.ViewAcco
 import com.example.sharesphere.data.remote.dto.auth.username.UsernameResponseDto
 import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpRequestDto
 import com.example.sharesphere.data.remote.dto.auth.verifyotp.VerifyOtpResponseDto
+import com.example.sharesphere.data.remote.dto.chat.chat.GetChatsResDto
 import com.example.sharesphere.data.remote.dto.user.common.comment.addComments.AddCommentReqDto
 import com.example.sharesphere.data.remote.dto.user.common.comment.addComments.AddCommentResDto
 import com.example.sharesphere.data.remote.dto.user.common.comment.showComments.ShowCommentsResDto
@@ -144,6 +145,10 @@ interface ShareSphereApi {
         @Path("postId") postId: String,
         @Body addCommentReqDto: AddCommentReqDto
     ): AddCommentResDto
+
+    @Headers("AddAuthorizationHeader: true")
+    @GET("chat/all")
+    suspend fun getChats():GetChatsResDto
 
 
 }

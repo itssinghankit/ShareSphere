@@ -6,8 +6,10 @@ import com.example.sharesphere.data.remote.ShareSphereApi
 import com.example.sharesphere.data.remote.ShareSphereAuthenticator
 import com.example.sharesphere.data.remote.ShareSphereInterceptor
 import com.example.sharesphere.data.repository.AuthRepositoryImplementation
+import com.example.sharesphere.data.repository.ChatRepositoryImplementation
 import com.example.sharesphere.data.repository.UserRepositoryImplementation
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
+import com.example.sharesphere.domain.repository.ChatRepositoryInterface
 import com.example.sharesphere.domain.repository.UserRepositoryInterface
 import dagger.Module
 import dagger.Provides
@@ -71,6 +73,16 @@ class NetworkModule {
         return UserRepositoryImplementation(
             shareSphereApi = shareSphereApi,
             homePostDatabase = homePostDatabase
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun providesChatRepository(
+        shareSphereApi: ShareSphereApi
+    ): ChatRepositoryInterface {
+        return ChatRepositoryImplementation(
+            shareSphereApi = shareSphereApi
         )
     }
 

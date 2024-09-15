@@ -39,6 +39,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.sharesphere.data.remote.dto.user.profile.ProfileArguments
 import com.example.sharesphere.presentation.navigation.Navigator
 import com.example.sharesphere.presentation.navigation.ScreenSealedClass
 import com.example.sharesphere.presentation.navigation.UserGraph
@@ -108,7 +109,7 @@ private fun BottomBar(userNavController: NavHostController) {
             selectedIcon = Icons.Filled.Notifications,
             unselectedIcon = Icons.Outlined.Notifications,
             hasNews = false,
-            badgeCount = 23
+            badgeCount = 0
         ),
         BottomNavigationItem(
             title = "Profile",

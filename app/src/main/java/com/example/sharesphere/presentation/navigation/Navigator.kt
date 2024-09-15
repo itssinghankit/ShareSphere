@@ -103,6 +103,18 @@ class Navigator(private val navController: NavController) {
             is NavigationActions.NavigateToUserScreens.NavigateToFFScreen -> {
                 navController.navigate("${ScreenSealedClass.UserScreens.FFScreen.route}/${action.userid}/${action.followers}/${action.username}")
             }
+
+            NavigationActions.NavigateToUserScreens.NavigateToAccountScreen -> {
+                navController.navigate(ScreenSealedClass.UserScreens.AccountScreen.route)
+            }
+
+            is NavigationActions.NavigateToUserScreens.NavigateToViewProfile -> {
+                navController.navigate("${ScreenSealedClass.UserScreens.ViewProfileScreen.route}/${action.userId}")
+            }
+
+            NavigationActions.NavigateToChatScreens -> {
+                navController.navigate(ScreenSealedClass.ChatScreens.route)
+            }
         }
     }
 }

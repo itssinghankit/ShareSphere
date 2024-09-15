@@ -1,4 +1,4 @@
-package com.example.sharesphere.presentation.screens.user.search
+package com.example.sharesphere.presentation.screens.chat.chat
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,10 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sharesphere.R
+import com.example.sharesphere.data.remote.dto.chat.chat.Chat
 import com.example.sharesphere.domain.model.user.common.UserItemModel
+import com.example.sharesphere.domain.use_case.chat.GetChatsUseCase
 import com.example.sharesphere.domain.use_case.user.common.follow.FollowUserUseCase
-import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
 import com.example.sharesphere.domain.use_case.user.common.search.SearchUserUseCase
+import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
 import com.example.sharesphere.util.ApiResult
 import com.example.sharesphere.util.DataError
 import com.example.sharesphere.util.NetworkMonitor
@@ -26,47 +28,64 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-data class SearchStates(
-    val isLoading:Boolean=false,
-    val errorMessage:UiText?=null,
-    val searchResult:List<UserItemModel>? = null,
-    val userId:String?=null
+data class ChatStates(
+    val isLoading: Boolean = false,
+    val errorMessage: UiText? = null,
+    val searchResult: List<UserItemModel>? = null,
+    val userId: String? = null,
+    val chats: List<Chat> = emptyList()
 )
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(
+class ChatViewModel @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val searchUserUseCase: SearchUserUseCase,
     private val followUserUseCase: FollowUserUseCase,
-    private val getUserIdDataStoreUseCase: GetUserIdDataStoreUseCase
-):ViewModel() {
-    private val _uiStates= MutableStateFlow(SearchStates())
-    val uiStates:StateFlow<SearchStates> = _uiStates.asStateFlow()
+    private val getUserIdDataStoreUseCase: GetUserIdDataStoreUseCase,
+    private val getChatsUseCase: GetChatsUseCase
+) : ViewModel() {
+
+    private val _uiStates = MutableStateFlow(ChatStates())
+    val uiStates: StateFlow<ChatStates> = _uiStates.asStateFlow()
+
+    val networkState = networkMonitor.networkState
 
     var searchQuery by mutableStateOf("")
         private set
 
-    val networkState=networkMonitor.networkState
+    private var job: Job? = null
 
-    private var job:Job?=null
+    init {
+        //fetch all chats available
+        getChats()
 
-    fun onEvent(event: SearchEvents){
-        when(event){
-            is SearchEvents.ResetErrorMessage -> {
+        //fetch userid for further processing
+        viewModelScope.launch {
+            val userId = getUserIdDataStoreUseCase()
+            _uiStates.update {
+                it.copy(userId = userId)
+            }
+        }
+    }
+
+    fun onEvent(event: ChatEvents) {
+        when (event) {
+            ChatEvents.ResetErrorMessage -> {
                 _uiStates.update {
                     it.copy(errorMessage = null)
                 }
             }
-            is SearchEvents.OnSearchQueryChanged -> {
-                searchQuery=event.searchQuery
+
+            is ChatEvents.OnSearchQueryChanged -> {
+                searchQuery = event.searchQuery
                 job?.cancel()
-                if(searchQuery.isNotEmpty()){
-                    job= viewModelScope.launch {
+                if (searchQuery.isNotEmpty()) {
+                    job = viewModelScope.launch {
                         delay(500)
                         searchUser(searchQuery)
                     }
-                }else{
-                    onEvent(SearchEvents.OnSearchActiveClosed)
+                } else {
+                    onEvent(ChatEvents.OnSearchActiveClosed)
                     _uiStates.update {
                         it.copy(searchResult = null)
                     }
@@ -74,11 +93,11 @@ class SearchViewModel @Inject constructor(
 
             }
 
-            is SearchEvents.OnFollowClicked -> {
+            is ChatEvents.OnFollowClicked -> {
                 followUser(event.userId)
             }
 
-            SearchEvents.OnSearchActiveClosed -> {
+            ChatEvents.OnSearchActiveClosed -> {
                 job?.cancel()
                 _uiStates.update {
                     it.copy(
@@ -86,8 +105,9 @@ class SearchViewModel @Inject constructor(
                     )
                 }
             }
-        }
 
+
+        }
     }
 
     private fun searchUser(usernameOrName: String) {
@@ -140,19 +160,9 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun followUser(accountId:String) {
+    private fun followUser(accountId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val userId=getUserIdDataStoreUseCase()
-            if(userId==accountId){
-                withContext(Dispatchers.Main){
-                    _uiStates.update {
-                        it.copy(
-                            errorMessage = UiText.StringResource(R.string.errorFollowSelf)
-                        )
-                    }
-                }
-                return@launch
-            }
+
             followUserUseCase(accountId).collect { result ->
                 when (result) {
                     is ApiResult.Error -> {
@@ -187,4 +197,49 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
+
+    private fun getChats() {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            getChatsUseCase().collect { result ->
+                when (result) {
+                    is ApiResult.Error -> {
+
+                        when (result.error) {
+                            DataError.Network.INTERNAL_SERVER_ERROR -> {
+                                withContext(Dispatchers.Main) {
+                                    _uiStates.update {
+                                        it.copy(
+                                            errorMessage = UiText.StringResource(R.string.errorInternalServerError)
+                                        )
+                                    }
+                                }
+                            }
+
+                            else -> {
+                                withContext(Dispatchers.Main) {
+                                    _uiStates.update {
+                                        it.copy(
+                                            errorMessage = UiText.StringResource(R.string.errorCheckInternet)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    is ApiResult.Success -> {
+                        withContext(Dispatchers.Main) {
+                            _uiStates.update {
+                                it.copy(
+                                    chats = result.data
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

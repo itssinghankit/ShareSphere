@@ -10,7 +10,8 @@ fun SearchResDto.toUserItemModelList(): List<UserItemModel> {
             avatar = it.avatar,
             fullName = it.fullName,
             isFollowed = it.isFollowed,
-            username = it.username
+            username = it.username,
+            isOnline = it.isOnline
         )
     }
 }
