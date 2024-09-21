@@ -20,9 +20,6 @@ fingertips.
 - **View Profile**: View and update your profile details
 - **Day and Night Mode**: Reduce eye strain with easy-to-toggle light and dark themes
 
-## Screenshots
-
----
 ## Architecture and Design
 
 ShareSphere is built with modern Android development best practices in mind:
