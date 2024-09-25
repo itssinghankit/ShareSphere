@@ -5,11 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -30,14 +28,15 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.sharesphere.R
 
-@Preview
 @Composable
-private fun previewChat() {
-    ChatItem(name = "Ankit Singh",lastMessage="Bhai kha hai abhi tak nhi aaya sab thik to hai")
-}
-
-@Composable
-fun ChatItem(modifier: Modifier = Modifier,name:String,lastMessage:String,time:String="12:00",messageLeft:Int=0) {
+fun ChatItem(
+    modifier: Modifier = Modifier,
+    avatar:String,
+    name: String,
+    lastMessage: String,
+    time: String = "12:00",
+    messageLeft: Int = 0
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -49,7 +48,7 @@ fun ChatItem(modifier: Modifier = Modifier,name:String,lastMessage:String,time:S
 
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             AsyncImage(
-                model = "https://avatars.githubusercontent.com/u/1",
+                model = avatar,
                 contentDescription = "avatar",
                 modifier = Modifier
                     .size(48.dp)
@@ -57,9 +56,12 @@ fun ChatItem(modifier: Modifier = Modifier,name:String,lastMessage:String,time:S
                 contentScale = ContentScale.Crop,
                 placeholder = MaterialTheme.colorScheme.outlineVariant.let { ColorPainter(it) },
             )
-            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(start = 12.dp)) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(start = 12.dp)
+            ) {
                 Text(
-                    text =name ,
+                    text = name,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontFamily = FontFamily(Font(R.font.gilroy_regular))
@@ -75,15 +77,15 @@ fun ChatItem(modifier: Modifier = Modifier,name:String,lastMessage:String,time:S
                 )
             }
         }
-        Column(Modifier.height(48.dp),horizontalAlignment = Alignment.End) {
+        Column(Modifier.height(48.dp), horizontalAlignment = Alignment.End) {
             Text(
                 modifier = Modifier.padding(top = 4.dp),
                 text = time,
                 style = MaterialTheme.typography.bodySmall,
-                color = if(messageLeft>0)MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary,
+                color = if (messageLeft > 0) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.secondary,
                 fontFamily = FontFamily(Font(R.font.gilroy_regular))
             )
-            if(messageLeft>0){
+            if (messageLeft > 0) {
                 Text(
                     modifier = Modifier
                         .padding(top = 8.dp)

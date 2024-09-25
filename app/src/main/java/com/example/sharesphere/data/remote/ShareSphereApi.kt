@@ -146,9 +146,4 @@ interface ShareSphereApi {
         @Body addCommentReqDto: AddCommentReqDto
     ): AddCommentResDto
 
-    @Headers("AddAuthorizationHeader: true")
-    @GET("chat/all")
-    suspend fun getChats():GetChatsResDto
-
-
 }

@@ -1,6 +1,7 @@
 package com.example.sharesphere.data.repository
 
 import com.example.sharesphere.data.remote.ShareSphereApi
+import com.example.sharesphere.data.remote.ShareSphereChatApi
 import com.example.sharesphere.data.remote.dto.chat.chat.Chat
 import com.example.sharesphere.domain.repository.ChatRepositoryInterface
 import com.example.sharesphere.util.ApiResult
@@ -12,12 +13,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 class ChatRepositoryImplementation @Inject constructor(
-    private val shareSphereApi: ShareSphereApi
+    private val shareSphereChatApi: ShareSphereChatApi
 ) : ChatRepositoryInterface {
 
     override suspend fun getChats(): Flow<ApiResult<List<Chat>, DataError.Network>> = flow {
         try {
-            val response = shareSphereApi.getChats()
+            val response = shareSphereChatApi.getChats()
             emit(ApiResult.Success(response.data))
         } catch (e: HttpException) {
             when (e.code()) {

@@ -29,6 +29,9 @@ android {
         properties.load(project.rootProject.file("local.properties").newInputStream());
 
         buildConfigField "String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"";
+        buildConfigField "String", "RENDER_BASE_URL", "\"${properties.getProperty("RENDER_BASE_URL")}\"";
+        buildConfigField "String", "SOCKET_BASE_URL", "\"${properties.getProperty("SOCKET_BASE_URL")}\"";
+
 
     }
 
@@ -142,5 +145,10 @@ dependencies {
 
     //paging
     implementation "androidx.paging:paging-compose:3.3.2"
+
+    //socket io
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 
 }

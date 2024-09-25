@@ -4,6 +4,7 @@ import com.example.sharesphere.BuildConfig
 import com.example.sharesphere.data.local.HomePostDatabase
 import com.example.sharesphere.data.remote.ShareSphereApi
 import com.example.sharesphere.data.remote.ShareSphereAuthenticator
+import com.example.sharesphere.data.remote.ShareSphereChatApi
 import com.example.sharesphere.data.remote.ShareSphereInterceptor
 import com.example.sharesphere.data.repository.AuthRepositoryImplementation
 import com.example.sharesphere.data.repository.ChatRepositoryImplementation
@@ -20,7 +21,16 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class Render
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class Vercel
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -37,7 +47,7 @@ class NetworkModule {
 
         return OkHttpClient.Builder()
             .connectTimeout(100, TimeUnit.SECONDS)
-            .writeTimeout(100,TimeUnit.SECONDS)
+            .writeTimeout(100, TimeUnit.SECONDS)
             .readTimeout(100, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
@@ -47,14 +57,23 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @Vercel
+    fun providesRetrofitVercel(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
     }
 
     @Singleton
     @Provides
-    fun providesShareSphereInterface(retrofit: Retrofit): ShareSphereApi {
+    @Render
+    fun providesRetrofitRender(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder().baseUrl(BuildConfig.RENDER_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
+    }
+
+    @Singleton
+    @Provides
+    fun providesShareSphereInterface(@Vercel retrofit: Retrofit): ShareSphereApi {
         return retrofit.create(ShareSphereApi::class.java)
     }
 
@@ -78,11 +97,18 @@ class NetworkModule {
 
     @Singleton
     @Provides
+    fun providesShareSphereChatInterface(@Render retrofit: Retrofit): ShareSphereChatApi {
+        return retrofit
+            .create(ShareSphereChatApi::class.java)
+    }
+
+    @Singleton
+    @Provides
     fun providesChatRepository(
-        shareSphereApi: ShareSphereApi
+        shareSphereChatApi: ShareSphereChatApi
     ): ChatRepositoryInterface {
         return ChatRepositoryImplementation(
-            shareSphereApi = shareSphereApi
+            shareSphereChatApi = shareSphereChatApi
         )
     }
 

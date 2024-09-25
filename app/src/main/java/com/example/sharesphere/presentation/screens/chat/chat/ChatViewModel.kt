@@ -26,6 +26,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.example.sharesphere.data.remote.SocketHandler
+import timber.log.Timber
 import javax.inject.Inject
 
 data class ChatStates(
@@ -33,7 +35,8 @@ data class ChatStates(
     val errorMessage: UiText? = null,
     val searchResult: List<UserItemModel>? = null,
     val userId: String? = null,
-    val chats: List<Chat> = emptyList()
+    val chats: List<Chat> = emptyList(),
+    val isChatLoading:Boolean = false
 )
 
 @HiltViewModel
@@ -42,7 +45,8 @@ class ChatViewModel @Inject constructor(
     private val searchUserUseCase: SearchUserUseCase,
     private val followUserUseCase: FollowUserUseCase,
     private val getUserIdDataStoreUseCase: GetUserIdDataStoreUseCase,
-    private val getChatsUseCase: GetChatsUseCase
+    private val getChatsUseCase: GetChatsUseCase,
+
 ) : ViewModel() {
 
     private val _uiStates = MutableStateFlow(ChatStates())
@@ -66,7 +70,28 @@ class ChatViewModel @Inject constructor(
                 it.copy(userId = userId)
             }
         }
+
+        //setting socket
+
+        listenSocket()
     }
+
+    private fun listenSocket() {
+        viewModelScope.launch {
+            val socketHandler= SocketHandler
+            socketHandler.setSocket()
+            socketHandler.establishConnection()
+           
+            val mSocket = SocketHandler.getSocket()
+            mSocket.on("connected") { args ->
+                Timber.d("after connection"+args[0].toString())
+            }
+            mSocket.on("connect_error") { args ->
+                Timber.d("error"+args[0].toString())
+            }
+        }
+    }
+
 
     fun onEvent(event: ChatEvents) {
         when (event) {
@@ -200,7 +225,13 @@ class ChatViewModel @Inject constructor(
 
     private fun getChats() {
         viewModelScope.launch(Dispatchers.IO) {
-
+            withContext(Dispatchers.Main) {
+                _uiStates.update {
+                    it.copy(
+                      isChatLoading = true
+                    )
+                }
+            }
             getChatsUseCase().collect { result ->
                 when (result) {
                     is ApiResult.Error -> {
@@ -210,7 +241,7 @@ class ChatViewModel @Inject constructor(
                                 withContext(Dispatchers.Main) {
                                     _uiStates.update {
                                         it.copy(
-                                            errorMessage = UiText.StringResource(R.string.errorInternalServerError)
+                                            errorMessage = UiText.StringResource(R.string.errorInternalServerError), isChatLoading = false
                                         )
                                     }
                                 }
@@ -220,7 +251,7 @@ class ChatViewModel @Inject constructor(
                                 withContext(Dispatchers.Main) {
                                     _uiStates.update {
                                         it.copy(
-                                            errorMessage = UiText.StringResource(R.string.errorCheckInternet)
+                                            errorMessage = UiText.StringResource(R.string.errorCheckInternet), isChatLoading = false
                                         )
                                     }
                                 }
@@ -232,7 +263,7 @@ class ChatViewModel @Inject constructor(
                         withContext(Dispatchers.Main) {
                             _uiStates.update {
                                 it.copy(
-                                    chats = result.data
+                                    chats = result.data, isChatLoading = false
                                 )
                             }
                         }
