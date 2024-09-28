@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.sharesphere.R
+import com.example.sharesphere.presentation.screens.chat.chat.ChatEvents
 
 @Composable
 fun ChatItem(
@@ -34,13 +35,14 @@ fun ChatItem(
     avatar:String,
     name: String,
     lastMessage: String,
-    time: String = "12:00",
-    messageLeft: Int = 0
+    time: String,
+    messageLeft: Int = 0,
+    onChatClicked: ()->Unit
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onChatClicked() }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -51,7 +53,7 @@ fun ChatItem(
                 model = avatar,
                 contentDescription = "avatar",
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(44.dp)
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 placeholder = MaterialTheme.colorScheme.outlineVariant.let { ColorPainter(it) },
@@ -67,11 +69,11 @@ fun ChatItem(
                     fontFamily = FontFamily(Font(R.font.gilroy_regular))
                 )
                 Text(
-                    modifier = Modifier.padding(top = 4.dp),
+                    modifier = Modifier.padding(top = 6.dp),
                     text = lastMessage,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     fontFamily = FontFamily(Font(R.font.gilroy_regular))
                 )

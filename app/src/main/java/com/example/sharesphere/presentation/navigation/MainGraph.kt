@@ -1,6 +1,7 @@
 package com.example.sharesphere.presentation.navigation
 
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresExtension
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +28,9 @@ import com.example.sharesphere.presentation.screens.authentication.verifyOtp.Ver
 import com.example.sharesphere.presentation.screens.authentication.verifyOtp.VerifyOtpViewModel
 import com.example.sharesphere.presentation.screens.chat.chat.ChatScreen
 import com.example.sharesphere.presentation.screens.chat.chat.ChatViewModel
+import com.example.sharesphere.presentation.screens.chat.message.ChatMessageArguments
+import com.example.sharesphere.presentation.screens.chat.message.ChatMessageScreen
+import com.example.sharesphere.presentation.screens.chat.message.ChatMessageViewModel
 import com.example.sharesphere.presentation.screens.user.UserScreen
 import com.example.sharesphere.presentation.screens.user.account.AccountScreen
 import com.example.sharesphere.presentation.screens.user.followersFollowing.FFArguments
@@ -36,7 +40,9 @@ import com.example.sharesphere.presentation.screens.user.viewProfile.ViewProfile
 import com.example.sharesphere.presentation.screens.user.viewProfile.ViewProfileScreen
 import com.example.sharesphere.presentation.screens.user.viewProfile.ViewProfileViewModel
 import com.example.sharesphere.util.composeAnimatedSlide
+import timber.log.Timber
 
+@RequiresApi(Build.VERSION_CODES.O)
 @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
 @Composable
 fun RootNavGraph(rootNavController: NavHostController, navigator: Navigator) {
@@ -279,6 +285,40 @@ fun RootNavGraph(rootNavController: NavHostController, navigator: Navigator) {
             ) {
                 val viewModel: ChatViewModel = hiltViewModel()
                 ChatScreen(
+                    viewModel = viewModel,
+                    onEvent = viewModel::onEvent,
+                    onBackPressed = { rootNavController.popBackStack() }
+                ) { chatId, fullName, username, avatar ->
+                    navigator.onAction(
+                        NavigationActions.NavigateToChatScreens.NavigateToChatMessageScreen(
+                            chatId = chatId,
+                            fullName = fullName,
+                            username = username,
+                            avatar = avatar
+                        )
+                    )
+                }
+            }
+
+            composeAnimatedSlide(route =  "${ScreenSealedClass.ChatScreens.ChatMessageScreen.route}/{${ChatMessageArguments.CHAT_ID.name}}/{${ChatMessageArguments.FULL_NAME.name}}/{${ChatMessageArguments.USERNAME.name}}/{${ChatMessageArguments.AVATAR.name}}",
+
+                arguments = listOf(
+                    navArgument(ChatMessageArguments.CHAT_ID.name) {
+                        type = NavType.StringType
+                    },
+                    navArgument(ChatMessageArguments.FULL_NAME.name){
+                        type=NavType.StringType
+                    },
+                    navArgument(ChatMessageArguments.USERNAME.name){
+                        type=NavType.StringType
+                    },
+                    navArgument(ChatMessageArguments.AVATAR.name){
+                        type=NavType.StringType
+                    }
+                )
+            ) {
+                val viewModel: ChatMessageViewModel = hiltViewModel()
+                ChatMessageScreen(
                     viewModel = viewModel,
                     onEvent = viewModel::onEvent,
                     onBackPressed = { rootNavController.popBackStack() }

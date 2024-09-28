@@ -1,5 +1,6 @@
 package com.example.sharesphere.presentation.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
 import timber.log.Timber
 
@@ -114,6 +115,10 @@ class Navigator(private val navController: NavController) {
 
             NavigationActions.NavigateToChatScreens -> {
                 navController.navigate(ScreenSealedClass.ChatScreens.route)
+            }
+
+            is NavigationActions.NavigateToChatScreens.NavigateToChatMessageScreen -> {
+                navController.navigate("${ScreenSealedClass.ChatScreens.ChatMessageScreen.route}/${action.chatId}/${action.fullName}/${action.username}/${Uri.encode(action.avatar)}")
             }
         }
     }

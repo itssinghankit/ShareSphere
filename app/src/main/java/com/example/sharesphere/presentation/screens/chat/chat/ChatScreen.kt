@@ -1,6 +1,5 @@
 package com.example.sharesphere.presentation.screens.chat.chat
 
-import android.icu.text.RelativeDateTimeFormatter
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
@@ -12,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +34,6 @@ import com.example.sharesphere.presentation.screens.user.search.SearchContent
 import com.example.sharesphere.util.NetworkMonitor
 import formatDateTimeRelative
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -42,7 +41,8 @@ fun ChatScreen(
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel,
     onEvent: (ChatEvents) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    onChatClicked: (chatId: String, fullName: String, username: String, avatar: String) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -60,6 +60,20 @@ fun ChatScreen(
         val snackBarText = errorMessage.asString()
         scope.launch {
             snackBarHostState.showSnackbar(snackBarText)
+        }
+    }
+
+    DisposableEffect(uiState.navigateToChatMsgScreen) {
+        if (uiState.navigateToChatMsgScreen) {
+            onChatClicked(
+                uiState.newChatId!!,
+                uiState.newChatFullName!!,
+                uiState.newChatUserName!!,
+                uiState.newChatAvatar!!
+            )
+        }
+        onDispose {
+            onEvent(ChatEvents.OnNavigationDone)
         }
     }
 
@@ -97,10 +111,18 @@ fun ChatScreen(
                     onEvent(ChatEvents.OnSearchActiveClosed)
                 }
             },
-            onUserClicked = {},
+            onUserClicked = { onEvent(ChatEvents.OnSearchChatClicked(it)) },
             chat = uiState.chats,
             userId = uiState.userId!!,
-            isChatLoading=uiState.isChatLoading
+            isChatLoading = uiState.isChatLoading,
+            onChatClicked = { chatId, fullName, username, avatar ->
+                onChatClicked(
+                    chatId,
+                    fullName,
+                    username,
+                    avatar
+                )
+            }
         )
     }
 
@@ -122,7 +144,8 @@ fun ChatContent(
     onUserClicked: (String) -> Unit,
     chat: List<Chat>,
     userId: String,
-    isChatLoading:Boolean
+    isChatLoading: Boolean,
+    onChatClicked: (chatId: String, fullName: String, username: String, avatar: String) -> Unit
 ) {
 
     Column {
@@ -139,36 +162,40 @@ fun ChatContent(
             onUserClicked = onUserClicked
         )
 
-       if(isChatLoading){
-           Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)){
-               Loading()
-           }
-       }else{
-           LazyColumn(
-               modifier = Modifier.padding(top = 4.dp),
-               contentPadding = PaddingValues(top = 8.dp)
-           ) {
+        if (isChatLoading) {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.weight(1f)) {
+                Loading()
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.padding(top = 4.dp),
+                contentPadding = PaddingValues(top = 8.dp)
+            ) {
 
-               items(chat.size) {index->
-                   var name= ""
-                   var avatar=""
-                   chat[index].participants.forEachIndexed{ _, participant ->
+                items(chat.size) { index ->
+                    var name = ""
+                    var avatar = ""
+                    var username = ""
+                    chat[index].participants.forEachIndexed { _, participant ->
 
-                       if (participant._id != userId) {
-                           name=participant.fullName
-                           avatar=participant.avatar
-                       }
-                   }
-                   ChatItem(
-                       name = name,
-                       avatar = avatar,
-                       lastMessage = chat[index].lastMessage.content,
-                       time = formatDateTimeRelative(chat[index].lastMessage.updatedAt),
-                       messageLeft = 0
-                   )
-               }
-           }
-       }
+                        if (participant._id != userId) {
+                            name = participant.fullName
+                            avatar = participant.avatar
+                            username = participant.username
+                        }
+                    }
+                    ChatItem(
+                        name = name,
+                        avatar = avatar,
+                        lastMessage = chat[index].lastMessage?.content ?: "",
+                        time = chat[index].lastMessage?.let { formatDateTimeRelative(it.updatedAt) }
+                            ?: "",
+                        messageLeft = 0,
+                        onChatClicked = { onChatClicked(chat[index]._id, name, username, avatar) }
+                    )
+                }
+            }
+        }
     }
 
 }

@@ -29,6 +29,7 @@ sealed class ScreenSealedClass(val route:String) {
 
     object ChatScreens :ScreenSealedClass("chat"){
         object ChatScreen:ScreenSealedClass("chat_screen")
+        object ChatMessageScreen:ScreenSealedClass("chat_message_screen")
     }
 
 }

@@ -1,17 +1,21 @@
 package com.example.sharesphere.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.sharesphere.BuildConfig
 import com.example.sharesphere.data.local.HomePostDatabase
 import com.example.sharesphere.data.remote.ShareSphereApi
 import com.example.sharesphere.data.remote.ShareSphereAuthenticator
 import com.example.sharesphere.data.remote.ShareSphereChatApi
 import com.example.sharesphere.data.remote.ShareSphereInterceptor
+import com.example.sharesphere.data.remote.SocketHandler
 import com.example.sharesphere.data.repository.AuthRepositoryImplementation
 import com.example.sharesphere.data.repository.ChatRepositoryImplementation
 import com.example.sharesphere.data.repository.UserRepositoryImplementation
 import com.example.sharesphere.domain.repository.AuthRepositoryInterface
 import com.example.sharesphere.domain.repository.ChatRepositoryInterface
 import com.example.sharesphere.domain.repository.UserRepositoryInterface
+import com.example.sharesphere.domain.use_case.user.common.userId.GetUserIdDataStoreUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -102,13 +106,16 @@ class NetworkModule {
             .create(ShareSphereChatApi::class.java)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Singleton
     @Provides
     fun providesChatRepository(
-        shareSphereChatApi: ShareSphereChatApi
+        shareSphereChatApi: ShareSphereChatApi,
+        socketHandler: SocketHandler
     ): ChatRepositoryInterface {
         return ChatRepositoryImplementation(
-            shareSphereChatApi = shareSphereChatApi
+            shareSphereChatApi = shareSphereChatApi,
+            socketHandler = socketHandler
         )
     }
 

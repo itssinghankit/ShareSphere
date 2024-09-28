@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Subtitles
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -37,16 +36,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.sharesphere.R
-import com.example.sharesphere.presentation.ui.theme.DefinedFonts
 import com.example.sharesphere.presentation.ui.theme.Black13
+import com.example.sharesphere.presentation.ui.theme.DefinedFonts
 import com.example.sharesphere.presentation.ui.theme.greytxtfieldlabel
 
 @Composable
 fun ComponentDayNightTextField(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     value: String,
-    label: String="",
-    placeHolderText:String="",
+    label: String = "",
+    placeHolderText: String = "",
     onValueChange: (String) -> Unit,
     leadingIconImageVector: ImageVector,
     leadingIconDescription: String = "",
@@ -54,8 +53,9 @@ fun ComponentDayNightTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     showError: Boolean = false,
     errorMessage: String = "",
-    singleLine:Boolean=true,
-    maxLines:Int=1
+    singleLine: Boolean = true,
+    maxLines: Int = 1,
+    shape: Shape = RectangleShape
 ) {
 
     Column(modifier = modifier) {
@@ -68,9 +68,10 @@ fun ComponentDayNightTextField(
             placeholder = {
                 Text(text = placeHolderText)
             },
-            shape = RectangleShape,
+
+            shape = shape,
             maxLines = maxLines,
-            label = {Text(text = label)},
+            label = { Text(text = label) },
             leadingIcon = {
                 Icon(
                     imageVector = leadingIconImageVector,
@@ -86,7 +87,6 @@ fun ComponentDayNightTextField(
                     )
                 }
             },
-
             singleLine = singleLine,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
@@ -125,8 +125,8 @@ fun ComponentTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     showError: Boolean = false,
     errorMessage: String = "",
-    singleLine:Boolean=true,
-    maxLines:Int=1
+    singleLine: Boolean = true,
+    maxLines: Int = 1
 ) {
 
     OutlinedTextField(

@@ -33,6 +33,7 @@ sealed class NavigationActions {
     object NavigateToDetailsFromSplash:NavigationActions()
 
     object NavigateToChatScreens:NavigationActions(){
+        data class NavigateToChatMessageScreen(val chatId:String,val avatar:String,val fullName:String,val username:String):NavigationActions()
     }
 
 
